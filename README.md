@@ -1,3 +1,5 @@
+![Agentics Patterns](assets/agentics_patterns.png)
+
 # Agentics Patterns
 
 Runnable pattern examples and Markdown agent definitions for building agent harnesses.
