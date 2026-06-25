@@ -1,11 +1,11 @@
 ---
-name: ruview-retrieval-review-answer-drafter
+name: retrieval-review-answer-drafter
 description: "Drafts the retrieval-grounded answer from returned passages without adding unsupported claims."
 ---
 
 # Answer Drafter
 
-- Source pattern: `ruview-retrieval-review`
+- Source pattern: `retrieval-review`
 - Pattern name: Retrieval review
 - Workflow: Index -> retrieve -> answer -> source review
 - Recommended tier: `sonnet`

@@ -14,7 +14,6 @@ this directory with `python run_example.py <example-id>`.
 
 ## Catalog Vertical And Base Patterns
 
-- [`minimal-base-harness`](./minimal-base-harness/README.md) - Minimal base harness
 - [`devops-incident-response`](./devops-incident-response/README.md) - DevOps incident response
 - [`coding-senior-engineering-pod`](./coding-senior-engineering-pod/README.md) - Senior engineering pod
 - [`research-evidence-dossier`](./research-evidence-dossier/README.md) - Evidence dossier
@@ -27,7 +26,7 @@ this directory with `python run_example.py <example-id>`.
 - [`advertising-media-optimization`](./advertising-media-optimization/README.md) - Media optimization
 - [`ai-ml-lifecycle`](./ai-ml-lifecycle/README.md) - ML lifecycle
 - [`agentics-controlled-swarm`](./agentics-controlled-swarm/README.md) - Controlled swarm
-- [`ruview-retrieval-review`](./ruview-retrieval-review/README.md) - Retrieval review
+- [`retrieval-review`](./retrieval-review/README.md) - Retrieval review
 - [`health-safe-wellness-coordination`](./health-safe-wellness-coordination/README.md) - Safe wellness coordination
 - [`gaming-playtest-to-design`](./gaming-playtest-to-design/README.md) - Playtest-to-design
 - [`sales-b2b-pipeline`](./sales-b2b-pipeline/README.md) - B2B pipeline

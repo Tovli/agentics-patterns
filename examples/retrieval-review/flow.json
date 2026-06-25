@@ -1,5 +1,5 @@
 {
-  "id": "ruview-retrieval-review",
+  "id": "retrieval-review",
   "source": {
     "type": "local_catalog",
     "section": "catalog",
@@ -40,7 +40,7 @@
     ]
   },
   "run": {
-    "command": "python ../run_example.py ruview-retrieval-review",
+    "command": "python ../run_example.py retrieval-review",
     "expected_stdout": "expected-output.json"
   },
   "memory_update": {

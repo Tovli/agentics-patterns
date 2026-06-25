@@ -1,11 +1,11 @@
 ---
-name: ruview-retrieval-review-retriever
+name: retrieval-review-retriever
 description: "Runs HNSW search with citations."
 ---
 
 # Retriever
 
-- Source pattern: `ruview-retrieval-review`
+- Source pattern: `retrieval-review`
 - Pattern name: Retrieval review
 - Workflow: Index -> retrieve -> answer -> source review
 - Recommended tier: `sonnet`

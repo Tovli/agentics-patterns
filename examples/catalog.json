@@ -596,7 +596,7 @@
       "source_heading": "`agentics` — Controlled Swarm Pattern"
     },
     {
-      "id": "ruview-retrieval-review",
+      "id": "retrieval-review",
       "section": "catalog",
       "number": 13,
       "name": "Retrieval review",
@@ -633,7 +633,7 @@
           "reviewer_verdict"
         ]
       },
-      "source_heading": "`ruview` — Retrieval Review Pattern"
+      "source_heading": "`ruvector` — Retrieval Review Pattern"
     },
     {
       "id": "health-safe-wellness-coordination",

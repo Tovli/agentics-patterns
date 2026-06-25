@@ -19,7 +19,7 @@ Status: all documented patterns currently have generated example artifacts.
 - [x] `advertising-media-optimization` - `advertising` — Media Optimization Pattern - `examples/advertising-media-optimization/README.md`
 - [x] `ai-ml-lifecycle` - `ai` — ML Lifecycle Pattern - `examples/ai-ml-lifecycle/README.md`
 - [x] `agentics-controlled-swarm` - `agentics` — Controlled Swarm Pattern - `examples/agentics-controlled-swarm/README.md`
-- [x] `ruview-retrieval-review` - `ruview` — Retrieval Review Pattern - `examples/ruview-retrieval-review/README.md`
+- [x] `retrieval-review` - `ruvector` — Retrieval Review Pattern - `examples/retrieval-review/README.md`
 - [x] `health-safe-wellness-coordination` - `health` — Safe Wellness Coordination Pattern - `examples/health-safe-wellness-coordination/README.md`
 - [x] `gaming-playtest-to-design` - `gaming` — Playtest-to-Design Pattern - `examples/gaming-playtest-to-design/README.md`
 - [x] `sales-b2b-pipeline` - `sales` — B2B Pipeline Pattern - `examples/sales-b2b-pipeline/README.md`

@@ -2,7 +2,7 @@
 
 Catalog entry: `catalog` pattern 13
 
-Source heading: `ruview` — Retrieval Review Pattern
+Source heading: `ruvector` — Retrieval Review Pattern
 
 Pattern: **Index -> retrieve -> answer -> source review**
 
@@ -38,13 +38,13 @@ Use `input.json` as the concrete scenario payload for this example.
 From this directory:
 
 ```bash
-python ../run_example.py ruview-retrieval-review
+python ../run_example.py retrieval-review
 ```
 
 To verify the checked-in expected artifact:
 
 ```bash
-python ../run_example.py ruview-retrieval-review --check
+python ../run_example.py retrieval-review --check
 ```
 
 ## Expected Output

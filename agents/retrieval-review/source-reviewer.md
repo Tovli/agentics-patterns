@@ -5,7 +5,7 @@ description: "Grades the answer against the sources."
 
 # Source Reviewer
 
-- Source pattern: `ruview-retrieval-review`
+- Source pattern: `retrieval-review`
 - Pattern name: Retrieval review
 - Workflow: Index -> retrieve -> answer -> source review
 - Recommended tier: `opus`

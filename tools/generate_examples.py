@@ -370,7 +370,7 @@ SPECS = [
         ["goal", "plan", "task_graph", "worker_outputs", "critic_findings", "final_result", "cost", "unresolved_issues"],
     ),
     example(
-        "ruview-retrieval-review",
+        "retrieval-review",
         "catalog",
         13,
         "Retrieval review",
