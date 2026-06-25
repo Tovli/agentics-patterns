@@ -1,0 +1,74 @@
+{
+  "artifact_type": "trade_ticket",
+  "example_id": "trading-paper-decision",
+  "status": "ready_for_review",
+  "summary": "Paper trading decision example completed for SPY.",
+  "fields": {
+    "hypothesis": {
+      "summary": "hypothesis recorded for SPY.",
+      "responsible_agent": "Postmortem Analyst",
+      "supporting_evidence": [
+        "A momentum signal appears in a liquid ETF, but portfolio drawdown is near the weekly limit.",
+        "Summarize market state and relevant conditions."
+      ]
+    },
+    "signal": "intraday breakout above prior high",
+    "invalidation_criteria": {
+      "command": "python ../run_example.py trading-paper-decision",
+      "status": "passed",
+      "checked_fields": [
+        "hypothesis",
+        "signal",
+        "invalidation_criteria",
+        "risk_checks",
+        "order_intent",
+        "paper_live_status",
+        "post_trade_analysis"
+      ]
+    },
+    "risk_checks": {
+      "level": "medium",
+      "drivers": [
+        "A momentum signal appears in a liquid ETF, but portfolio drawdown is near the weekly limit.",
+        "Summarize market state and relevant conditions."
+      ],
+      "mitigation": "Risk Checker is non-bypassable."
+    },
+    "order_intent": {
+      "summary": "order intent recorded for SPY.",
+      "responsible_agent": "Paper Executor",
+      "supporting_evidence": [
+        "A momentum signal appears in a liquid ETF, but portfolio drawdown is near the weekly limit.",
+        "Summarize market state and relevant conditions."
+      ]
+    },
+    "paper_live_status": {
+      "result": "approve_for_example",
+      "reason": "Postmortem Analyst completed the gated Watch -> signal -> risk gate -> paper execution -> attribution flow for SPY."
+    },
+    "post_trade_analysis": {
+      "summary": "post trade analysis recorded for SPY.",
+      "responsible_agent": "Market Watcher",
+      "supporting_evidence": [
+        "A momentum signal appears in a liquid ETF, but portfolio drawdown is near the weekly limit.",
+        "Summarize market state and relevant conditions."
+      ]
+    }
+  },
+  "policy_verdict": {
+    "allowed": true,
+    "gates_checked": [
+      "Risk Checker is non-bypassable.",
+      "Executor runs paper-by-default unless live trading is explicitly approved."
+    ],
+    "blocked_actions": [],
+    "notes": "Example runner accepts the artifact only after every declared policy gate is represented."
+  },
+  "receipt": {
+    "required": true,
+    "input_hash": "sha256:522cd0569b50f945",
+    "flow_hash": "sha256:3414f9a5725f09e3",
+    "output_hash": "sha256:6aab385253266b61",
+    "reviewer_verdict": "accepted_for_example"
+  }
+}

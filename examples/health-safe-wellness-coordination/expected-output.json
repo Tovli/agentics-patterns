@@ -1,0 +1,66 @@
+{
+  "artifact_type": "intake_summary",
+  "example_id": "health-safe-wellness-coordination",
+  "status": "ready_for_review",
+  "summary": "Safe wellness coordination example completed for stress and poor sleep.",
+  "fields": {
+    "user_stated_concern": {
+      "summary": "user stated concern recorded for stress and poor sleep.",
+      "responsible_agent": "Care Coordinator",
+      "supporting_evidence": [
+        "A user describes stress, poor sleep, and a concerning symptom while asking for next steps.",
+        "Collect structured wellness information without diagnosing."
+      ]
+    },
+    "non_clinical_context": {
+      "summary": "non clinical context recorded for stress and poor sleep.",
+      "responsible_agent": "Red-Flag Triage",
+      "supporting_evidence": [
+        "A user describes stress, poor sleep, and a concerning symptom while asking for next steps.",
+        "Collect structured wellness information without diagnosing."
+      ]
+    },
+    "red_flags": {
+      "summary": "red flags recorded for stress and poor sleep.",
+      "responsible_agent": "Clinician Escalation Gate",
+      "supporting_evidence": [
+        "A user describes stress, poor sleep, and a concerning symptom while asking for next steps.",
+        "Collect structured wellness information without diagnosing."
+      ]
+    },
+    "suggested_resource_type": [
+      {
+        "claim": "A user describes stress, poor sleep, and a concerning symptom while asking for next steps.",
+        "status": "accepted_for_example"
+      },
+      {
+        "claim": "Collect structured wellness information without diagnosing.",
+        "status": "accepted_for_example"
+      }
+    ],
+    "escalation_recommendation": {
+      "summary": "escalation recommendation recorded for stress and poor sleep.",
+      "responsible_agent": "Clinician Escalation Gate",
+      "supporting_evidence": [
+        "A user describes stress, poor sleep, and a concerning symptom while asking for next steps.",
+        "Collect structured wellness information without diagnosing."
+      ]
+    }
+  },
+  "policy_verdict": {
+    "allowed": true,
+    "gates_checked": [
+      "No diagnosis, treatment plan, or emergency minimization.",
+      "Clinical content is routed to professional care."
+    ],
+    "blocked_actions": [],
+    "notes": "Example runner accepts the artifact only after every declared policy gate is represented."
+  },
+  "receipt": {
+    "required": true,
+    "input_hash": "sha256:8de7d76eb6c35c9c",
+    "flow_hash": "sha256:963cac21b1221906",
+    "output_hash": "sha256:cfb9a3480121dbfe",
+    "reviewer_verdict": "accepted_for_example"
+  }
+}

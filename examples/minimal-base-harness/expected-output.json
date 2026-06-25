@@ -1,0 +1,49 @@
+{
+  "artifact_type": "doctor_report",
+  "example_id": "minimal-base-harness",
+  "status": "ready_for_review",
+  "summary": "Minimal base harness example completed for doctor.",
+  "fields": {
+    "overall_status": {
+      "result": "approve_for_example",
+      "reason": "Harness Doctor completed the gated Kernel smoke-test scaffold flow for doctor."
+    },
+    "checks": [
+      "kernel",
+      "mcp",
+      "memory",
+      "host_adapter"
+    ],
+    "failed_checks": {
+      "summary": "failed checks recorded for doctor.",
+      "responsible_agent": "Harness Doctor",
+      "supporting_evidence": [
+        "A new package scaffold needs a single doctor command before any domain agents are added.",
+        "Initialize the harness workspace."
+      ]
+    },
+    "remediation": {
+      "summary": "remediation recorded for doctor.",
+      "responsible_agent": "Harness Doctor",
+      "supporting_evidence": [
+        "A new package scaffold needs a single doctor command before any domain agents are added.",
+        "Initialize the harness workspace."
+      ]
+    }
+  },
+  "policy_verdict": {
+    "allowed": true,
+    "gates_checked": [
+      "No domain action is allowed from the minimal scaffold."
+    ],
+    "blocked_actions": [],
+    "notes": "Example runner accepts the artifact only after every declared policy gate is represented."
+  },
+  "receipt": {
+    "required": true,
+    "input_hash": "sha256:f2ad6727b007ac9b",
+    "flow_hash": "sha256:d80b4457a99081c9",
+    "output_hash": "sha256:c4a3644d329f3d86",
+    "reviewer_verdict": "accepted_for_example"
+  }
+}

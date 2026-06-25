@@ -1,0 +1,54 @@
+{
+  "artifact_type": "domain_learning_packet",
+  "example_id": "domain-judge-distill",
+  "status": "ready_for_review",
+  "summary": "Domain-specific judge and distill example completed for research.",
+  "fields": {
+    "domain_verdict": {
+      "result": "approve_for_example",
+      "reason": "Distill Provider completed the gated Domain judge -> domain distiller -> reusable lesson flow for research."
+    },
+    "metric_evidence": [
+      {
+        "claim": "Different verticals evaluate success with their own domain-specific outcome criteria.",
+        "status": "accepted_for_example"
+      },
+      {
+        "claim": "Apply domain-specific success criteria to the completed run.",
+        "status": "accepted_for_example"
+      }
+    ],
+    "distilled_lesson": {
+      "summary": "distilled lesson recorded for research.",
+      "responsible_agent": "Domain Judge",
+      "supporting_evidence": [
+        "Different verticals evaluate success with their own domain-specific outcome criteria.",
+        "Apply domain-specific success criteria to the completed run."
+      ]
+    },
+    "namespace": "research",
+    "reuse_conditions": {
+      "summary": "reuse conditions recorded for research.",
+      "responsible_agent": "Domain Judge",
+      "supporting_evidence": [
+        "Different verticals evaluate success with their own domain-specific outcome criteria.",
+        "Apply domain-specific success criteria to the completed run."
+      ]
+    }
+  },
+  "policy_verdict": {
+    "allowed": true,
+    "gates_checked": [
+      "Generic success metrics cannot replace domain-specific judgment."
+    ],
+    "blocked_actions": [],
+    "notes": "Example runner accepts the artifact only after every declared policy gate is represented."
+  },
+  "receipt": {
+    "required": true,
+    "input_hash": "sha256:38e1641fd61aaf5b",
+    "flow_hash": "sha256:5486c0249fdc91b7",
+    "output_hash": "sha256:9ee49d303f6fb3bd",
+    "reviewer_verdict": "accepted_for_example"
+  }
+}

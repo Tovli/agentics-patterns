@@ -1,0 +1,68 @@
+{
+  "id": "crm-lifecycle-management",
+  "source": {
+    "type": "local_catalog",
+    "section": "catalog",
+    "number": 8,
+    "heading": "`crm` — Lifecycle Management Pattern"
+  },
+  "name": "CRM lifecycle management",
+  "pattern": "Qualify -> manage account -> watch churn",
+  "scenario": "A mid-market account expands usage but has three unresolved support tickets before renewal.",
+  "workflow_steps": [
+    "Score fit, urgency, potential value, and routing.",
+    "Choose the next relationship play.",
+    "Monitor churn signals and explain early risk.",
+    "Update lifecycle memory with distilled state."
+  ],
+  "agents": [
+    "Lead Qualifier",
+    "Account Manager",
+    "Churn Watcher",
+    "Memory Updater"
+  ],
+  "policy_gates": [
+    "CRM mutation is suggestion-only unless explicitly permitted."
+  ],
+  "input_contract": {
+    "file": "input.json",
+    "description": "Concrete scenario input for this pattern example."
+  },
+  "output_contract": {
+    "artifact_type": "account_brief",
+    "required_fields": [
+      "stage",
+      "score",
+      "next_best_action",
+      "relationship_context",
+      "churn_risk",
+      "missing_facts"
+    ]
+  },
+  "run": {
+    "command": "python ../run_example.py crm-lifecycle-management",
+    "expected_stdout": "expected-output.json"
+  },
+  "memory_update": {
+    "mode": "distill-only",
+    "stores": [
+      "verified decisions",
+      "reusable failures",
+      "domain lessons"
+    ],
+    "excludes": [
+      "raw sensitive data",
+      "unsupported claims"
+    ]
+  },
+  "receipt": {
+    "required": true,
+    "records": [
+      "input_hash",
+      "workflow_steps",
+      "policy_verdict",
+      "output_hash",
+      "reviewer_verdict"
+    ]
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "request": "upgrade minor dependencies and open a patch",
+  "risk_budget": "medium",
+  "verification": [
+    "unit_tests",
+    "dependency_audit"
+  ]
+}

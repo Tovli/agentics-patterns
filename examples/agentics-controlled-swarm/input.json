@@ -1,0 +1,8 @@
+{
+  "goal": "compare auth provider integrations",
+  "budget": {
+    "max_worker_tasks": 6,
+    "max_depth": 2
+  },
+  "stopping_condition": "one recommended provider with unresolved risks listed"
+}

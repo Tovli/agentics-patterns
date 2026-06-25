@@ -1,0 +1,9 @@
+{
+  "local_lesson": "rollback runbooks need precomputed owner mapping",
+  "sensitive_fields": [
+    "customer_name",
+    "incident_id",
+    "internal_urls"
+  ],
+  "federation_namespace": "patterns"
+}

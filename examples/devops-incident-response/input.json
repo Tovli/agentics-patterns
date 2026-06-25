@@ -1,0 +1,9 @@
+{
+  "alert": "p95 checkout latency above 2500ms for 10 minutes",
+  "service": "checkout-api",
+  "environment": "production",
+  "signals": [
+    "db_cpu_92_percent",
+    "error_rate_1_4_percent"
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "instrument": "SPY",
+  "signal": "intraday breakout above prior high",
+  "portfolio_state": {
+    "weekly_drawdown_percent": 2.8,
+    "limit_percent": 3.0
+  }
+}

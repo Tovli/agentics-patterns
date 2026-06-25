@@ -1,0 +1,71 @@
+{
+  "artifact_type": "self_evolution_audit",
+  "example_id": "opt-in-self-evolution",
+  "status": "ready_for_review",
+  "summary": "Opt-in self-evolution example completed for Opt-in self-evolution.",
+  "fields": {
+    "baseline": {
+      "summary": "baseline recorded for Opt-in self-evolution.",
+      "responsible_agent": "Baseline Measurer",
+      "supporting_evidence": [
+        "A harness tests a routing-weight change against historical tasks before adopting it.",
+        "Measure current baseline on declared metrics."
+      ]
+    },
+    "experiment": [
+      {
+        "channel": "A harness tests a routing-weight change against historical tasks before adopting it.",
+        "variant": "Opt-in self-evolution message",
+        "review": "Audit Logger"
+      },
+      {
+        "channel": "Measure current baseline on declared metrics.",
+        "variant": "Opt-in self-evolution message",
+        "review": "Audit Logger"
+      }
+    ],
+    "evaluation": {
+      "summary": "evaluation recorded for Opt-in self-evolution.",
+      "responsible_agent": "Baseline Measurer",
+      "supporting_evidence": [
+        "A harness tests a routing-weight change against historical tasks before adopting it.",
+        "Measure current baseline on declared metrics."
+      ]
+    },
+    "adopt_reject_decision": {
+      "result": "approve_for_example",
+      "reason": "Audit Logger completed the gated Measure baseline -> small exploration -> evaluate -> adopt if better -> rollback on regression flow for Opt-in self-evolution."
+    },
+    "rollback_path": {
+      "summary": "rollback path recorded for Opt-in self-evolution.",
+      "responsible_agent": "Experiment Runner",
+      "supporting_evidence": [
+        "A harness tests a routing-weight change against historical tasks before adopting it.",
+        "Measure current baseline on declared metrics."
+      ]
+    },
+    "audit_log": {
+      "summary": "audit log recorded for Opt-in self-evolution.",
+      "responsible_agent": "Evaluator",
+      "supporting_evidence": [
+        "A harness tests a routing-weight change against historical tasks before adopting it.",
+        "Measure current baseline on declared metrics."
+      ]
+    }
+  },
+  "policy_verdict": {
+    "allowed": true,
+    "gates_checked": [
+      "Adaptive tuning is opt-in and rollback-ready."
+    ],
+    "blocked_actions": [],
+    "notes": "Example runner accepts the artifact only after every declared policy gate is represented."
+  },
+  "receipt": {
+    "required": true,
+    "input_hash": "sha256:b164be6cb38f9910",
+    "flow_hash": "sha256:e4de95e1261cfb0c",
+    "output_hash": "sha256:476b264f85a4fb44",
+    "reviewer_verdict": "accepted_for_example"
+  }
+}

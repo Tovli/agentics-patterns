@@ -1,0 +1,67 @@
+{
+  "artifact_type": "model_cascade_record",
+  "example_id": "cost-aware-model-cascade",
+  "status": "ready_for_review",
+  "summary": "Cost-aware model cascade example completed for label incoming GitHub issue.",
+  "fields": {
+    "initial_model": {
+      "summary": "initial model recorded for label incoming GitHub issue.",
+      "responsible_agent": "Escalation Router",
+      "supporting_evidence": [
+        "A CI triage agent drafts issue labels cheaply and escalates only uncertain cases to a stronger model.",
+        "Attempt the task with the cheapest suitable model."
+      ]
+    },
+    "verification_result": {
+      "command": "python ../run_example.py cost-aware-model-cascade",
+      "status": "passed",
+      "checked_fields": [
+        "initial_model",
+        "verification_result",
+        "escalated_model",
+        "cost",
+        "latency",
+        "quality_outcome"
+      ]
+    },
+    "escalated_model": {
+      "summary": "escalated model recorded for label incoming GitHub issue.",
+      "responsible_agent": "Escalation Router",
+      "supporting_evidence": [
+        "A CI triage agent drafts issue labels cheaply and escalates only uncertain cases to a stronger model.",
+        "Attempt the task with the cheapest suitable model."
+      ]
+    },
+    "cost": {
+      "limit": "example_budget",
+      "spent": "within_limit"
+    },
+    "latency": {
+      "target": "example_sla",
+      "observed": "within_target"
+    },
+    "quality_outcome": {
+      "summary": "quality outcome recorded for label incoming GitHub issue.",
+      "responsible_agent": "Cheap Drafter",
+      "supporting_evidence": [
+        "A CI triage agent drafts issue labels cheaply and escalates only uncertain cases to a stronger model.",
+        "Attempt the task with the cheapest suitable model."
+      ]
+    }
+  },
+  "policy_verdict": {
+    "allowed": true,
+    "gates_checked": [
+      "Escalation is evidence-driven, not automatic."
+    ],
+    "blocked_actions": [],
+    "notes": "Example runner accepts the artifact only after every declared policy gate is represented."
+  },
+  "receipt": {
+    "required": true,
+    "input_hash": "sha256:2d590ae769f38274",
+    "flow_hash": "sha256:54292c0db37c76b7",
+    "output_hash": "sha256:128b40f0bb51f77a",
+    "reviewer_verdict": "accepted_for_example"
+  }
+}

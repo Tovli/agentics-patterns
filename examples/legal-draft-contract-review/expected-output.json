@@ -1,0 +1,91 @@
+{
+  "artifact_type": "draft_redline_packet",
+  "example_id": "legal-draft-contract-review",
+  "status": "ready_for_review",
+  "summary": "Draft-only contract review example completed for vendor_msa.",
+  "fields": {
+    "redlines": [
+      {
+        "target": "indemnity",
+        "change": "drafted",
+        "review": "human_or_reviewer_gate_required"
+      },
+      {
+        "target": "renewal",
+        "change": "drafted",
+        "review": "human_or_reviewer_gate_required"
+      },
+      {
+        "target": "limitation_of_liability",
+        "change": "drafted",
+        "review": "human_or_reviewer_gate_required"
+      }
+    ],
+    "issue_list": {
+      "summary": "issue list recorded for vendor_msa.",
+      "responsible_agent": "Redliner",
+      "supporting_evidence": [
+        "indemnity",
+        "renewal",
+        "limitation_of_liability"
+      ]
+    },
+    "negotiation_notes": {
+      "summary": "negotiation notes recorded for vendor_msa.",
+      "responsible_agent": "Citation Checker",
+      "supporting_evidence": [
+        "indemnity",
+        "renewal",
+        "limitation_of_liability"
+      ]
+    },
+    "citation_status": [
+      {
+        "claim": "indemnity",
+        "status": "accepted_for_example"
+      },
+      {
+        "claim": "renewal",
+        "status": "accepted_for_example"
+      },
+      {
+        "claim": "limitation_of_liability",
+        "status": "accepted_for_example"
+      }
+    ],
+    "risk_score_per_clause": {
+      "overall": "medium",
+      "by_item": {
+        "indemnity": "medium",
+        "renewal": "medium",
+        "limitation_of_liability": "medium"
+      },
+      "review_owner": "Risk Rater"
+    },
+    "draft_only_disclaimer": {
+      "summary": "draft only disclaimer recorded for vendor_msa.",
+      "responsible_agent": "Risk Rater",
+      "supporting_evidence": [
+        "indemnity",
+        "renewal",
+        "limitation_of_liability"
+      ]
+    }
+  },
+  "policy_verdict": {
+    "allowed": true,
+    "gates_checked": [
+      "Output is draft-only and is never presented as legal advice.",
+      "Licensed human review is required before external use."
+    ],
+    "blocked_actions": [],
+    "notes": "Example runner accepts the artifact only after every declared policy gate is represented."
+  },
+  "receipt": {
+    "required": true,
+    "input_hash": "sha256:d989597f412ab21d",
+    "flow_hash": "sha256:8b8b0440d6ffc67b",
+    "output_hash": "sha256:765382c5aa174728",
+    "reviewer_verdict": "accepted_for_example"
+  }
+}

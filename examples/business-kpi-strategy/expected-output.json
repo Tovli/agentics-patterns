@@ -1,0 +1,109 @@
+{
+  "artifact_type": "quarterly_plan",
+  "example_id": "business-kpi-strategy",
+  "status": "ready_for_review",
+  "summary": "KPI-grounded strategy example completed for KPI-grounded strategy.",
+  "fields": {
+    "findings": {
+      "summary": "findings recorded for KPI-grounded strategy.",
+      "responsible_agent": "Ops Coordinator",
+      "supporting_evidence": [
+        "pipeline_conversion: down_12_percent",
+        "activation: flat",
+        "retention: up_3_percent"
+      ]
+    },
+    "strategic_choice": {
+      "summary": "strategic choice recorded for KPI-grounded strategy.",
+      "responsible_agent": "Analyst",
+      "supporting_evidence": [
+        "pipeline_conversion: down_12_percent",
+        "activation: flat",
+        "retention: up_3_percent"
+      ]
+    },
+    "rejected_alternatives": [
+      "No unsafe rejected alternatives accepted without gate: Strategic recommendations must tie directly to metrics."
+    ],
+    "action_owners": [
+      {
+        "action": "Turn current metrics into findings.",
+        "status": "proposed",
+        "gate": "Strategic recommendations must tie directly to metrics."
+      },
+      {
+        "action": "Choose one strategic bet and state trade-offs.",
+        "status": "proposed",
+        "gate": "Strategic recommendations must tie directly to metrics."
+      },
+      {
+        "action": "Translate the bet into owners, actions, milestones, and KPIs.",
+        "status": "proposed",
+        "gate": "Strategic recommendations must tie directly to metrics."
+      }
+    ],
+    "kpis": [
+      {
+        "name": "pipeline_conversion",
+        "target": "improve",
+        "cadence": "weekly"
+      },
+      {
+        "name": "activation",
+        "target": "improve",
+        "cadence": "weekly"
+      },
+      {
+        "name": "retention",
+        "target": "improve",
+        "cadence": "weekly"
+      }
+    ],
+    "milestones": [
+      {
+        "step": 1,
+        "action": "Turn current metrics into findings.",
+        "owner": "Analyst"
+      },
+      {
+        "step": 2,
+        "action": "Choose one strategic bet and state trade-offs.",
+        "owner": "Strategist"
+      },
+      {
+        "step": 3,
+        "action": "Translate the bet into owners, actions, milestones, and KPIs.",
+        "owner": "Ops Coordinator"
+      },
+      {
+        "step": 4,
+        "action": "Review feasibility and metric alignment.",
+        "owner": "Feasibility Reviewer"
+      }
+    ],
+    "review_cadence": {
+      "summary": "review cadence recorded for KPI-grounded strategy.",
+      "responsible_agent": "Analyst",
+      "supporting_evidence": [
+        "pipeline_conversion: down_12_percent",
+        "activation: flat",
+        "retention: up_3_percent"
+      ]
+    }
+  },
+  "policy_verdict": {
+    "allowed": true,
+    "gates_checked": [
+      "Strategic recommendations must tie directly to metrics."
+    ],
+    "blocked_actions": [],
+    "notes": "Example runner accepts the artifact only after every declared policy gate is represented."
+  },
+  "receipt": {
+    "required": true,
+    "input_hash": "sha256:e01dd50cc8122f29",
+    "flow_hash": "sha256:a732dcfcc8bde542",
+    "output_hash": "sha256:1d12be53c9a91f1a",
+    "reviewer_verdict": "accepted_for_example"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "question": "Do passkeys reduce account takeover risk for consumer apps?",
+  "required_evidence": [
+    "standards",
+    "incident_data",
+    "deployment_reports"
+  ],
+  "deadline": "same-day brief"
+}

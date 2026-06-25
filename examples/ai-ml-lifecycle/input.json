@@ -1,0 +1,10 @@
+{
+  "objective": "route support tickets by product area",
+  "baseline_accuracy": 0.72,
+  "slices": [
+    "enterprise",
+    "free_tier",
+    "billing",
+    "security"
+  ]
+}

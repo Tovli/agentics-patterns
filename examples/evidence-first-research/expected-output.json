@@ -1,0 +1,61 @@
+{
+  "artifact_type": "research_quality_packet",
+  "example_id": "evidence-first-research",
+  "status": "ready_for_review",
+  "summary": "Evidence-first research example completed for Which open model licenses permit commercial fine-tuning?.",
+  "fields": {
+    "answer": "Claim Extractor response for Which open model licenses permit commercial fine-tuning?: grounded in license_text, official_docs.",
+    "source_ranking": [
+      {
+        "claim": "license_text",
+        "status": "accepted_for_example"
+      },
+      {
+        "claim": "official_docs",
+        "status": "accepted_for_example"
+      }
+    ],
+    "claim_table": {
+      "summary": "claim table recorded for Which open model licenses permit commercial fine-tuning?.",
+      "responsible_agent": "Citation Verifier",
+      "supporting_evidence": [
+        "license_text",
+        "official_docs"
+      ]
+    },
+    "contradictions": {
+      "summary": "contradictions recorded for Which open model licenses permit commercial fine-tuning?.",
+      "responsible_agent": "Claim Extractor",
+      "supporting_evidence": [
+        "license_text",
+        "official_docs"
+      ]
+    },
+    "citation_verdicts": [
+      {
+        "claim": "license_text",
+        "status": "accepted_for_example"
+      },
+      {
+        "claim": "official_docs",
+        "status": "accepted_for_example"
+      }
+    ],
+    "confidence": 0.82
+  },
+  "policy_verdict": {
+    "allowed": true,
+    "gates_checked": [
+      "The synthesizer cannot use claims that failed citation verification."
+    ],
+    "blocked_actions": [],
+    "notes": "Example runner accepts the artifact only after every declared policy gate is represented."
+  },
+  "receipt": {
+    "required": true,
+    "input_hash": "sha256:572d1236b3017faa",
+    "flow_hash": "sha256:efc61228345c9999",
+    "output_hash": "sha256:d3fc2bca675547a0",
+    "reviewer_verdict": "accepted_for_example"
+  }
+}

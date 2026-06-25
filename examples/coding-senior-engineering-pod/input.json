@@ -1,0 +1,8 @@
+{
+  "issue": "Retry transient 503 responses up to three times with jitter.",
+  "repository": "payments-sdk",
+  "constraints": [
+    "preserve_public_api",
+    "avoid_new_dependencies"
+  ]
+}

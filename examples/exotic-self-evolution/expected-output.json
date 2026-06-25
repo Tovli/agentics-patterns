@@ -1,0 +1,62 @@
+{
+  "artifact_type": "evolution_record",
+  "example_id": "exotic-self-evolution",
+  "status": "ready_for_review",
+  "summary": "Self-evolution example completed for Self-evolution.",
+  "fields": {
+    "hypothesis": "hybrid retrieval weight should increase sparse score from 0.35 to 0.45",
+    "metric": "answer_faithfulness",
+    "sandbox_config": {
+      "summary": "sandbox config recorded for Self-evolution.",
+      "responsible_agent": "Hypothesizer",
+      "supporting_evidence": [
+        "A harness proposes changing retrieval weights after repeated low-confidence answers.",
+        "Propose a falsifiable improvement with a declared metric."
+      ]
+    },
+    "result": {
+      "summary": "result recorded for Self-evolution.",
+      "responsible_agent": "Federator",
+      "supporting_evidence": [
+        "A harness proposes changing retrieval weights after repeated low-confidence answers.",
+        "Propose a falsifiable improvement with a declared metric."
+      ]
+    },
+    "keep_kill_decision": {
+      "result": "approve_for_example",
+      "reason": "Experimenter completed the gated Hypothesize -> sandbox experiment -> record -> maybe federate flow for Self-evolution."
+    },
+    "rollback_path": {
+      "summary": "rollback path recorded for Self-evolution.",
+      "responsible_agent": "Witness Logger",
+      "supporting_evidence": [
+        "A harness proposes changing retrieval weights after repeated low-confidence answers.",
+        "Propose a falsifiable improvement with a declared metric."
+      ]
+    },
+    "federation_eligibility": {
+      "summary": "federation eligibility recorded for Self-evolution.",
+      "responsible_agent": "Federator",
+      "supporting_evidence": [
+        "A harness proposes changing retrieval weights after repeated low-confidence answers.",
+        "Propose a falsifiable improvement with a declared metric."
+      ]
+    }
+  },
+  "policy_verdict": {
+    "allowed": true,
+    "gates_checked": [
+      "Self-evolution is opt-in and sandboxed.",
+      "Production self-mutation and proxy-metric optimization require review."
+    ],
+    "blocked_actions": [],
+    "notes": "Example runner accepts the artifact only after every declared policy gate is represented."
+  },
+  "receipt": {
+    "required": true,
+    "input_hash": "sha256:cc35e4a0c882801c",
+    "flow_hash": "sha256:d0cc9a731e25bbec",
+    "output_hash": "sha256:716fa662ea8fbd84",
+    "reviewer_verdict": "accepted_for_example"
+  }
+}

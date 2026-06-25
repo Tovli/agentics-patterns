@@ -1,0 +1,99 @@
+{
+  "artifact_type": "learning_cycle_report",
+  "example_id": "education-mastery-learning",
+  "status": "ready_for_review",
+  "summary": "Mastery learning example completed for Mastery learning.",
+  "fields": {
+    "concept_taught": {
+      "summary": "concept taught recorded for Mastery learning.",
+      "responsible_agent": "Explainer",
+      "supporting_evidence": [
+        "A learner knows linear equations but struggles to apply slope-intercept form in word problems.",
+        "Choose next concept from the mastery map."
+      ]
+    },
+    "explanation_level": [
+      {
+        "step": 1,
+        "action": "Choose next concept from the mastery map.",
+        "owner": "Tutor"
+      },
+      {
+        "step": 2,
+        "action": "Explain at the right depth for the learner profile.",
+        "owner": "Explainer"
+      },
+      {
+        "step": 3,
+        "action": "Generate calibrated questions.",
+        "owner": "Quiz Master"
+      },
+      {
+        "step": 4,
+        "action": "Grade answers against a rubric.",
+        "owner": "Grader"
+      },
+      {
+        "step": 5,
+        "action": "Update mastery memory and recommend next focus.",
+        "owner": "Mastery Memory Updater"
+      }
+    ],
+    "quiz_result": {
+      "summary": "quiz result recorded for Mastery learning.",
+      "responsible_agent": "Grader",
+      "supporting_evidence": [
+        "A learner knows linear equations but struggles to apply slope-intercept form in word problems.",
+        "Choose next concept from the mastery map."
+      ]
+    },
+    "misconceptions": {
+      "summary": "misconceptions recorded for Mastery learning.",
+      "responsible_agent": "Grader",
+      "supporting_evidence": [
+        "A learner knows linear equations but struggles to apply slope-intercept form in word problems.",
+        "Choose next concept from the mastery map."
+      ]
+    },
+    "mastery_update": {
+      "summary": "mastery update recorded for Mastery learning.",
+      "responsible_agent": "Explainer",
+      "supporting_evidence": [
+        "A learner knows linear equations but struggles to apply slope-intercept form in word problems.",
+        "Choose next concept from the mastery map."
+      ]
+    },
+    "next_recommendation": [
+      {
+        "action": "Choose next concept from the mastery map.",
+        "status": "proposed",
+        "gate": "The tutor abstains instead of faking certainty."
+      },
+      {
+        "action": "Explain at the right depth for the learner profile.",
+        "status": "proposed",
+        "gate": "The tutor abstains instead of faking certainty."
+      },
+      {
+        "action": "Generate calibrated questions.",
+        "status": "proposed",
+        "gate": "The tutor abstains instead of faking certainty."
+      }
+    ]
+  },
+  "policy_verdict": {
+    "allowed": true,
+    "gates_checked": [
+      "The tutor abstains instead of faking certainty."
+    ],
+    "blocked_actions": [],
+    "notes": "Example runner accepts the artifact only after every declared policy gate is represented."
+  },
+  "receipt": {
+    "required": true,
+    "input_hash": "sha256:8a3bb4012d93f9a5",
+    "flow_hash": "sha256:da37936dab868abb",
+    "output_hash": "sha256:c5a4fb095187550b",
+    "reviewer_verdict": "accepted_for_example"
+  }
+}

@@ -1,0 +1,66 @@
+{
+  "id": "domain-judge-distill",
+  "source": {
+    "type": "local_catalog",
+    "section": "agentic",
+    "number": 8,
+    "heading": "Domain-specific Judge / Distill pattern"
+  },
+  "name": "Domain-specific judge and distill",
+  "pattern": "Domain judge -> domain distiller -> reusable lesson",
+  "scenario": "Different verticals evaluate success with their own domain-specific outcome criteria.",
+  "workflow_steps": [
+    "Apply domain-specific success criteria to the completed run.",
+    "Separate domain verdict from generic task completion.",
+    "Distill a reusable lesson for that vertical.",
+    "Store the lesson in the correct namespace with evidence."
+  ],
+  "agents": [
+    "Domain Judge",
+    "Distill Provider",
+    "Memory Curator"
+  ],
+  "policy_gates": [
+    "Generic success metrics cannot replace domain-specific judgment."
+  ],
+  "input_contract": {
+    "file": "input.json",
+    "description": "Concrete scenario input for this pattern example."
+  },
+  "output_contract": {
+    "artifact_type": "domain_learning_packet",
+    "required_fields": [
+      "domain_verdict",
+      "metric_evidence",
+      "distilled_lesson",
+      "namespace",
+      "reuse_conditions"
+    ]
+  },
+  "run": {
+    "command": "python ../run_example.py domain-judge-distill",
+    "expected_stdout": "expected-output.json"
+  },
+  "memory_update": {
+    "mode": "distill-only",
+    "stores": [
+      "verified decisions",
+      "reusable failures",
+      "domain lessons"
+    ],
+    "excludes": [
+      "raw sensitive data",
+      "unsupported claims"
+    ]
+  },
+  "receipt": {
+    "required": true,
+    "records": [
+      "input_hash",
+      "workflow_steps",
+      "policy_verdict",
+      "output_hash",
+      "reviewer_verdict"
+    ]
+  }
+}

@@ -1,0 +1,71 @@
+{
+  "id": "exotic-self-evolution",
+  "source": {
+    "type": "local_catalog",
+    "section": "catalog",
+    "number": 19,
+    "heading": "`exotic` — Self-Evolution Pattern"
+  },
+  "name": "Self-evolution",
+  "pattern": "Hypothesize -> sandbox experiment -> record -> maybe federate",
+  "scenario": "A harness proposes changing retrieval weights after repeated low-confidence answers.",
+  "workflow_steps": [
+    "Propose a falsifiable improvement with a declared metric.",
+    "Run the experiment only in a sandbox.",
+    "Write success or failure to a witness-signed evolution log.",
+    "Preserve failed experiments as learning.",
+    "Federate only vetted, non-sensitive improvements."
+  ],
+  "agents": [
+    "Hypothesizer",
+    "Experimenter",
+    "Witness Logger",
+    "Federator"
+  ],
+  "policy_gates": [
+    "Self-evolution is opt-in and sandboxed.",
+    "Production self-mutation and proxy-metric optimization require review."
+  ],
+  "input_contract": {
+    "file": "input.json",
+    "description": "Concrete scenario input for this pattern example."
+  },
+  "output_contract": {
+    "artifact_type": "evolution_record",
+    "required_fields": [
+      "hypothesis",
+      "metric",
+      "sandbox_config",
+      "result",
+      "keep_kill_decision",
+      "rollback_path",
+      "federation_eligibility"
+    ]
+  },
+  "run": {
+    "command": "python ../run_example.py exotic-self-evolution",
+    "expected_stdout": "expected-output.json"
+  },
+  "memory_update": {
+    "mode": "distill-only",
+    "stores": [
+      "verified decisions",
+      "reusable failures",
+      "domain lessons"
+    ],
+    "excludes": [
+      "raw sensitive data",
+      "unsupported claims"
+    ]
+  },
+  "receipt": {
+    "required": true,
+    "records": [
+      "input_hash",
+      "workflow_steps",
+      "policy_verdict",
+      "output_hash",
+      "reviewer_verdict"
+    ]
+  }
+}

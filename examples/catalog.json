@@ -1,0 +1,1519 @@
+{
+  "source": "local_example_catalog",
+  "example_count": 34,
+  "examples": [
+    {
+      "id": "minimal-base-harness",
+      "section": "catalog",
+      "number": 0,
+      "name": "Minimal base harness",
+      "pattern": "Kernel smoke-test scaffold",
+      "scenario": "A new package scaffold needs a single doctor command before any domain agents are added.",
+      "agents": [
+        "Harness Doctor"
+      ],
+      "workflow_steps": [
+        "Initialize the harness workspace.",
+        "Load the kernel and host adapter.",
+        "Check MCP wiring, memory backend, and host adapter health.",
+        "Return one PASS/FAIL report with remediation hints."
+      ],
+      "policy_gates": [
+        "No domain action is allowed from the minimal scaffold."
+      ],
+      "input": {
+        "command": "doctor",
+        "workspace": "new-harness",
+        "checks": [
+          "kernel",
+          "mcp",
+          "memory",
+          "host_adapter"
+        ]
+      },
+      "output_contract": {
+        "artifact_type": "doctor_report",
+        "required_fields": [
+          "overall_status",
+          "checks",
+          "failed_checks",
+          "remediation"
+        ]
+      },
+      "source_heading": "`minimal` — Base Harness Pattern"
+    },
+    {
+      "id": "devops-incident-response",
+      "section": "catalog",
+      "number": 1,
+      "name": "DevOps incident response",
+      "pattern": "Alert -> runbook -> gated action -> escalation -> postmortem",
+      "scenario": "Checkout latency crosses the paging threshold while database saturation is suspected.",
+      "agents": [
+        "Responder",
+        "Runbook Runner",
+        "Policy Gate",
+        "Escalator",
+        "Postmortem Writer"
+      ],
+      "workflow_steps": [
+        "Classify alert severity and impacted service.",
+        "Find the closest runbook and propose bounded diagnostics.",
+        "Gate shell, network, and kubectl actions before execution.",
+        "Escalate when severity or uncertainty crosses policy.",
+        "Draft timeline, root cause, contributing factors, and follow-ups."
+      ],
+      "policy_gates": [
+        "Production mutations require explicit human approval.",
+        "Escalation is mandatory for high severity or unclear blast radius."
+      ],
+      "input": {
+        "alert": "p95 checkout latency above 2500ms for 10 minutes",
+        "service": "checkout-api",
+        "environment": "production",
+        "signals": [
+          "db_cpu_92_percent",
+          "error_rate_1_4_percent"
+        ]
+      },
+      "output_contract": {
+        "artifact_type": "incident_packet",
+        "required_fields": [
+          "severity",
+          "impacted_service",
+          "evidence",
+          "actions_taken",
+          "actions_blocked",
+          "escalation_target",
+          "postmortem_draft"
+        ]
+      },
+      "source_heading": "`devops` — Incident Response Pattern"
+    },
+    {
+      "id": "coding-senior-engineering-pod",
+      "section": "catalog",
+      "number": 2,
+      "name": "Senior engineering pod",
+      "pattern": "Architect -> implementer -> reviewer -> test-writer",
+      "scenario": "A repository issue asks for deterministic retry behavior around a flaky API client.",
+      "agents": [
+        "Architect",
+        "Implementer",
+        "Reviewer",
+        "Test Writer"
+      ],
+      "workflow_steps": [
+        "Convert the issue into a minimal file-level implementation plan.",
+        "Write or update the focused failing test.",
+        "Implement the smallest local-style patch.",
+        "Review the diff for correctness, security, reuse, and overengineering.",
+        "Run validation gates and summarize residual risk."
+      ],
+      "policy_gates": [
+        "No implementation starts before a concrete plan exists.",
+        "No merge recommendation is allowed before tests and review."
+      ],
+      "input": {
+        "issue": "Retry transient 503 responses up to three times with jitter.",
+        "repository": "payments-sdk",
+        "constraints": [
+          "preserve_public_api",
+          "avoid_new_dependencies"
+        ]
+      },
+      "output_contract": {
+        "artifact_type": "patch_packet",
+        "required_fields": [
+          "plan",
+          "changed_files",
+          "tests",
+          "review_findings",
+          "validation_result",
+          "residual_risk"
+        ]
+      },
+      "source_heading": "`coding` — Senior Engineering Pod Pattern"
+    },
+    {
+      "id": "research-evidence-dossier",
+      "section": "catalog",
+      "number": 3,
+      "name": "Evidence dossier",
+      "pattern": "Decompose -> search -> grade -> synthesize -> fact-check -> cite",
+      "scenario": "A product team asks whether passkeys reduce account takeover risk for consumer apps.",
+      "agents": [
+        "Scout",
+        "Web Searcher",
+        "Source Grader",
+        "Synthesizer",
+        "Fact Checker",
+        "Citer"
+      ],
+      "workflow_steps": [
+        "Break the research question into independent sub-questions.",
+        "Collect primary and secondary sources for each sub-question.",
+        "Grade sources for authority, recency, bias, and relevance.",
+        "Synthesize only claims backed by accepted evidence.",
+        "Attack each claim and normalize citations."
+      ],
+      "policy_gates": [
+        "Unsupported claims must be removed or marked as assumptions."
+      ],
+      "input": {
+        "question": "Do passkeys reduce account takeover risk for consumer apps?",
+        "required_evidence": [
+          "standards",
+          "incident_data",
+          "deployment_reports"
+        ],
+        "deadline": "same-day brief"
+      },
+      "output_contract": {
+        "artifact_type": "evidence_dossier",
+        "required_fields": [
+          "answer",
+          "evidence_table",
+          "confidence",
+          "disputed_claims",
+          "missing_evidence",
+          "citations"
+        ]
+      },
+      "source_heading": "`research` — Evidence Dossier Pattern"
+    },
+    {
+      "id": "trading-paper-decision",
+      "section": "catalog",
+      "number": 4,
+      "name": "Paper trading decision",
+      "pattern": "Watch -> signal -> risk gate -> paper execution -> attribution",
+      "scenario": "A momentum signal appears in a liquid ETF, but portfolio drawdown is near the weekly limit.",
+      "agents": [
+        "Market Watcher",
+        "Signal Generator",
+        "Risk Checker",
+        "Paper Executor",
+        "Postmortem Analyst"
+      ],
+      "workflow_steps": [
+        "Summarize market state and relevant conditions.",
+        "Propose signal, confidence, horizon, and invalidation criteria.",
+        "Check exposure, drawdown, liquidity, concentration, and circuit breakers.",
+        "Route only approved orders to paper execution.",
+        "Attribute outcome to thesis, timing, risk, or noise."
+      ],
+      "policy_gates": [
+        "Risk Checker is non-bypassable.",
+        "Executor runs paper-by-default unless live trading is explicitly approved."
+      ],
+      "input": {
+        "instrument": "SPY",
+        "signal": "intraday breakout above prior high",
+        "portfolio_state": {
+          "weekly_drawdown_percent": 2.8,
+          "limit_percent": 3.0
+        }
+      },
+      "output_contract": {
+        "artifact_type": "trade_ticket",
+        "required_fields": [
+          "hypothesis",
+          "signal",
+          "invalidation_criteria",
+          "risk_checks",
+          "order_intent",
+          "paper_live_status",
+          "post_trade_analysis"
+        ]
+      },
+      "source_heading": "`trading` — Paper Trading Decision Pattern"
+    },
+    {
+      "id": "support-resolution",
+      "section": "catalog",
+      "number": 5,
+      "name": "Customer support resolution",
+      "pattern": "Triage -> KB retrieval -> grounded response -> escalation",
+      "scenario": "A frustrated enterprise customer reports that SSO stopped working after a certificate rotation.",
+      "agents": [
+        "Triager",
+        "KB Searcher",
+        "Responder",
+        "Escalator",
+        "Memory Updater"
+      ],
+      "workflow_steps": [
+        "Classify intent, urgency, customer tier, and sentiment.",
+        "Retrieve cited policy and product answers from the KB.",
+        "Draft a grounded customer-facing response.",
+        "Escalate when confidence, policy coverage, tone, or authority requires it.",
+        "Store distilled account and ticket learning."
+      ],
+      "policy_gates": [
+        "The responder abstains instead of inventing product or policy details."
+      ],
+      "input": {
+        "ticket": "SSO login fails after IdP certificate rotation.",
+        "customer_tier": "enterprise",
+        "sentiment": "frustrated"
+      },
+      "output_contract": {
+        "artifact_type": "support_reply_packet",
+        "required_fields": [
+          "classification",
+          "cited_kb_articles",
+          "customer_reply",
+          "confidence",
+          "escalation_reason",
+          "next_action"
+        ]
+      },
+      "source_heading": "`support` — Customer Support Resolution Pattern"
+    },
+    {
+      "id": "legal-draft-contract-review",
+      "section": "catalog",
+      "number": 6,
+      "name": "Draft-only contract review",
+      "pattern": "Redline -> citation check -> risk rating -> human lawyer",
+      "scenario": "A vendor MSA includes broad indemnity and unilateral renewal language that conflicts with the playbook.",
+      "agents": [
+        "Redliner",
+        "Citation Checker",
+        "Risk Rater",
+        "Human Lawyer Gate"
+      ],
+      "workflow_steps": [
+        "Compare clauses against the contract playbook.",
+        "Propose clause-level draft redlines.",
+        "Verify every cited authority or policy reference.",
+        "Score residual legal and commercial risk per clause.",
+        "Route draft redline and memo for licensed human review."
+      ],
+      "policy_gates": [
+        "Output is draft-only and is never presented as legal advice.",
+        "Licensed human review is required before external use."
+      ],
+      "input": {
+        "document": "vendor_msa",
+        "clauses": [
+          "indemnity",
+          "renewal",
+          "limitation_of_liability"
+        ],
+        "playbook": "standard_vendor_contract_playbook_v3"
+      },
+      "output_contract": {
+        "artifact_type": "draft_redline_packet",
+        "required_fields": [
+          "redlines",
+          "issue_list",
+          "negotiation_notes",
+          "citation_status",
+          "risk_score_per_clause",
+          "draft_only_disclaimer"
+        ]
+      },
+      "source_heading": "`legal` — Draft-Only Contract Review Pattern"
+    },
+    {
+      "id": "business-kpi-strategy",
+      "section": "catalog",
+      "number": 7,
+      "name": "KPI-grounded strategy",
+      "pattern": "Analyze -> choose bet -> operationalize",
+      "scenario": "A business unit must choose one quarterly growth bet after pipeline conversion slowed.",
+      "agents": [
+        "Analyst",
+        "Strategist",
+        "Ops Coordinator",
+        "Feasibility Reviewer"
+      ],
+      "workflow_steps": [
+        "Turn current metrics into findings.",
+        "Choose one strategic bet and state trade-offs.",
+        "Translate the bet into owners, actions, milestones, and KPIs.",
+        "Review feasibility and metric alignment."
+      ],
+      "policy_gates": [
+        "Strategic recommendations must tie directly to metrics."
+      ],
+      "input": {
+        "quarter": "Q3",
+        "metrics": {
+          "pipeline_conversion": "down_12_percent",
+          "activation": "flat",
+          "retention": "up_3_percent"
+        },
+        "decision": "select_one_growth_bet"
+      },
+      "output_contract": {
+        "artifact_type": "quarterly_plan",
+        "required_fields": [
+          "findings",
+          "strategic_choice",
+          "rejected_alternatives",
+          "action_owners",
+          "kpis",
+          "milestones",
+          "review_cadence"
+        ]
+      },
+      "source_heading": "`business` — KPI-Grounded Strategy Pattern"
+    },
+    {
+      "id": "crm-lifecycle-management",
+      "section": "catalog",
+      "number": 8,
+      "name": "CRM lifecycle management",
+      "pattern": "Qualify -> manage account -> watch churn",
+      "scenario": "A mid-market account expands usage but has three unresolved support tickets before renewal.",
+      "agents": [
+        "Lead Qualifier",
+        "Account Manager",
+        "Churn Watcher",
+        "Memory Updater"
+      ],
+      "workflow_steps": [
+        "Score fit, urgency, potential value, and routing.",
+        "Choose the next relationship play.",
+        "Monitor churn signals and explain early risk.",
+        "Update lifecycle memory with distilled state."
+      ],
+      "policy_gates": [
+        "CRM mutation is suggestion-only unless explicitly permitted."
+      ],
+      "input": {
+        "account": "Northstar Health",
+        "event": "renewal_60_days_out",
+        "signals": [
+          "usage_up_22_percent",
+          "three_open_support_tickets",
+          "champion_changed_roles"
+        ]
+      },
+      "output_contract": {
+        "artifact_type": "account_brief",
+        "required_fields": [
+          "stage",
+          "score",
+          "next_best_action",
+          "relationship_context",
+          "churn_risk",
+          "missing_facts"
+        ]
+      },
+      "source_heading": "`crm` — Lifecycle Management Pattern"
+    },
+    {
+      "id": "marketing-campaign-strategy",
+      "section": "catalog",
+      "number": 9,
+      "name": "Campaign strategy",
+      "pattern": "Audience -> message -> content -> SEO/analytics loop",
+      "scenario": "A B2B SaaS team wants a launch campaign for a new compliance dashboard.",
+      "agents": [
+        "Strategist",
+        "Content Creator",
+        "SEO Analyst",
+        "Analytics Reviewer",
+        "Memory Updater"
+      ],
+      "workflow_steps": [
+        "Define audience, positioning, channel, and target metric.",
+        "Draft channel-specific assets.",
+        "Ground content in search demand and analytics.",
+        "Revise campaign brief before human review and publishing.",
+        "Feed measured results back into memory."
+      ],
+      "policy_gates": [
+        "Traffic, SEO, and competitor claims require analytics or cited evidence."
+      ],
+      "input": {
+        "campaign_goal": "launch compliance dashboard",
+        "icp": "security operations leaders at mid-market SaaS companies",
+        "channels": [
+          "blog",
+          "linkedin",
+          "webinar"
+        ]
+      },
+      "output_contract": {
+        "artifact_type": "campaign_brief",
+        "required_fields": [
+          "icp",
+          "message",
+          "content_plan",
+          "channels",
+          "seo_targets",
+          "analytics_baseline",
+          "kpi",
+          "experiments"
+        ]
+      },
+      "source_heading": "`marketing` — Campaign Strategy Pattern"
+    },
+    {
+      "id": "advertising-media-optimization",
+      "section": "catalog",
+      "number": 10,
+      "name": "Media optimization",
+      "pattern": "Media plan -> creative -> performance readout -> budget reallocation",
+      "scenario": "A paid acquisition team has a fixed budget and must rebalance underperforming channels weekly.",
+      "agents": [
+        "Media Planner",
+        "Copywriter",
+        "Performance Analyst",
+        "Budget Reallocator"
+      ],
+      "workflow_steps": [
+        "Allocate spend across channels based on objective and audience.",
+        "Create format-specific creative variants.",
+        "Read performance metrics against KPIs and stop-loss thresholds.",
+        "Recommend budget reallocation and flag weak creative or channel fit."
+      ],
+      "policy_gates": [
+        "Creative ideation cannot control spend reallocation without performance evidence."
+      ],
+      "input": {
+        "objective": "trial_signups",
+        "budget_usd": 25000,
+        "channels": [
+          "search",
+          "linkedin",
+          "retargeting"
+        ]
+      },
+      "output_contract": {
+        "artifact_type": "media_plan",
+        "required_fields": [
+          "audience",
+          "channel_split",
+          "budget",
+          "creative_variants",
+          "kpis",
+          "test_plan",
+          "stop_loss_thresholds",
+          "optimization_recommendation"
+        ]
+      },
+      "source_heading": "`advertising` — Media Optimization Pattern"
+    },
+    {
+      "id": "ai-ml-lifecycle",
+      "section": "catalog",
+      "number": 11,
+      "name": "ML lifecycle",
+      "pattern": "Data -> train -> evaluate -> deploy behind guardrails",
+      "scenario": "An ML team wants to ship a classifier for support-ticket routing only if it beats the baseline across slices.",
+      "agents": [
+        "Data Curator",
+        "Trainer",
+        "Evaluator",
+        "Deployer",
+        "Drift Monitor"
+      ],
+      "workflow_steps": [
+        "Build a dataset card with provenance and limits.",
+        "Run reproducible training or fine-tuning.",
+        "Compare against baseline, subgroup slices, and failure cases.",
+        "Deploy only if evaluation gates pass.",
+        "Monitor post-deploy drift and regressions."
+      ],
+      "policy_gates": [
+        "Evaluator is independent; training metrics alone cannot drive deployment."
+      ],
+      "input": {
+        "objective": "route support tickets by product area",
+        "baseline_accuracy": 0.72,
+        "slices": [
+          "enterprise",
+          "free_tier",
+          "billing",
+          "security"
+        ]
+      },
+      "output_contract": {
+        "artifact_type": "eval_report",
+        "required_fields": [
+          "dataset_summary",
+          "baseline_delta",
+          "metrics",
+          "subgroup_performance",
+          "risks",
+          "ship_no_ship_decision",
+          "deployment_guardrails"
+        ]
+      },
+      "source_heading": "`ai` — ML Lifecycle Pattern"
+    },
+    {
+      "id": "agentics-controlled-swarm",
+      "section": "catalog",
+      "number": 12,
+      "name": "Controlled swarm",
+      "pattern": "Orchestrator -> planner -> workers -> critic",
+      "scenario": "A harness must evaluate three independent integration options without exceeding a fixed budget.",
+      "agents": [
+        "Orchestrator",
+        "Planner",
+        "Worker Pool",
+        "Critic",
+        "Memory Curator"
+      ],
+      "workflow_steps": [
+        "Set objective, budget, max depth, and stopping condition.",
+        "Decompose work into dependency-aware tasks.",
+        "Run bounded worker tasks.",
+        "Review outputs through a critic before landing them.",
+        "Decide whether to continue, retry, or stop and store distilled lessons."
+      ],
+      "policy_gates": [
+        "No run starts without budget, max depth, stopping condition, and critic gate."
+      ],
+      "input": {
+        "goal": "compare auth provider integrations",
+        "budget": {
+          "max_worker_tasks": 6,
+          "max_depth": 2
+        },
+        "stopping_condition": "one recommended provider with unresolved risks listed"
+      },
+      "output_contract": {
+        "artifact_type": "run_report",
+        "required_fields": [
+          "goal",
+          "plan",
+          "task_graph",
+          "worker_outputs",
+          "critic_findings",
+          "final_result",
+          "cost",
+          "unresolved_issues"
+        ]
+      },
+      "source_heading": "`agentics` — Controlled Swarm Pattern"
+    },
+    {
+      "id": "ruview-retrieval-review",
+      "section": "catalog",
+      "number": 13,
+      "name": "Retrieval review",
+      "pattern": "Index -> retrieve -> answer -> source review",
+      "scenario": "A documentation assistant answers a policy question from a newly indexed handbook corpus.",
+      "agents": [
+        "Indexer",
+        "Retriever",
+        "Answer Drafter",
+        "Source Reviewer"
+      ],
+      "workflow_steps": [
+        "Chunk, embed, and store source documents.",
+        "Retrieve candidate passages with citations.",
+        "Draft an answer only from retrieved evidence.",
+        "Grade answer fidelity against sources.",
+        "Reject or retry weak and unsupported answers."
+      ],
+      "policy_gates": [
+        "Retrieval confidence and answer faithfulness are assessed separately."
+      ],
+      "input": {
+        "corpus": "employee_handbook",
+        "question": "What is the parental leave policy for contractors?",
+        "retrieval_top_k": 5
+      },
+      "output_contract": {
+        "artifact_type": "reviewed_answer",
+        "required_fields": [
+          "cited_response",
+          "source_list",
+          "retrieval_confidence",
+          "unsupported_claims",
+          "reviewer_verdict"
+        ]
+      },
+      "source_heading": "`ruview` — Retrieval Review Pattern"
+    },
+    {
+      "id": "health-safe-wellness-coordination",
+      "section": "catalog",
+      "number": 14,
+      "name": "Safe wellness coordination",
+      "pattern": "Intake -> red-flag triage -> resource coordination",
+      "scenario": "A user describes stress, poor sleep, and a concerning symptom while asking for next steps.",
+      "agents": [
+        "Intake Agent",
+        "Red-Flag Triage",
+        "Care Coordinator",
+        "Clinician Escalation Gate"
+      ],
+      "workflow_steps": [
+        "Collect structured wellness information without diagnosing.",
+        "Detect red flags and route to appropriate resource type.",
+        "Coordinate logistics, reminders, and non-clinical follow-up.",
+        "Redirect clinical decisions to a clinician."
+      ],
+      "policy_gates": [
+        "No diagnosis, treatment plan, or emergency minimization.",
+        "Clinical content is routed to professional care."
+      ],
+      "input": {
+        "concern": "stress and poor sleep",
+        "red_flag_signal": "chest tightness during exertion",
+        "requested_help": "what should I do tonight?"
+      },
+      "output_contract": {
+        "artifact_type": "intake_summary",
+        "required_fields": [
+          "user_stated_concern",
+          "non_clinical_context",
+          "red_flags",
+          "suggested_resource_type",
+          "escalation_recommendation"
+        ]
+      },
+      "source_heading": "`health` — Safe Wellness Coordination Pattern"
+    },
+    {
+      "id": "gaming-playtest-to-design",
+      "section": "catalog",
+      "number": 15,
+      "name": "Playtest-to-design",
+      "pattern": "Read playtest -> critique balance -> model economy -> preserve narrative",
+      "scenario": "A playtest shows players abandoning the second dungeon while economy telemetry shows gold inflation.",
+      "agents": [
+        "Playtest Reader",
+        "Balance Critic",
+        "Economy Modeler",
+        "Narrative Keeper",
+        "Design Diff Writer"
+      ],
+      "workflow_steps": [
+        "Extract signal from telemetry, feedback, and design docs.",
+        "Identify mechanic imbalance and propose changes.",
+        "Check loops, sinks, inflation, and progression.",
+        "Review lore and story consistency.",
+        "Write a build-to-build design diff."
+      ],
+      "policy_gates": [
+        "Player anecdotes are separated from telemetry-backed findings."
+      ],
+      "input": {
+        "build": "0.8.4",
+        "telemetry": {
+          "dungeon_2_abandonment": "48_percent",
+          "gold_inflation": "31_percent"
+        },
+        "feedback": [
+          "boss feels unfair",
+          "crafting prices feel meaningless"
+        ]
+      },
+      "output_contract": {
+        "artifact_type": "playtest_recap",
+        "required_fields": [
+          "player_pain_points",
+          "balance_issues",
+          "economy_risks",
+          "narrative_conflicts",
+          "proposed_changes",
+          "build_to_build_diff"
+        ]
+      },
+      "source_heading": "`gaming` — Playtest-to-Design Pattern"
+    },
+    {
+      "id": "sales-b2b-pipeline",
+      "section": "catalog",
+      "number": 16,
+      "name": "B2B pipeline",
+      "pattern": "Prospect -> qualify -> demo -> close honestly",
+      "scenario": "A sales team evaluates whether a healthcare prospect is ready for a technical demo.",
+      "agents": [
+        "Prospector",
+        "Qualifier",
+        "Demo Coach",
+        "Closer",
+        "Pipeline Reporter"
+      ],
+      "workflow_steps": [
+        "Research account context and buying signals.",
+        "Score qualification and list missing facts.",
+        "Create a personalized demo path.",
+        "Handle objections within negotiation boundaries.",
+        "Identify pipeline bottleneck and next step."
+      ],
+      "policy_gates": [
+        "No-stretch policy: never exaggerate product capabilities."
+      ],
+      "input": {
+        "account": "Acme Clinics",
+        "signals": [
+          "recent_security_audit",
+          "new_vp_it",
+          "budget_cycle_q4"
+        ],
+        "methodology": "MEDDPICC"
+      },
+      "output_contract": {
+        "artifact_type": "deal_brief",
+        "required_fields": [
+          "account_context",
+          "qualification_score",
+          "missing_facts",
+          "demo_angle",
+          "objections",
+          "next_step",
+          "go_no_go"
+        ]
+      },
+      "source_heading": "`sales` — B2B Pipeline Pattern"
+    },
+    {
+      "id": "education-mastery-learning",
+      "section": "catalog",
+      "number": 17,
+      "name": "Mastery learning",
+      "pattern": "Tutor -> explain -> quiz -> grade -> update mastery",
+      "scenario": "A learner knows linear equations but struggles to apply slope-intercept form in word problems.",
+      "agents": [
+        "Tutor",
+        "Explainer",
+        "Quiz Master",
+        "Grader",
+        "Mastery Memory Updater"
+      ],
+      "workflow_steps": [
+        "Choose next concept from the mastery map.",
+        "Explain at the right depth for the learner profile.",
+        "Generate calibrated questions.",
+        "Grade answers against a rubric.",
+        "Update mastery memory and recommend next focus."
+      ],
+      "policy_gates": [
+        "The tutor abstains instead of faking certainty."
+      ],
+      "input": {
+        "learner_profile": "grade_8_algebra",
+        "mastery_map": {
+          "linear_equations": "partial",
+          "slope_intercept_word_problems": "weak"
+        },
+        "session_goal": "diagnose misconception"
+      },
+      "output_contract": {
+        "artifact_type": "learning_cycle_report",
+        "required_fields": [
+          "concept_taught",
+          "explanation_level",
+          "quiz_result",
+          "misconceptions",
+          "mastery_update",
+          "next_recommendation"
+        ]
+      },
+      "source_heading": "`education` — Mastery Learning Pattern"
+    },
+    {
+      "id": "repo-maintainer-stewardship",
+      "section": "catalog",
+      "number": 18,
+      "name": "Repo stewardship",
+      "pattern": "Triage diff -> benchmark -> release check -> security scan",
+      "scenario": "A release candidate changes CLI wiring, dependencies, and generated template files.",
+      "agents": [
+        "Maintainer",
+        "Benchmarker",
+        "Security Reviewer",
+        "Release Drafter"
+      ],
+      "workflow_steps": [
+        "Identify changed areas, risks, and review order.",
+        "Run performance and regression gates.",
+        "Flag risky MCP grants, leaked secrets, and dangerous diffs.",
+        "Draft release body and validate readiness gates.",
+        "Produce release or no-release recommendation."
+      ],
+      "policy_gates": [
+        "The recommendation is conservative and does not overstate readiness."
+      ],
+      "input": {
+        "candidate": "v0.2.0-rc.1",
+        "changed_areas": [
+          "cli",
+          "templates",
+          "dependencies"
+        ],
+        "required_gates": [
+          "tests",
+          "benchmarks",
+          "security_scan",
+          "release_notes"
+        ]
+      },
+      "output_contract": {
+        "artifact_type": "maintainer_packet",
+        "required_fields": [
+          "changed_areas",
+          "risk_map",
+          "benchmark_result",
+          "security_findings",
+          "release_notes",
+          "readiness_verdict"
+        ]
+      },
+      "source_heading": "`repo-maintainer` — Repo Stewardship Pattern"
+    },
+    {
+      "id": "exotic-self-evolution",
+      "section": "catalog",
+      "number": 19,
+      "name": "Self-evolution",
+      "pattern": "Hypothesize -> sandbox experiment -> record -> maybe federate",
+      "scenario": "A harness proposes changing retrieval weights after repeated low-confidence answers.",
+      "agents": [
+        "Hypothesizer",
+        "Experimenter",
+        "Witness Logger",
+        "Federator"
+      ],
+      "workflow_steps": [
+        "Propose a falsifiable improvement with a declared metric.",
+        "Run the experiment only in a sandbox.",
+        "Write success or failure to a witness-signed evolution log.",
+        "Preserve failed experiments as learning.",
+        "Federate only vetted, non-sensitive improvements."
+      ],
+      "policy_gates": [
+        "Self-evolution is opt-in and sandboxed.",
+        "Production self-mutation and proxy-metric optimization require review."
+      ],
+      "input": {
+        "hypothesis": "hybrid retrieval weight should increase sparse score from 0.35 to 0.45",
+        "metric": "answer_faithfulness",
+        "sandbox": "retrieval_eval_fixture_2026_06"
+      },
+      "output_contract": {
+        "artifact_type": "evolution_record",
+        "required_fields": [
+          "hypothesis",
+          "metric",
+          "sandbox_config",
+          "result",
+          "keep_kill_decision",
+          "rollback_path",
+          "federation_eligibility"
+        ]
+      },
+      "source_heading": "`exotic` — Self-Evolution Pattern"
+    },
+    {
+      "id": "algorithmic-control-plane",
+      "section": "agentic",
+      "number": 1,
+      "name": "Algorithmic control plane",
+      "pattern": "Model proposes; harness decides; algorithms verify",
+      "scenario": "A user asks the harness to update dependencies, but confidence, risk, cost, and verification gates must pass first.",
+      "agents": [
+        "Intent Classifier",
+        "Planner",
+        "Router",
+        "Tool Broker",
+        "Verifier",
+        "Receipt Logger"
+      ],
+      "workflow_steps": [
+        "Classify intent, risk, expected cost, and verification strategy.",
+        "Create a plan and route each step to the right worker or model.",
+        "Broker tool access under policy.",
+        "Verify outputs independently before applying results.",
+        "Write receipt and memory update after verified completion."
+      ],
+      "policy_gates": [
+        "Execution is blocked unless confidence, risk, cost, and verification gates pass."
+      ],
+      "input": {
+        "request": "upgrade minor dependencies and open a patch",
+        "risk_budget": "medium",
+        "verification": [
+          "unit_tests",
+          "dependency_audit"
+        ]
+      },
+      "output_contract": {
+        "artifact_type": "control_plane_receipt",
+        "required_fields": [
+          "intent",
+          "risk",
+          "plan",
+          "tool_grants",
+          "verification",
+          "receipt_hash",
+          "result"
+        ]
+      },
+      "source_heading": "Algorithmic control-plane pattern"
+    },
+    {
+      "id": "repo-genome-harness-plan",
+      "section": "agentic",
+      "number": 2,
+      "name": "Repo genome to harness plan",
+      "pattern": "Static repo genome -> recommended harness plan",
+      "scenario": "A meta-harness analyzes a repository without executing code and recommends the safest generated harness shape.",
+      "agents": [
+        "Repo Scanner",
+        "Risk Profiler",
+        "Topology Recommender",
+        "Plan Writer"
+      ],
+      "workflow_steps": [
+        "Scan repository structure, languages, tests, and release surfaces without execution.",
+        "Score test confidence, MCP risk, and publish readiness.",
+        "Recommend agent topology, tool surface, memory namespaces, and approvals.",
+        "Emit a harness plan with constraints and required human gates."
+      ],
+      "policy_gates": [
+        "Repo analysis does not execute repository code."
+      ],
+      "input": {
+        "repository": "edge-intelligence-service",
+        "allowed_analysis": [
+          "static_files",
+          "package_manifests",
+          "ci_config"
+        ],
+        "disallowed_analysis": [
+          "running_tests",
+          "network_calls"
+        ]
+      },
+      "output_contract": {
+        "artifact_type": "repo_genome_plan",
+        "required_fields": [
+          "repo_profile",
+          "agent_topology",
+          "tool_surface",
+          "risk_budget",
+          "memory_namespaces",
+          "recommended_vertical",
+          "required_human_approvals"
+        ]
+      },
+      "source_heading": "Repo Genome → Harness Plan pattern"
+    },
+    {
+      "id": "planner-executor-verifier",
+      "section": "agentic",
+      "number": 3,
+      "name": "Planner executor verifier",
+      "pattern": "Planner -> executor -> verifier",
+      "scenario": "A coding harness must fix a bug while keeping the approver independent from the patch author.",
+      "agents": [
+        "Planner",
+        "Executor",
+        "Verifier"
+      ],
+      "workflow_steps": [
+        "Planner decomposes the issue into small steps and acceptance checks.",
+        "Executor edits files or drafts the patch within the plan.",
+        "Verifier runs tests and reviews the diff independently.",
+        "Verifier rejects, requests retry, or approves with residual risk."
+      ],
+      "policy_gates": [
+        "The same agent cannot create and approve the output."
+      ],
+      "input": {
+        "bug": "cache returns stale data after tenant switch",
+        "acceptance_checks": [
+          "reproduction_test",
+          "unit_tests",
+          "diff_review"
+        ]
+      },
+      "output_contract": {
+        "artifact_type": "verification_packet",
+        "required_fields": [
+          "plan",
+          "patch_summary",
+          "test_results",
+          "diff_risks",
+          "verifier_verdict"
+        ]
+      },
+      "source_heading": "Planner–Executor–Verifier pattern"
+    },
+    {
+      "id": "default-deny-tool-broker",
+      "section": "agentic",
+      "number": 4,
+      "name": "Default-deny tool broker",
+      "pattern": "Governed tool surface with explicit grants",
+      "scenario": "An agent requests shell, network, and file-write access while diagnosing a failing build.",
+      "agents": [
+        "Tool Broker",
+        "Policy Engine",
+        "Agent Worker",
+        "Audit Logger"
+      ],
+      "workflow_steps": [
+        "Declare requested tool, risk, timeout, and call budget.",
+        "Evaluate request against default-deny policy.",
+        "Require approval for dangerous or write-capable operations.",
+        "Execute only approved calls and record the audit trail."
+      ],
+      "policy_gates": [
+        "Network, shell, and file writes are denied unless explicitly granted."
+      ],
+      "input": {
+        "requested_tools": [
+          "shell:npm_test",
+          "network:package_registry",
+          "file_write:patch"
+        ],
+        "context": "failing build diagnosis",
+        "dirty_worktree": true
+      },
+      "output_contract": {
+        "artifact_type": "tool_broker_decision",
+        "required_fields": [
+          "tool_name",
+          "needs",
+          "risk",
+          "approval",
+          "timeout_ms",
+          "max_calls_per_turn",
+          "audit_record"
+        ]
+      },
+      "source_heading": "Default-deny tool-broker pattern"
+    },
+    {
+      "id": "test-first-coding-pod",
+      "section": "agentic",
+      "number": 5,
+      "name": "Test-first coding pod",
+      "pattern": "Understand issue -> failing test -> patch -> tests -> diff review",
+      "scenario": "A repo-maintenance agent fixes a parsing regression by proving the failure before editing production code.",
+      "agents": [
+        "Issue Analyst",
+        "Test Author",
+        "Implementation Agent",
+        "Reviewer",
+        "Release-note Drafter"
+      ],
+      "workflow_steps": [
+        "Understand the issue and target behavior.",
+        "Write the failing test that reproduces the issue.",
+        "Patch only the code needed to pass the test.",
+        "Run relevant and full validation gates.",
+        "Review the diff and summarize release notes."
+      ],
+      "policy_gates": [
+        "No production code is edited before a failing test exists."
+      ],
+      "input": {
+        "issue": "markdown parser drops escaped dots in numbered headings",
+        "test_target": "heading_parser",
+        "validation": [
+          "unit_test",
+          "snapshot_test"
+        ]
+      },
+      "output_contract": {
+        "artifact_type": "coding_pod_packet",
+        "required_fields": [
+          "issue_summary",
+          "failing_test",
+          "patch",
+          "validation",
+          "diff_review",
+          "release_note"
+        ]
+      },
+      "source_heading": "Test-first coding pod"
+    },
+    {
+      "id": "evidence-first-research",
+      "section": "agentic",
+      "number": 6,
+      "name": "Evidence-first research",
+      "pattern": "Retriever -> source ranker -> claim extractor -> contradiction finder -> synthesizer -> citation verifier",
+      "scenario": "A research assistant must answer a technical market question with primary-source support.",
+      "agents": [
+        "Retriever",
+        "Source Ranker",
+        "Claim Extractor",
+        "Contradiction Finder",
+        "Synthesizer",
+        "Citation Verifier"
+      ],
+      "workflow_steps": [
+        "Retrieve candidate sources for each sub-question.",
+        "Rank each source for authority, recency, balance, and relevance.",
+        "Extract claims and identify contradictions.",
+        "Synthesize only supported claims.",
+        "Verify every citation against the claim it supports."
+      ],
+      "policy_gates": [
+        "The synthesizer cannot use claims that failed citation verification."
+      ],
+      "input": {
+        "question": "Which open model licenses permit commercial fine-tuning?",
+        "source_requirements": [
+          "license_text",
+          "official_docs"
+        ]
+      },
+      "output_contract": {
+        "artifact_type": "research_quality_packet",
+        "required_fields": [
+          "answer",
+          "source_ranking",
+          "claim_table",
+          "contradictions",
+          "citation_verdicts",
+          "confidence"
+        ]
+      },
+      "source_heading": "Evidence-first research pattern"
+    },
+    {
+      "id": "memory-distillation",
+      "section": "agentic",
+      "number": 7,
+      "name": "Memory distillation",
+      "pattern": "Retrieve -> judge -> distill -> consolidate",
+      "scenario": "A coding harness stores only durable lessons from a failed dependency upgrade, not the full noisy trace.",
+      "agents": [
+        "Memory Retriever",
+        "Trajectory Judge",
+        "Distiller",
+        "Consolidator"
+      ],
+      "workflow_steps": [
+        "Retrieve relevant prior task traces and lessons.",
+        "Judge whether the current trajectory produced useful learning.",
+        "Distill durable patterns, failures, and verified decisions.",
+        "Consolidate into namespace-specific memory with decay metadata."
+      ],
+      "policy_gates": [
+        "Do not store raw sensitive task history when a distilled lesson is sufficient."
+      ],
+      "input": {
+        "task_trace": "dependency upgrade failed due peer dependency conflict",
+        "namespace": "repo-maintenance",
+        "sensitivity": "internal_package_names"
+      },
+      "output_contract": {
+        "artifact_type": "memory_update_packet",
+        "required_fields": [
+          "retrieved_context",
+          "judge_verdict",
+          "distilled_lesson",
+          "namespace",
+          "decay_policy",
+          "excluded_raw_data"
+        ]
+      },
+      "source_heading": "Memory distillation pattern"
+    },
+    {
+      "id": "domain-judge-distill",
+      "section": "agentic",
+      "number": 8,
+      "name": "Domain-specific judge and distill",
+      "pattern": "Domain judge -> domain distiller -> reusable lesson",
+      "scenario": "Different verticals evaluate success with their own domain-specific outcome criteria.",
+      "agents": [
+        "Domain Judge",
+        "Distill Provider",
+        "Memory Curator"
+      ],
+      "workflow_steps": [
+        "Apply domain-specific success criteria to the completed run.",
+        "Separate domain verdict from generic task completion.",
+        "Distill a reusable lesson for that vertical.",
+        "Store the lesson in the correct namespace with evidence."
+      ],
+      "policy_gates": [
+        "Generic success metrics cannot replace domain-specific judgment."
+      ],
+      "input": {
+        "vertical": "research",
+        "run_result": "answer passed grammar checks but had weak source diversity",
+        "domain_metric": "citation_faithfulness_and_balance"
+      },
+      "output_contract": {
+        "artifact_type": "domain_learning_packet",
+        "required_fields": [
+          "domain_verdict",
+          "metric_evidence",
+          "distilled_lesson",
+          "namespace",
+          "reuse_conditions"
+        ]
+      },
+      "source_heading": "Domain-specific Judge / Distill pattern"
+    },
+    {
+      "id": "cost-aware-model-cascade",
+      "section": "agentic",
+      "number": 9,
+      "name": "Cost-aware model cascade",
+      "pattern": "Cheap draft -> verify -> stronger retry only if needed -> record cost and quality",
+      "scenario": "A CI triage agent drafts issue labels cheaply and escalates only uncertain cases to a stronger model.",
+      "agents": [
+        "Cheap Drafter",
+        "Verifier",
+        "Escalation Router",
+        "Cost Logger"
+      ],
+      "workflow_steps": [
+        "Attempt the task with the cheapest suitable model.",
+        "Verify confidence, quality, and safety.",
+        "Escalate to a stronger model only when verification fails or uncertainty is high.",
+        "Record cost, latency, and quality outcome."
+      ],
+      "policy_gates": [
+        "Escalation is evidence-driven, not automatic."
+      ],
+      "input": {
+        "task": "label incoming GitHub issue",
+        "cheap_model_confidence": 0.62,
+        "escalation_threshold": 0.8
+      },
+      "output_contract": {
+        "artifact_type": "model_cascade_record",
+        "required_fields": [
+          "initial_model",
+          "verification_result",
+          "escalated_model",
+          "cost",
+          "latency",
+          "quality_outcome"
+        ]
+      },
+      "source_heading": "Cost-aware model cascade pattern"
+    },
+    {
+      "id": "receipt-led-governance",
+      "section": "agentic",
+      "number": 10,
+      "name": "Receipt-led governance",
+      "pattern": "Every meaningful action writes a tamper-evident receipt",
+      "scenario": "A harness performs a dependency audit and records all material inputs, outputs, tools, and verdicts.",
+      "agents": [
+        "Action Worker",
+        "Tool Auditor",
+        "Verifier",
+        "Receipt Logger"
+      ],
+      "workflow_steps": [
+        "Hash inputs and planned outputs before action.",
+        "Record agent, model, tool calls, cost, latency, risk, and verdict.",
+        "Hash-chain the receipt to the previous receipt.",
+        "Expose the receipt for audit and replay."
+      ],
+      "policy_gates": [
+        "Material actions without receipts are treated as incomplete."
+      ],
+      "input": {
+        "action": "dependency_audit",
+        "previous_receipt_hash": "sha256:previous",
+        "tool_calls": [
+          "npm_audit"
+        ]
+      },
+      "output_contract": {
+        "artifact_type": "governance_receipt",
+        "required_fields": [
+          "input_hash",
+          "output_hash",
+          "agent",
+          "model",
+          "tool_calls",
+          "cost",
+          "latency",
+          "risk",
+          "verdict",
+          "previous_hash",
+          "current_hash"
+        ]
+      },
+      "source_heading": "Receipt-led governance pattern"
+    },
+    {
+      "id": "ci-agent",
+      "section": "agentic",
+      "number": 11,
+      "name": "CI agent",
+      "pattern": "Trigger -> bounded task -> GitHub API tools -> PR/comment/status output",
+      "scenario": "A GitHub Action reviews a pull request and posts a bounded genome report without arbitrary shell access.",
+      "agents": [
+        "Trigger Handler",
+        "Bounded Task Runner",
+        "GitHub Tool Broker",
+        "Status Reporter"
+      ],
+      "workflow_steps": [
+        "Start from a CI trigger with declared permissions.",
+        "Run a bounded, non-interactive task.",
+        "Use GitHub API tools instead of arbitrary shell by default.",
+        "Post PR comment, status, or release note output."
+      ],
+      "policy_gates": [
+        "No arbitrary shell or broad token permissions in CI by default."
+      ],
+      "input": {
+        "trigger": "pull_request_opened",
+        "permissions": [
+          "contents:read",
+          "pull-requests:write"
+        ],
+        "task": "repo_genome_report"
+      },
+      "output_contract": {
+        "artifact_type": "ci_agent_output",
+        "required_fields": [
+          "trigger",
+          "bounded_task",
+          "tool_permissions",
+          "findings",
+          "posted_status",
+          "residual_risk"
+        ]
+      },
+      "source_heading": "CI agent pattern"
+    },
+    {
+      "id": "human-approval-gate",
+      "section": "agentic",
+      "number": 12,
+      "name": "Human approval gate",
+      "pattern": "Draft -> explain risk -> request approval -> execute approved action -> record receipt",
+      "scenario": "An agent wants to publish a package release after tests pass but before human release approval.",
+      "agents": [
+        "Drafting Agent",
+        "Risk Explainer",
+        "Approval Gate",
+        "Executor",
+        "Receipt Logger"
+      ],
+      "workflow_steps": [
+        "Draft the proposed action and explain risk.",
+        "Request approval for the exact action.",
+        "Execute only the approved operation.",
+        "Record approval, execution, and receipt."
+      ],
+      "policy_gates": [
+        "Dangerous actions execute only after explicit approval of the exact action."
+      ],
+      "input": {
+        "proposed_action": "publish npm package",
+        "risk": "irreversible public release",
+        "approval_required": true
+      },
+      "output_contract": {
+        "artifact_type": "approval_gate_record",
+        "required_fields": [
+          "draft_action",
+          "risk_explanation",
+          "approval_request",
+          "approved_action",
+          "execution_result",
+          "receipt"
+        ]
+      },
+      "source_heading": "Human approval gate pattern"
+    },
+    {
+      "id": "opt-in-self-evolution",
+      "section": "agentic",
+      "number": 13,
+      "name": "Opt-in self-evolution",
+      "pattern": "Measure baseline -> small exploration -> evaluate -> adopt if better -> rollback on regression",
+      "scenario": "A harness tests a routing-weight change against historical tasks before adopting it.",
+      "agents": [
+        "Baseline Measurer",
+        "Experiment Runner",
+        "Evaluator",
+        "Rollback Manager",
+        "Audit Logger"
+      ],
+      "workflow_steps": [
+        "Measure current baseline on declared metrics.",
+        "Run a small opt-in exploration in sandbox.",
+        "Evaluate against baseline and regression thresholds.",
+        "Adopt only if better, otherwise preserve failure learning.",
+        "Write rollback path and audit log."
+      ],
+      "policy_gates": [
+        "Adaptive tuning is opt-in and rollback-ready."
+      ],
+      "input": {
+        "baseline_metric": "successful_verification_rate",
+        "candidate_change": "increase code-review model threshold",
+        "regression_threshold": "no_drop_above_1_percent"
+      },
+      "output_contract": {
+        "artifact_type": "self_evolution_audit",
+        "required_fields": [
+          "baseline",
+          "experiment",
+          "evaluation",
+          "adopt_reject_decision",
+          "rollback_path",
+          "audit_log"
+        ]
+      },
+      "source_heading": "Self-evolution pattern, but opt-in only"
+    },
+    {
+      "id": "private-shared-federation",
+      "section": "agentic",
+      "number": 14,
+      "name": "Private/shared federation",
+      "pattern": "Local confidential work -> distilled non-sensitive pattern -> signed sharing -> peer validation",
+      "scenario": "An enterprise team shares a generic failure pattern learned from internal incidents without exposing customer data.",
+      "agents": [
+        "Local Distiller",
+        "Sensitivity Filter",
+        "Signer",
+        "Federation Publisher",
+        "Peer Validator"
+      ],
+      "workflow_steps": [
+        "Distill non-sensitive pattern from confidential local work.",
+        "Filter user data, secrets, and task history.",
+        "Sign the reusable pattern and publish to an allowed namespace.",
+        "Validate peer patterns before import."
+      ],
+      "policy_gates": [
+        "Federation shares patterns, not user data."
+      ],
+      "input": {
+        "local_lesson": "rollback runbooks need precomputed owner mapping",
+        "sensitive_fields": [
+          "customer_name",
+          "incident_id",
+          "internal_urls"
+        ],
+        "federation_namespace": "patterns"
+      },
+      "output_contract": {
+        "artifact_type": "federated_pattern_record",
+        "required_fields": [
+          "distilled_pattern",
+          "excluded_sensitive_data",
+          "signature",
+          "namespace",
+          "peer_validation",
+          "import_decision"
+        ]
+      },
+      "source_heading": "Federation pattern for private/shared learning"
+    }
+  ]
+}

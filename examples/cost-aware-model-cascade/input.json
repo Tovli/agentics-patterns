@@ -1,0 +1,5 @@
+{
+  "task": "label incoming GitHub issue",
+  "cheap_model_confidence": 0.62,
+  "escalation_threshold": 0.8
+}

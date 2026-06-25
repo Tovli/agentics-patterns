@@ -1,0 +1,72 @@
+{
+  "id": "algorithmic-control-plane",
+  "source": {
+    "type": "local_catalog",
+    "section": "agentic",
+    "number": 1,
+    "heading": "Algorithmic control-plane pattern"
+  },
+  "name": "Algorithmic control plane",
+  "pattern": "Model proposes; harness decides; algorithms verify",
+  "scenario": "A user asks the harness to update dependencies, but confidence, risk, cost, and verification gates must pass first.",
+  "workflow_steps": [
+    "Classify intent, risk, expected cost, and verification strategy.",
+    "Create a plan and route each step to the right worker or model.",
+    "Broker tool access under policy.",
+    "Verify outputs independently before applying results.",
+    "Write receipt and memory update after verified completion."
+  ],
+  "agents": [
+    "Intent Classifier",
+    "Planner",
+    "Router",
+    "Tool Broker",
+    "Verifier",
+    "Receipt Logger"
+  ],
+  "policy_gates": [
+    "Execution is blocked unless confidence, risk, cost, and verification gates pass."
+  ],
+  "input_contract": {
+    "file": "input.json",
+    "description": "Concrete scenario input for this pattern example."
+  },
+  "output_contract": {
+    "artifact_type": "control_plane_receipt",
+    "required_fields": [
+      "intent",
+      "risk",
+      "plan",
+      "tool_grants",
+      "verification",
+      "receipt_hash",
+      "result"
+    ]
+  },
+  "run": {
+    "command": "python ../run_example.py algorithmic-control-plane",
+    "expected_stdout": "expected-output.json"
+  },
+  "memory_update": {
+    "mode": "distill-only",
+    "stores": [
+      "verified decisions",
+      "reusable failures",
+      "domain lessons"
+    ],
+    "excludes": [
+      "raw sensitive data",
+      "unsupported claims"
+    ]
+  },
+  "receipt": {
+    "required": true,
+    "records": [
+      "input_hash",
+      "workflow_steps",
+      "policy_verdict",
+      "output_hash",
+      "reviewer_verdict"
+    ]
+  }
+}

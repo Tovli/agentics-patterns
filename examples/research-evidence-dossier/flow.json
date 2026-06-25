@@ -1,0 +1,71 @@
+{
+  "id": "research-evidence-dossier",
+  "source": {
+    "type": "local_catalog",
+    "section": "catalog",
+    "number": 3,
+    "heading": "`research` — Evidence Dossier Pattern"
+  },
+  "name": "Evidence dossier",
+  "pattern": "Decompose -> search -> grade -> synthesize -> fact-check -> cite",
+  "scenario": "A product team asks whether passkeys reduce account takeover risk for consumer apps.",
+  "workflow_steps": [
+    "Break the research question into independent sub-questions.",
+    "Collect primary and secondary sources for each sub-question.",
+    "Grade sources for authority, recency, bias, and relevance.",
+    "Synthesize only claims backed by accepted evidence.",
+    "Attack each claim and normalize citations."
+  ],
+  "agents": [
+    "Scout",
+    "Web Searcher",
+    "Source Grader",
+    "Synthesizer",
+    "Fact Checker",
+    "Citer"
+  ],
+  "policy_gates": [
+    "Unsupported claims must be removed or marked as assumptions."
+  ],
+  "input_contract": {
+    "file": "input.json",
+    "description": "Concrete scenario input for this pattern example."
+  },
+  "output_contract": {
+    "artifact_type": "evidence_dossier",
+    "required_fields": [
+      "answer",
+      "evidence_table",
+      "confidence",
+      "disputed_claims",
+      "missing_evidence",
+      "citations"
+    ]
+  },
+  "run": {
+    "command": "python ../run_example.py research-evidence-dossier",
+    "expected_stdout": "expected-output.json"
+  },
+  "memory_update": {
+    "mode": "distill-only",
+    "stores": [
+      "verified decisions",
+      "reusable failures",
+      "domain lessons"
+    ],
+    "excludes": [
+      "raw sensitive data",
+      "unsupported claims"
+    ]
+  },
+  "receipt": {
+    "required": true,
+    "records": [
+      "input_hash",
+      "workflow_steps",
+      "policy_verdict",
+      "output_hash",
+      "reviewer_verdict"
+    ]
+  }
+}

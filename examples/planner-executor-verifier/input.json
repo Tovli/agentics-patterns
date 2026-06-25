@@ -1,0 +1,8 @@
+{
+  "bug": "cache returns stale data after tenant switch",
+  "acceptance_checks": [
+    "reproduction_test",
+    "unit_tests",
+    "diff_review"
+  ]
+}

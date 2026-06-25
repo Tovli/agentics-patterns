@@ -1,0 +1,70 @@
+{
+  "id": "legal-draft-contract-review",
+  "source": {
+    "type": "local_catalog",
+    "section": "catalog",
+    "number": 6,
+    "heading": "`legal` — Draft-Only Contract Review Pattern"
+  },
+  "name": "Draft-only contract review",
+  "pattern": "Redline -> citation check -> risk rating -> human lawyer",
+  "scenario": "A vendor MSA includes broad indemnity and unilateral renewal language that conflicts with the playbook.",
+  "workflow_steps": [
+    "Compare clauses against the contract playbook.",
+    "Propose clause-level draft redlines.",
+    "Verify every cited authority or policy reference.",
+    "Score residual legal and commercial risk per clause.",
+    "Route draft redline and memo for licensed human review."
+  ],
+  "agents": [
+    "Redliner",
+    "Citation Checker",
+    "Risk Rater",
+    "Human Lawyer Gate"
+  ],
+  "policy_gates": [
+    "Output is draft-only and is never presented as legal advice.",
+    "Licensed human review is required before external use."
+  ],
+  "input_contract": {
+    "file": "input.json",
+    "description": "Concrete scenario input for this pattern example."
+  },
+  "output_contract": {
+    "artifact_type": "draft_redline_packet",
+    "required_fields": [
+      "redlines",
+      "issue_list",
+      "negotiation_notes",
+      "citation_status",
+      "risk_score_per_clause",
+      "draft_only_disclaimer"
+    ]
+  },
+  "run": {
+    "command": "python ../run_example.py legal-draft-contract-review",
+    "expected_stdout": "expected-output.json"
+  },
+  "memory_update": {
+    "mode": "distill-only",
+    "stores": [
+      "verified decisions",
+      "reusable failures",
+      "domain lessons"
+    ],
+    "excludes": [
+      "raw sensitive data",
+      "unsupported claims"
+    ]
+  },
+  "receipt": {
+    "required": true,
+    "records": [
+      "input_hash",
+      "workflow_steps",
+      "policy_verdict",
+      "output_hash",
+      "reviewer_verdict"
+    ]
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "artifact_type": "memory_update_packet",
+  "example_id": "memory-distillation",
+  "status": "ready_for_review",
+  "summary": "Memory distillation example completed for Memory distillation.",
+  "fields": {
+    "retrieved_context": {
+      "summary": "retrieved context recorded for Memory distillation.",
+      "responsible_agent": "Distiller",
+      "supporting_evidence": [
+        "A coding harness stores only durable lessons from a failed dependency upgrade, not the full noisy trace.",
+        "Retrieve relevant prior task traces and lessons."
+      ]
+    },
+    "judge_verdict": {
+      "result": "approve_for_example",
+      "reason": "Consolidator completed the gated Retrieve -> judge -> distill -> consolidate flow for Memory distillation."
+    },
+    "distilled_lesson": {
+      "summary": "distilled lesson recorded for Memory distillation.",
+      "responsible_agent": "Trajectory Judge",
+      "supporting_evidence": [
+        "A coding harness stores only durable lessons from a failed dependency upgrade, not the full noisy trace.",
+        "Retrieve relevant prior task traces and lessons."
+      ]
+    },
+    "namespace": "repo-maintenance",
+    "decay_policy": {
+      "summary": "decay policy recorded for Memory distillation.",
+      "responsible_agent": "Trajectory Judge",
+      "supporting_evidence": [
+        "A coding harness stores only durable lessons from a failed dependency upgrade, not the full noisy trace.",
+        "Retrieve relevant prior task traces and lessons."
+      ]
+    },
+    "excluded_raw_data": [
+      "No unsafe excluded raw data accepted without gate: Do not store raw sensitive task history when a distilled lesson is sufficient."
+    ]
+  },
+  "policy_verdict": {
+    "allowed": true,
+    "gates_checked": [
+      "Do not store raw sensitive task history when a distilled lesson is sufficient."
+    ],
+    "blocked_actions": [],
+    "notes": "Example runner accepts the artifact only after every declared policy gate is represented."
+  },
+  "receipt": {
+    "required": true,
+    "input_hash": "sha256:8f4483036047b8e6",
+    "flow_hash": "sha256:28b17cf95faaabc5",
+    "output_hash": "sha256:4928c9f1c270fe53",
+    "reviewer_verdict": "accepted_for_example"
+  }
+}

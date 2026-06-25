@@ -1,0 +1,5 @@
+{
+  "baseline_metric": "successful_verification_rate",
+  "candidate_change": "increase code-review model threshold",
+  "regression_threshold": "no_drop_above_1_percent"
+}

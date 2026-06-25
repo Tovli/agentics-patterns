@@ -1,0 +1,70 @@
+{
+  "id": "education-mastery-learning",
+  "source": {
+    "type": "local_catalog",
+    "section": "catalog",
+    "number": 17,
+    "heading": "`education` — Mastery Learning Pattern"
+  },
+  "name": "Mastery learning",
+  "pattern": "Tutor -> explain -> quiz -> grade -> update mastery",
+  "scenario": "A learner knows linear equations but struggles to apply slope-intercept form in word problems.",
+  "workflow_steps": [
+    "Choose next concept from the mastery map.",
+    "Explain at the right depth for the learner profile.",
+    "Generate calibrated questions.",
+    "Grade answers against a rubric.",
+    "Update mastery memory and recommend next focus."
+  ],
+  "agents": [
+    "Tutor",
+    "Explainer",
+    "Quiz Master",
+    "Grader",
+    "Mastery Memory Updater"
+  ],
+  "policy_gates": [
+    "The tutor abstains instead of faking certainty."
+  ],
+  "input_contract": {
+    "file": "input.json",
+    "description": "Concrete scenario input for this pattern example."
+  },
+  "output_contract": {
+    "artifact_type": "learning_cycle_report",
+    "required_fields": [
+      "concept_taught",
+      "explanation_level",
+      "quiz_result",
+      "misconceptions",
+      "mastery_update",
+      "next_recommendation"
+    ]
+  },
+  "run": {
+    "command": "python ../run_example.py education-mastery-learning",
+    "expected_stdout": "expected-output.json"
+  },
+  "memory_update": {
+    "mode": "distill-only",
+    "stores": [
+      "verified decisions",
+      "reusable failures",
+      "domain lessons"
+    ],
+    "excludes": [
+      "raw sensitive data",
+      "unsupported claims"
+    ]
+  },
+  "receipt": {
+    "required": true,
+    "records": [
+      "input_hash",
+      "workflow_steps",
+      "policy_verdict",
+      "output_hash",
+      "reviewer_verdict"
+    ]
+  }
+}

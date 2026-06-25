@@ -1,0 +1,72 @@
+{
+  "id": "devops-incident-response",
+  "source": {
+    "type": "local_catalog",
+    "section": "catalog",
+    "number": 1,
+    "heading": "`devops` — Incident Response Pattern"
+  },
+  "name": "DevOps incident response",
+  "pattern": "Alert -> runbook -> gated action -> escalation -> postmortem",
+  "scenario": "Checkout latency crosses the paging threshold while database saturation is suspected.",
+  "workflow_steps": [
+    "Classify alert severity and impacted service.",
+    "Find the closest runbook and propose bounded diagnostics.",
+    "Gate shell, network, and kubectl actions before execution.",
+    "Escalate when severity or uncertainty crosses policy.",
+    "Draft timeline, root cause, contributing factors, and follow-ups."
+  ],
+  "agents": [
+    "Responder",
+    "Runbook Runner",
+    "Policy Gate",
+    "Escalator",
+    "Postmortem Writer"
+  ],
+  "policy_gates": [
+    "Production mutations require explicit human approval.",
+    "Escalation is mandatory for high severity or unclear blast radius."
+  ],
+  "input_contract": {
+    "file": "input.json",
+    "description": "Concrete scenario input for this pattern example."
+  },
+  "output_contract": {
+    "artifact_type": "incident_packet",
+    "required_fields": [
+      "severity",
+      "impacted_service",
+      "evidence",
+      "actions_taken",
+      "actions_blocked",
+      "escalation_target",
+      "postmortem_draft"
+    ]
+  },
+  "run": {
+    "command": "python ../run_example.py devops-incident-response",
+    "expected_stdout": "expected-output.json"
+  },
+  "memory_update": {
+    "mode": "distill-only",
+    "stores": [
+      "verified decisions",
+      "reusable failures",
+      "domain lessons"
+    ],
+    "excludes": [
+      "raw sensitive data",
+      "unsupported claims"
+    ]
+  },
+  "receipt": {
+    "required": true,
+    "records": [
+      "input_hash",
+      "workflow_steps",
+      "policy_verdict",
+      "output_hash",
+      "reviewer_verdict"
+    ]
+  }
+}

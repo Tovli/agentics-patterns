@@ -1,0 +1,79 @@
+{
+  "artifact_type": "repo_genome_plan",
+  "example_id": "repo-genome-harness-plan",
+  "status": "ready_for_review",
+  "summary": "Repo genome to harness plan example completed for edge-intelligence-service.",
+  "fields": {
+    "repo_profile": {
+      "summary": "repo profile recorded for edge-intelligence-service.",
+      "responsible_agent": "Topology Recommender",
+      "supporting_evidence": [
+        "A meta-harness analyzes a repository without executing code and recommends the safest generated harness shape.",
+        "Scan repository structure, languages, tests, and release surfaces without execution."
+      ]
+    },
+    "agent_topology": {
+      "summary": "agent topology recorded for edge-intelligence-service.",
+      "responsible_agent": "Plan Writer",
+      "supporting_evidence": [
+        "A meta-harness analyzes a repository without executing code and recommends the safest generated harness shape.",
+        "Scan repository structure, languages, tests, and release surfaces without execution."
+      ]
+    },
+    "tool_surface": {
+      "summary": "tool surface recorded for edge-intelligence-service.",
+      "responsible_agent": "Topology Recommender",
+      "supporting_evidence": [
+        "A meta-harness analyzes a repository without executing code and recommends the safest generated harness shape.",
+        "Scan repository structure, languages, tests, and release surfaces without execution."
+      ]
+    },
+    "risk_budget": {
+      "level": "medium",
+      "drivers": [
+        "A meta-harness analyzes a repository without executing code and recommends the safest generated harness shape.",
+        "Scan repository structure, languages, tests, and release surfaces without execution."
+      ],
+      "mitigation": "Repo analysis does not execute repository code."
+    },
+    "memory_namespaces": {
+      "summary": "memory namespaces recorded for edge-intelligence-service.",
+      "responsible_agent": "Repo Scanner",
+      "supporting_evidence": [
+        "A meta-harness analyzes a repository without executing code and recommends the safest generated harness shape.",
+        "Scan repository structure, languages, tests, and release surfaces without execution."
+      ]
+    },
+    "recommended_vertical": {
+      "summary": "recommended vertical recorded for edge-intelligence-service.",
+      "responsible_agent": "Repo Scanner",
+      "supporting_evidence": [
+        "A meta-harness analyzes a repository without executing code and recommends the safest generated harness shape.",
+        "Scan repository structure, languages, tests, and release surfaces without execution."
+      ]
+    },
+    "required_human_approvals": {
+      "summary": "required human approvals recorded for edge-intelligence-service.",
+      "responsible_agent": "Repo Scanner",
+      "supporting_evidence": [
+        "A meta-harness analyzes a repository without executing code and recommends the safest generated harness shape.",
+        "Scan repository structure, languages, tests, and release surfaces without execution."
+      ]
+    }
+  },
+  "policy_verdict": {
+    "allowed": true,
+    "gates_checked": [
+      "Repo analysis does not execute repository code."
+    ],
+    "blocked_actions": [],
+    "notes": "Example runner accepts the artifact only after every declared policy gate is represented."
+  },
+  "receipt": {
+    "required": true,
+    "input_hash": "sha256:416e7bf19b88f359",
+    "flow_hash": "sha256:380352604086fe7a",
+    "output_hash": "sha256:ffdf9ae728663105",
+    "reviewer_verdict": "accepted_for_example"
+  }
+}

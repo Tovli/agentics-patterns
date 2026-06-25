@@ -1,0 +1,70 @@
+{
+  "id": "test-first-coding-pod",
+  "source": {
+    "type": "local_catalog",
+    "section": "agentic",
+    "number": 5,
+    "heading": "Test-first coding pod"
+  },
+  "name": "Test-first coding pod",
+  "pattern": "Understand issue -> failing test -> patch -> tests -> diff review",
+  "scenario": "A repo-maintenance agent fixes a parsing regression by proving the failure before editing production code.",
+  "workflow_steps": [
+    "Understand the issue and target behavior.",
+    "Write the failing test that reproduces the issue.",
+    "Patch only the code needed to pass the test.",
+    "Run relevant and full validation gates.",
+    "Review the diff and summarize release notes."
+  ],
+  "agents": [
+    "Issue Analyst",
+    "Test Author",
+    "Implementation Agent",
+    "Reviewer",
+    "Release-note Drafter"
+  ],
+  "policy_gates": [
+    "No production code is edited before a failing test exists."
+  ],
+  "input_contract": {
+    "file": "input.json",
+    "description": "Concrete scenario input for this pattern example."
+  },
+  "output_contract": {
+    "artifact_type": "coding_pod_packet",
+    "required_fields": [
+      "issue_summary",
+      "failing_test",
+      "patch",
+      "validation",
+      "diff_review",
+      "release_note"
+    ]
+  },
+  "run": {
+    "command": "python ../run_example.py test-first-coding-pod",
+    "expected_stdout": "expected-output.json"
+  },
+  "memory_update": {
+    "mode": "distill-only",
+    "stores": [
+      "verified decisions",
+      "reusable failures",
+      "domain lessons"
+    ],
+    "excludes": [
+      "raw sensitive data",
+      "unsupported claims"
+    ]
+  },
+  "receipt": {
+    "required": true,
+    "records": [
+      "input_hash",
+      "workflow_steps",
+      "policy_verdict",
+      "output_hash",
+      "reviewer_verdict"
+    ]
+  }
+}

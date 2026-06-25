@@ -1,0 +1,7 @@
+{
+  "question": "Which open model licenses permit commercial fine-tuning?",
+  "source_requirements": [
+    "license_text",
+    "official_docs"
+  ]
+}

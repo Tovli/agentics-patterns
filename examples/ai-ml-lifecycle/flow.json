@@ -1,0 +1,71 @@
+{
+  "id": "ai-ml-lifecycle",
+  "source": {
+    "type": "local_catalog",
+    "section": "catalog",
+    "number": 11,
+    "heading": "`ai` — ML Lifecycle Pattern"
+  },
+  "name": "ML lifecycle",
+  "pattern": "Data -> train -> evaluate -> deploy behind guardrails",
+  "scenario": "An ML team wants to ship a classifier for support-ticket routing only if it beats the baseline across slices.",
+  "workflow_steps": [
+    "Build a dataset card with provenance and limits.",
+    "Run reproducible training or fine-tuning.",
+    "Compare against baseline, subgroup slices, and failure cases.",
+    "Deploy only if evaluation gates pass.",
+    "Monitor post-deploy drift and regressions."
+  ],
+  "agents": [
+    "Data Curator",
+    "Trainer",
+    "Evaluator",
+    "Deployer",
+    "Drift Monitor"
+  ],
+  "policy_gates": [
+    "Evaluator is independent; training metrics alone cannot drive deployment."
+  ],
+  "input_contract": {
+    "file": "input.json",
+    "description": "Concrete scenario input for this pattern example."
+  },
+  "output_contract": {
+    "artifact_type": "eval_report",
+    "required_fields": [
+      "dataset_summary",
+      "baseline_delta",
+      "metrics",
+      "subgroup_performance",
+      "risks",
+      "ship_no_ship_decision",
+      "deployment_guardrails"
+    ]
+  },
+  "run": {
+    "command": "python ../run_example.py ai-ml-lifecycle",
+    "expected_stdout": "expected-output.json"
+  },
+  "memory_update": {
+    "mode": "distill-only",
+    "stores": [
+      "verified decisions",
+      "reusable failures",
+      "domain lessons"
+    ],
+    "excludes": [
+      "raw sensitive data",
+      "unsupported claims"
+    ]
+  },
+  "receipt": {
+    "required": true,
+    "records": [
+      "input_hash",
+      "workflow_steps",
+      "policy_verdict",
+      "output_hash",
+      "reviewer_verdict"
+    ]
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "issue": "markdown parser drops escaped dots in numbered headings",
+  "test_target": "heading_parser",
+  "validation": [
+    "unit_test",
+    "snapshot_test"
+  ]
+}

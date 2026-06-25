@@ -1,0 +1,66 @@
+{
+  "id": "planner-executor-verifier",
+  "source": {
+    "type": "local_catalog",
+    "section": "agentic",
+    "number": 3,
+    "heading": "Planner–Executor–Verifier pattern"
+  },
+  "name": "Planner executor verifier",
+  "pattern": "Planner -> executor -> verifier",
+  "scenario": "A coding harness must fix a bug while keeping the approver independent from the patch author.",
+  "workflow_steps": [
+    "Planner decomposes the issue into small steps and acceptance checks.",
+    "Executor edits files or drafts the patch within the plan.",
+    "Verifier runs tests and reviews the diff independently.",
+    "Verifier rejects, requests retry, or approves with residual risk."
+  ],
+  "agents": [
+    "Planner",
+    "Executor",
+    "Verifier"
+  ],
+  "policy_gates": [
+    "The same agent cannot create and approve the output."
+  ],
+  "input_contract": {
+    "file": "input.json",
+    "description": "Concrete scenario input for this pattern example."
+  },
+  "output_contract": {
+    "artifact_type": "verification_packet",
+    "required_fields": [
+      "plan",
+      "patch_summary",
+      "test_results",
+      "diff_risks",
+      "verifier_verdict"
+    ]
+  },
+  "run": {
+    "command": "python ../run_example.py planner-executor-verifier",
+    "expected_stdout": "expected-output.json"
+  },
+  "memory_update": {
+    "mode": "distill-only",
+    "stores": [
+      "verified decisions",
+      "reusable failures",
+      "domain lessons"
+    ],
+    "excludes": [
+      "raw sensitive data",
+      "unsupported claims"
+    ]
+  },
+  "receipt": {
+    "required": true,
+    "records": [
+      "input_hash",
+      "workflow_steps",
+      "policy_verdict",
+      "output_hash",
+      "reviewer_verdict"
+    ]
+  }
+}

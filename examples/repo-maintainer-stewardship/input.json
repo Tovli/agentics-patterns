@@ -1,0 +1,14 @@
+{
+  "candidate": "v0.2.0-rc.1",
+  "changed_areas": [
+    "cli",
+    "templates",
+    "dependencies"
+  ],
+  "required_gates": [
+    "tests",
+    "benchmarks",
+    "security_scan",
+    "release_notes"
+  ]
+}

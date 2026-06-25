@@ -1,0 +1,9 @@
+{
+  "account": "Acme Clinics",
+  "signals": [
+    "recent_security_audit",
+    "new_vp_it",
+    "budget_cycle_q4"
+  ],
+  "methodology": "MEDDPICC"
+}

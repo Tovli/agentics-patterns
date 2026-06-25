@@ -1,0 +1,64 @@
+{
+  "artifact_type": "maintainer_packet",
+  "example_id": "repo-maintainer-stewardship",
+  "status": "ready_for_review",
+  "summary": "Repo stewardship example completed for Repo stewardship.",
+  "fields": {
+    "changed_areas": [
+      "cli",
+      "templates",
+      "dependencies"
+    ],
+    "risk_map": {
+      "level": "medium",
+      "drivers": [
+        "A release candidate changes CLI wiring, dependencies, and generated template files.",
+        "Identify changed areas, risks, and review order."
+      ],
+      "mitigation": "The recommendation is conservative and does not overstate readiness."
+    },
+    "benchmark_result": {
+      "summary": "benchmark result recorded for Repo stewardship.",
+      "responsible_agent": "Benchmarker",
+      "supporting_evidence": [
+        "A release candidate changes CLI wiring, dependencies, and generated template files.",
+        "Identify changed areas, risks, and review order."
+      ]
+    },
+    "security_findings": {
+      "summary": "security findings recorded for Repo stewardship.",
+      "responsible_agent": "Benchmarker",
+      "supporting_evidence": [
+        "A release candidate changes CLI wiring, dependencies, and generated template files.",
+        "Identify changed areas, risks, and review order."
+      ]
+    },
+    "release_notes": {
+      "summary": "release notes recorded for Repo stewardship.",
+      "responsible_agent": "Benchmarker",
+      "supporting_evidence": [
+        "A release candidate changes CLI wiring, dependencies, and generated template files.",
+        "Identify changed areas, risks, and review order."
+      ]
+    },
+    "readiness_verdict": {
+      "result": "approve_for_example",
+      "reason": "Security Reviewer completed the gated Triage diff -> benchmark -> release check -> security scan flow for Repo stewardship."
+    }
+  },
+  "policy_verdict": {
+    "allowed": true,
+    "gates_checked": [
+      "The recommendation is conservative and does not overstate readiness."
+    ],
+    "blocked_actions": [],
+    "notes": "Example runner accepts the artifact only after every declared policy gate is represented."
+  },
+  "receipt": {
+    "required": true,
+    "input_hash": "sha256:0e8e9995d2295157",
+    "flow_hash": "sha256:8d3f0221e0aa1fab",
+    "output_hash": "sha256:b0fa4a528acfb5dd",
+    "reviewer_verdict": "accepted_for_example"
+  }
+}

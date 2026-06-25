@@ -1,0 +1,72 @@
+{
+  "id": "agentics-controlled-swarm",
+  "source": {
+    "type": "local_catalog",
+    "section": "catalog",
+    "number": 12,
+    "heading": "`agentics` — Controlled Swarm Pattern"
+  },
+  "name": "Controlled swarm",
+  "pattern": "Orchestrator -> planner -> workers -> critic",
+  "scenario": "A harness must evaluate three independent integration options without exceeding a fixed budget.",
+  "workflow_steps": [
+    "Set objective, budget, max depth, and stopping condition.",
+    "Decompose work into dependency-aware tasks.",
+    "Run bounded worker tasks.",
+    "Review outputs through a critic before landing them.",
+    "Decide whether to continue, retry, or stop and store distilled lessons."
+  ],
+  "agents": [
+    "Orchestrator",
+    "Planner",
+    "Worker Pool",
+    "Critic",
+    "Memory Curator"
+  ],
+  "policy_gates": [
+    "No run starts without budget, max depth, stopping condition, and critic gate."
+  ],
+  "input_contract": {
+    "file": "input.json",
+    "description": "Concrete scenario input for this pattern example."
+  },
+  "output_contract": {
+    "artifact_type": "run_report",
+    "required_fields": [
+      "goal",
+      "plan",
+      "task_graph",
+      "worker_outputs",
+      "critic_findings",
+      "final_result",
+      "cost",
+      "unresolved_issues"
+    ]
+  },
+  "run": {
+    "command": "python ../run_example.py agentics-controlled-swarm",
+    "expected_stdout": "expected-output.json"
+  },
+  "memory_update": {
+    "mode": "distill-only",
+    "stores": [
+      "verified decisions",
+      "reusable failures",
+      "domain lessons"
+    ],
+    "excludes": [
+      "raw sensitive data",
+      "unsupported claims"
+    ]
+  },
+  "receipt": {
+    "required": true,
+    "records": [
+      "input_hash",
+      "workflow_steps",
+      "policy_verdict",
+      "output_hash",
+      "reviewer_verdict"
+    ]
+  }
+}

@@ -1,0 +1,87 @@
+{
+  "artifact_type": "control_plane_receipt",
+  "example_id": "algorithmic-control-plane",
+  "status": "ready_for_review",
+  "summary": "Algorithmic control plane example completed for upgrade minor dependencies and open a patch.",
+  "fields": {
+    "intent": {
+      "summary": "intent recorded for upgrade minor dependencies and open a patch.",
+      "responsible_agent": "Verifier",
+      "supporting_evidence": [
+        "A user asks the harness to update dependencies, but confidence, risk, cost, and verification gates must pass first.",
+        "Classify intent, risk, expected cost, and verification strategy."
+      ]
+    },
+    "risk": {
+      "level": "medium",
+      "drivers": [
+        "A user asks the harness to update dependencies, but confidence, risk, cost, and verification gates must pass first.",
+        "Classify intent, risk, expected cost, and verification strategy."
+      ],
+      "mitigation": "Execution is blocked unless confidence, risk, cost, and verification gates pass."
+    },
+    "plan": [
+      {
+        "step": 1,
+        "action": "Classify intent, risk, expected cost, and verification strategy.",
+        "owner": "Intent Classifier"
+      },
+      {
+        "step": 2,
+        "action": "Create a plan and route each step to the right worker or model.",
+        "owner": "Planner"
+      },
+      {
+        "step": 3,
+        "action": "Broker tool access under policy.",
+        "owner": "Router"
+      },
+      {
+        "step": 4,
+        "action": "Verify outputs independently before applying results.",
+        "owner": "Tool Broker"
+      },
+      {
+        "step": 5,
+        "action": "Write receipt and memory update after verified completion.",
+        "owner": "Verifier"
+      }
+    ],
+    "tool_grants": {
+      "summary": "tool grants recorded for upgrade minor dependencies and open a patch.",
+      "responsible_agent": "Router",
+      "supporting_evidence": [
+        "A user asks the harness to update dependencies, but confidence, risk, cost, and verification gates must pass first.",
+        "Classify intent, risk, expected cost, and verification strategy."
+      ]
+    },
+    "verification": [
+      "unit_tests",
+      "dependency_audit"
+    ],
+    "receipt_hash": "sha256:faa9057fcbe34882",
+    "result": {
+      "summary": "result recorded for upgrade minor dependencies and open a patch.",
+      "responsible_agent": "Receipt Logger",
+      "supporting_evidence": [
+        "A user asks the harness to update dependencies, but confidence, risk, cost, and verification gates must pass first.",
+        "Classify intent, risk, expected cost, and verification strategy."
+      ]
+    }
+  },
+  "policy_verdict": {
+    "allowed": true,
+    "gates_checked": [
+      "Execution is blocked unless confidence, risk, cost, and verification gates pass."
+    ],
+    "blocked_actions": [],
+    "notes": "Example runner accepts the artifact only after every declared policy gate is represented."
+  },
+  "receipt": {
+    "required": true,
+    "input_hash": "sha256:ec4f22293c54e00b",
+    "flow_hash": "sha256:d90737c3e64dd4b9",
+    "output_hash": "sha256:dd4391d36a8f0566",
+    "reviewer_verdict": "accepted_for_example"
+  }
+}

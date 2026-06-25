@@ -1,0 +1,5 @@
+{
+  "task_trace": "dependency upgrade failed due peer dependency conflict",
+  "namespace": "repo-maintenance",
+  "sensitivity": "internal_package_names"
+}

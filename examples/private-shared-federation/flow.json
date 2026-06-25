@@ -1,0 +1,69 @@
+{
+  "id": "private-shared-federation",
+  "source": {
+    "type": "local_catalog",
+    "section": "agentic",
+    "number": 14,
+    "heading": "Federation pattern for private/shared learning"
+  },
+  "name": "Private/shared federation",
+  "pattern": "Local confidential work -> distilled non-sensitive pattern -> signed sharing -> peer validation",
+  "scenario": "An enterprise team shares a generic failure pattern learned from internal incidents without exposing customer data.",
+  "workflow_steps": [
+    "Distill non-sensitive pattern from confidential local work.",
+    "Filter user data, secrets, and task history.",
+    "Sign the reusable pattern and publish to an allowed namespace.",
+    "Validate peer patterns before import."
+  ],
+  "agents": [
+    "Local Distiller",
+    "Sensitivity Filter",
+    "Signer",
+    "Federation Publisher",
+    "Peer Validator"
+  ],
+  "policy_gates": [
+    "Federation shares patterns, not user data."
+  ],
+  "input_contract": {
+    "file": "input.json",
+    "description": "Concrete scenario input for this pattern example."
+  },
+  "output_contract": {
+    "artifact_type": "federated_pattern_record",
+    "required_fields": [
+      "distilled_pattern",
+      "excluded_sensitive_data",
+      "signature",
+      "namespace",
+      "peer_validation",
+      "import_decision"
+    ]
+  },
+  "run": {
+    "command": "python ../run_example.py private-shared-federation",
+    "expected_stdout": "expected-output.json"
+  },
+  "memory_update": {
+    "mode": "distill-only",
+    "stores": [
+      "verified decisions",
+      "reusable failures",
+      "domain lessons"
+    ],
+    "excludes": [
+      "raw sensitive data",
+      "unsupported claims"
+    ]
+  },
+  "receipt": {
+    "required": true,
+    "records": [
+      "input_hash",
+      "workflow_steps",
+      "policy_verdict",
+      "output_hash",
+      "reviewer_verdict"
+    ]
+  }
+}

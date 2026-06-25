@@ -1,0 +1,61 @@
+{
+  "artifact_type": "federated_pattern_record",
+  "example_id": "private-shared-federation",
+  "status": "ready_for_review",
+  "summary": "Private/shared federation example completed for rollback runbooks need precomputed owner mapping.",
+  "fields": {
+    "distilled_pattern": {
+      "summary": "distilled pattern recorded for rollback runbooks need precomputed owner mapping.",
+      "responsible_agent": "Peer Validator",
+      "supporting_evidence": [
+        "customer_name",
+        "incident_id",
+        "internal_urls"
+      ]
+    },
+    "excluded_sensitive_data": [
+      "No unsafe excluded sensitive data accepted without gate: Federation shares patterns, not user data."
+    ],
+    "signature": {
+      "summary": "signature recorded for rollback runbooks need precomputed owner mapping.",
+      "responsible_agent": "Federation Publisher",
+      "supporting_evidence": [
+        "customer_name",
+        "incident_id",
+        "internal_urls"
+      ]
+    },
+    "namespace": "rollback runbooks need precomputed owner mapping",
+    "peer_validation": {
+      "command": "python ../run_example.py private-shared-federation",
+      "status": "passed",
+      "checked_fields": [
+        "distilled_pattern",
+        "excluded_sensitive_data",
+        "signature",
+        "namespace",
+        "peer_validation",
+        "import_decision"
+      ]
+    },
+    "import_decision": {
+      "result": "approve_for_example",
+      "reason": "Federation Publisher completed the gated Local confidential work -> distilled non-sensitive pattern -> signed sharing -> peer validation flow for rollback runbooks need precomputed owner mapping."
+    }
+  },
+  "policy_verdict": {
+    "allowed": true,
+    "gates_checked": [
+      "Federation shares patterns, not user data."
+    ],
+    "blocked_actions": [],
+    "notes": "Example runner accepts the artifact only after every declared policy gate is represented."
+  },
+  "receipt": {
+    "required": true,
+    "input_hash": "sha256:99dc7c6a449c3a2e",
+    "flow_hash": "sha256:aa34d98f87da5e03",
+    "output_hash": "sha256:8f05ea46e8fbc177",
+    "reviewer_verdict": "accepted_for_example"
+  }
+}

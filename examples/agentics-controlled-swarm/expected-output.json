@@ -1,0 +1,93 @@
+{
+  "artifact_type": "run_report",
+  "example_id": "agentics-controlled-swarm",
+  "status": "ready_for_review",
+  "summary": "Controlled swarm example completed for compare auth provider integrations.",
+  "fields": {
+    "goal": "compare auth provider integrations",
+    "plan": [
+      {
+        "step": 1,
+        "action": "Set objective, budget, max depth, and stopping condition.",
+        "owner": "Orchestrator"
+      },
+      {
+        "step": 2,
+        "action": "Decompose work into dependency-aware tasks.",
+        "owner": "Planner"
+      },
+      {
+        "step": 3,
+        "action": "Run bounded worker tasks.",
+        "owner": "Worker Pool"
+      },
+      {
+        "step": 4,
+        "action": "Review outputs through a critic before landing them.",
+        "owner": "Critic"
+      },
+      {
+        "step": 5,
+        "action": "Decide whether to continue, retry, or stop and store distilled lessons.",
+        "owner": "Memory Curator"
+      }
+    ],
+    "task_graph": {
+      "summary": "task graph recorded for compare auth provider integrations.",
+      "responsible_agent": "Orchestrator",
+      "supporting_evidence": [
+        "A harness must evaluate three independent integration options without exceeding a fixed budget.",
+        "Set objective, budget, max depth, and stopping condition."
+      ]
+    },
+    "worker_outputs": {
+      "summary": "worker outputs recorded for compare auth provider integrations.",
+      "responsible_agent": "Orchestrator",
+      "supporting_evidence": [
+        "A harness must evaluate three independent integration options without exceeding a fixed budget.",
+        "Set objective, budget, max depth, and stopping condition."
+      ]
+    },
+    "critic_findings": {
+      "summary": "critic findings recorded for compare auth provider integrations.",
+      "responsible_agent": "Critic",
+      "supporting_evidence": [
+        "A harness must evaluate three independent integration options without exceeding a fixed budget.",
+        "Set objective, budget, max depth, and stopping condition."
+      ]
+    },
+    "final_result": {
+      "summary": "final result recorded for compare auth provider integrations.",
+      "responsible_agent": "Critic",
+      "supporting_evidence": [
+        "A harness must evaluate three independent integration options without exceeding a fixed budget.",
+        "Set objective, budget, max depth, and stopping condition."
+      ]
+    },
+    "cost": {
+      "limit": {
+        "max_worker_tasks": 6,
+        "max_depth": 2
+      },
+      "spent": "within_limit"
+    },
+    "unresolved_issues": [
+      "No unsafe unresolved issues accepted without gate: No run starts without budget, max depth, stopping condition, and critic gate."
+    ]
+  },
+  "policy_verdict": {
+    "allowed": true,
+    "gates_checked": [
+      "No run starts without budget, max depth, stopping condition, and critic gate."
+    ],
+    "blocked_actions": [],
+    "notes": "Example runner accepts the artifact only after every declared policy gate is represented."
+  },
+  "receipt": {
+    "required": true,
+    "input_hash": "sha256:c8d8d5270c859c51",
+    "flow_hash": "sha256:2b56262d2355c86e",
+    "output_hash": "sha256:43093da03e2e58cf",
+    "reviewer_verdict": "accepted_for_example"
+  }
+}

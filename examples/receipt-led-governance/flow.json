@@ -1,0 +1,73 @@
+{
+  "id": "receipt-led-governance",
+  "source": {
+    "type": "local_catalog",
+    "section": "agentic",
+    "number": 10,
+    "heading": "Receipt-led governance pattern"
+  },
+  "name": "Receipt-led governance",
+  "pattern": "Every meaningful action writes a tamper-evident receipt",
+  "scenario": "A harness performs a dependency audit and records all material inputs, outputs, tools, and verdicts.",
+  "workflow_steps": [
+    "Hash inputs and planned outputs before action.",
+    "Record agent, model, tool calls, cost, latency, risk, and verdict.",
+    "Hash-chain the receipt to the previous receipt.",
+    "Expose the receipt for audit and replay."
+  ],
+  "agents": [
+    "Action Worker",
+    "Tool Auditor",
+    "Verifier",
+    "Receipt Logger"
+  ],
+  "policy_gates": [
+    "Material actions without receipts are treated as incomplete."
+  ],
+  "input_contract": {
+    "file": "input.json",
+    "description": "Concrete scenario input for this pattern example."
+  },
+  "output_contract": {
+    "artifact_type": "governance_receipt",
+    "required_fields": [
+      "input_hash",
+      "output_hash",
+      "agent",
+      "model",
+      "tool_calls",
+      "cost",
+      "latency",
+      "risk",
+      "verdict",
+      "previous_hash",
+      "current_hash"
+    ]
+  },
+  "run": {
+    "command": "python ../run_example.py receipt-led-governance",
+    "expected_stdout": "expected-output.json"
+  },
+  "memory_update": {
+    "mode": "distill-only",
+    "stores": [
+      "verified decisions",
+      "reusable failures",
+      "domain lessons"
+    ],
+    "excludes": [
+      "raw sensitive data",
+      "unsupported claims"
+    ]
+  },
+  "receipt": {
+    "required": true,
+    "records": [
+      "input_hash",
+      "workflow_steps",
+      "policy_verdict",
+      "output_hash",
+      "reviewer_verdict"
+    ]
+  }
+}

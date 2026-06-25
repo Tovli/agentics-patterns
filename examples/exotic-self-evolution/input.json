@@ -1,0 +1,5 @@
+{
+  "hypothesis": "hybrid retrieval weight should increase sparse score from 0.35 to 0.45",
+  "metric": "answer_faithfulness",
+  "sandbox": "retrieval_eval_fixture_2026_06"
+}

@@ -1,0 +1,69 @@
+{
+  "id": "default-deny-tool-broker",
+  "source": {
+    "type": "local_catalog",
+    "section": "agentic",
+    "number": 4,
+    "heading": "Default-deny tool-broker pattern"
+  },
+  "name": "Default-deny tool broker",
+  "pattern": "Governed tool surface with explicit grants",
+  "scenario": "An agent requests shell, network, and file-write access while diagnosing a failing build.",
+  "workflow_steps": [
+    "Declare requested tool, risk, timeout, and call budget.",
+    "Evaluate request against default-deny policy.",
+    "Require approval for dangerous or write-capable operations.",
+    "Execute only approved calls and record the audit trail."
+  ],
+  "agents": [
+    "Tool Broker",
+    "Policy Engine",
+    "Agent Worker",
+    "Audit Logger"
+  ],
+  "policy_gates": [
+    "Network, shell, and file writes are denied unless explicitly granted."
+  ],
+  "input_contract": {
+    "file": "input.json",
+    "description": "Concrete scenario input for this pattern example."
+  },
+  "output_contract": {
+    "artifact_type": "tool_broker_decision",
+    "required_fields": [
+      "tool_name",
+      "needs",
+      "risk",
+      "approval",
+      "timeout_ms",
+      "max_calls_per_turn",
+      "audit_record"
+    ]
+  },
+  "run": {
+    "command": "python ../run_example.py default-deny-tool-broker",
+    "expected_stdout": "expected-output.json"
+  },
+  "memory_update": {
+    "mode": "distill-only",
+    "stores": [
+      "verified decisions",
+      "reusable failures",
+      "domain lessons"
+    ],
+    "excludes": [
+      "raw sensitive data",
+      "unsupported claims"
+    ]
+  },
+  "receipt": {
+    "required": true,
+    "records": [
+      "input_hash",
+      "workflow_steps",
+      "policy_verdict",
+      "output_hash",
+      "reviewer_verdict"
+    ]
+  }
+}

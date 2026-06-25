@@ -1,0 +1,9 @@
+{
+  "objective": "trial_signups",
+  "budget_usd": 25000,
+  "channels": [
+    "search",
+    "linkedin",
+    "retargeting"
+  ]
+}

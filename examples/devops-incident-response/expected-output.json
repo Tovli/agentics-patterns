@@ -1,0 +1,72 @@
+{
+  "artifact_type": "incident_packet",
+  "example_id": "devops-incident-response",
+  "status": "ready_for_review",
+  "summary": "DevOps incident response example completed for checkout-api.",
+  "fields": {
+    "severity": "high",
+    "impacted_service": "checkout-api",
+    "evidence": [
+      {
+        "claim": "db_cpu_92_percent",
+        "status": "accepted_for_example"
+      },
+      {
+        "claim": "error_rate_1_4_percent",
+        "status": "accepted_for_example"
+      }
+    ],
+    "actions_taken": [
+      {
+        "action": "Classify alert severity and impacted service.",
+        "status": "proposed",
+        "gate": "Production mutations require explicit human approval."
+      },
+      {
+        "action": "Find the closest runbook and propose bounded diagnostics.",
+        "status": "proposed",
+        "gate": "Production mutations require explicit human approval."
+      },
+      {
+        "action": "Gate shell, network, and kubectl actions before execution.",
+        "status": "proposed",
+        "gate": "Production mutations require explicit human approval."
+      }
+    ],
+    "actions_blocked": [
+      "No unsafe actions blocked accepted without gate: Production mutations require explicit human approval."
+    ],
+    "escalation_target": {
+      "summary": "escalation target recorded for checkout-api.",
+      "responsible_agent": "Runbook Runner",
+      "supporting_evidence": [
+        "db_cpu_92_percent",
+        "error_rate_1_4_percent"
+      ]
+    },
+    "postmortem_draft": {
+      "summary": "postmortem draft recorded for checkout-api.",
+      "responsible_agent": "Escalator",
+      "supporting_evidence": [
+        "db_cpu_92_percent",
+        "error_rate_1_4_percent"
+      ]
+    }
+  },
+  "policy_verdict": {
+    "allowed": true,
+    "gates_checked": [
+      "Production mutations require explicit human approval.",
+      "Escalation is mandatory for high severity or unclear blast radius."
+    ],
+    "blocked_actions": [],
+    "notes": "Example runner accepts the artifact only after every declared policy gate is represented."
+  },
+  "receipt": {
+    "required": true,
+    "input_hash": "sha256:74f12aec75ebec35",
+    "flow_hash": "sha256:31f1c2585d04721c",
+    "output_hash": "sha256:9ee2e097fbe609e2",
+    "reviewer_verdict": "accepted_for_example"
+  }
+}

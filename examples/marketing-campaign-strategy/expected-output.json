@@ -1,0 +1,117 @@
+{
+  "artifact_type": "campaign_brief",
+  "example_id": "marketing-campaign-strategy",
+  "status": "ready_for_review",
+  "summary": "Campaign strategy example completed for launch compliance dashboard.",
+  "fields": {
+    "icp": "security operations leaders at mid-market SaaS companies",
+    "message": {
+      "summary": "message recorded for launch compliance dashboard.",
+      "responsible_agent": "Content Creator",
+      "supporting_evidence": [
+        "blog",
+        "linkedin",
+        "webinar"
+      ]
+    },
+    "content_plan": [
+      {
+        "step": 1,
+        "action": "Define audience, positioning, channel, and target metric.",
+        "owner": "Strategist"
+      },
+      {
+        "step": 2,
+        "action": "Draft channel-specific assets.",
+        "owner": "Content Creator"
+      },
+      {
+        "step": 3,
+        "action": "Ground content in search demand and analytics.",
+        "owner": "SEO Analyst"
+      },
+      {
+        "step": 4,
+        "action": "Revise campaign brief before human review and publishing.",
+        "owner": "Analytics Reviewer"
+      },
+      {
+        "step": 5,
+        "action": "Feed measured results back into memory.",
+        "owner": "Memory Updater"
+      }
+    ],
+    "channels": [
+      "blog",
+      "linkedin",
+      "webinar"
+    ],
+    "seo_targets": {
+      "summary": "seo targets recorded for launch compliance dashboard.",
+      "responsible_agent": "Memory Updater",
+      "supporting_evidence": [
+        "blog",
+        "linkedin",
+        "webinar"
+      ]
+    },
+    "analytics_baseline": {
+      "summary": "analytics baseline recorded for launch compliance dashboard.",
+      "responsible_agent": "Analytics Reviewer",
+      "supporting_evidence": [
+        "blog",
+        "linkedin",
+        "webinar"
+      ]
+    },
+    "kpi": [
+      {
+        "name": "blog",
+        "target": "improve",
+        "cadence": "weekly"
+      },
+      {
+        "name": "linkedin",
+        "target": "improve",
+        "cadence": "weekly"
+      },
+      {
+        "name": "webinar",
+        "target": "improve",
+        "cadence": "weekly"
+      }
+    ],
+    "experiments": [
+      {
+        "channel": "blog",
+        "variant": "Campaign strategy message",
+        "review": "Memory Updater"
+      },
+      {
+        "channel": "linkedin",
+        "variant": "Campaign strategy message",
+        "review": "Memory Updater"
+      },
+      {
+        "channel": "webinar",
+        "variant": "Campaign strategy message",
+        "review": "Memory Updater"
+      }
+    ]
+  },
+  "policy_verdict": {
+    "allowed": true,
+    "gates_checked": [
+      "Traffic, SEO, and competitor claims require analytics or cited evidence."
+    ],
+    "blocked_actions": [],
+    "notes": "Example runner accepts the artifact only after every declared policy gate is represented."
+  },
+  "receipt": {
+    "required": true,
+    "input_hash": "sha256:deebaa6dc7e4bd17",
+    "flow_hash": "sha256:6ce10a52dd1b5933",
+    "output_hash": "sha256:a16da5331965d453",
+    "reviewer_verdict": "accepted_for_example"
+  }
+}

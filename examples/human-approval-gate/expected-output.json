@@ -1,0 +1,86 @@
+{
+  "artifact_type": "approval_gate_record",
+  "example_id": "human-approval-gate",
+  "status": "ready_for_review",
+  "summary": "Human approval gate example completed for publish npm package.",
+  "fields": {
+    "draft_action": [
+      {
+        "action": "Draft the proposed action and explain risk.",
+        "status": "proposed",
+        "gate": "Dangerous actions execute only after explicit approval of the exact action."
+      },
+      {
+        "action": "Request approval for the exact action.",
+        "status": "proposed",
+        "gate": "Dangerous actions execute only after explicit approval of the exact action."
+      },
+      {
+        "action": "Execute only the approved operation.",
+        "status": "proposed",
+        "gate": "Dangerous actions execute only after explicit approval of the exact action."
+      }
+    ],
+    "risk_explanation": {
+      "level": "medium",
+      "drivers": [
+        "An agent wants to publish a package release after tests pass but before human release approval.",
+        "Draft the proposed action and explain risk."
+      ],
+      "mitigation": "Dangerous actions execute only after explicit approval of the exact action."
+    },
+    "approval_request": {
+      "summary": "approval request recorded for publish npm package.",
+      "responsible_agent": "Risk Explainer",
+      "supporting_evidence": [
+        "An agent wants to publish a package release after tests pass but before human release approval.",
+        "Draft the proposed action and explain risk."
+      ]
+    },
+    "approved_action": [
+      {
+        "action": "Draft the proposed action and explain risk.",
+        "status": "proposed",
+        "gate": "Dangerous actions execute only after explicit approval of the exact action."
+      },
+      {
+        "action": "Request approval for the exact action.",
+        "status": "proposed",
+        "gate": "Dangerous actions execute only after explicit approval of the exact action."
+      },
+      {
+        "action": "Execute only the approved operation.",
+        "status": "proposed",
+        "gate": "Dangerous actions execute only after explicit approval of the exact action."
+      }
+    ],
+    "execution_result": {
+      "summary": "execution result recorded for publish npm package.",
+      "responsible_agent": "Risk Explainer",
+      "supporting_evidence": [
+        "An agent wants to publish a package release after tests pass but before human release approval.",
+        "Draft the proposed action and explain risk."
+      ]
+    },
+    "receipt": {
+      "input_hash": "sha256:16e25c402134d453",
+      "flow_hash": "sha256:ad4fa2688aae223a",
+      "gate": "Dangerous actions execute only after explicit approval of the exact action."
+    }
+  },
+  "policy_verdict": {
+    "allowed": true,
+    "gates_checked": [
+      "Dangerous actions execute only after explicit approval of the exact action."
+    ],
+    "blocked_actions": [],
+    "notes": "Example runner accepts the artifact only after every declared policy gate is represented."
+  },
+  "receipt": {
+    "required": true,
+    "input_hash": "sha256:16e25c402134d453",
+    "flow_hash": "sha256:ad4fa2688aae223a",
+    "output_hash": "sha256:5b049ba13e396c36",
+    "reviewer_verdict": "accepted_for_example"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "account": "Northstar Health",
+  "event": "renewal_60_days_out",
+  "signals": [
+    "usage_up_22_percent",
+    "three_open_support_tickets",
+    "champion_changed_roles"
+  ]
+}

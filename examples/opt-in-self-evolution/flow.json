@@ -1,0 +1,70 @@
+{
+  "id": "opt-in-self-evolution",
+  "source": {
+    "type": "local_catalog",
+    "section": "agentic",
+    "number": 13,
+    "heading": "Self-evolution pattern, but opt-in only"
+  },
+  "name": "Opt-in self-evolution",
+  "pattern": "Measure baseline -> small exploration -> evaluate -> adopt if better -> rollback on regression",
+  "scenario": "A harness tests a routing-weight change against historical tasks before adopting it.",
+  "workflow_steps": [
+    "Measure current baseline on declared metrics.",
+    "Run a small opt-in exploration in sandbox.",
+    "Evaluate against baseline and regression thresholds.",
+    "Adopt only if better, otherwise preserve failure learning.",
+    "Write rollback path and audit log."
+  ],
+  "agents": [
+    "Baseline Measurer",
+    "Experiment Runner",
+    "Evaluator",
+    "Rollback Manager",
+    "Audit Logger"
+  ],
+  "policy_gates": [
+    "Adaptive tuning is opt-in and rollback-ready."
+  ],
+  "input_contract": {
+    "file": "input.json",
+    "description": "Concrete scenario input for this pattern example."
+  },
+  "output_contract": {
+    "artifact_type": "self_evolution_audit",
+    "required_fields": [
+      "baseline",
+      "experiment",
+      "evaluation",
+      "adopt_reject_decision",
+      "rollback_path",
+      "audit_log"
+    ]
+  },
+  "run": {
+    "command": "python ../run_example.py opt-in-self-evolution",
+    "expected_stdout": "expected-output.json"
+  },
+  "memory_update": {
+    "mode": "distill-only",
+    "stores": [
+      "verified decisions",
+      "reusable failures",
+      "domain lessons"
+    ],
+    "excludes": [
+      "raw sensitive data",
+      "unsupported claims"
+    ]
+  },
+  "receipt": {
+    "required": true,
+    "records": [
+      "input_hash",
+      "workflow_steps",
+      "policy_verdict",
+      "output_hash",
+      "reviewer_verdict"
+    ]
+  }
+}

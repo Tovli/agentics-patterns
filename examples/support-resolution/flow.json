@@ -1,0 +1,70 @@
+{
+  "id": "support-resolution",
+  "source": {
+    "type": "local_catalog",
+    "section": "catalog",
+    "number": 5,
+    "heading": "`support` — Customer Support Resolution Pattern"
+  },
+  "name": "Customer support resolution",
+  "pattern": "Triage -> KB retrieval -> grounded response -> escalation",
+  "scenario": "A frustrated enterprise customer reports that SSO stopped working after a certificate rotation.",
+  "workflow_steps": [
+    "Classify intent, urgency, customer tier, and sentiment.",
+    "Retrieve cited policy and product answers from the KB.",
+    "Draft a grounded customer-facing response.",
+    "Escalate when confidence, policy coverage, tone, or authority requires it.",
+    "Store distilled account and ticket learning."
+  ],
+  "agents": [
+    "Triager",
+    "KB Searcher",
+    "Responder",
+    "Escalator",
+    "Memory Updater"
+  ],
+  "policy_gates": [
+    "The responder abstains instead of inventing product or policy details."
+  ],
+  "input_contract": {
+    "file": "input.json",
+    "description": "Concrete scenario input for this pattern example."
+  },
+  "output_contract": {
+    "artifact_type": "support_reply_packet",
+    "required_fields": [
+      "classification",
+      "cited_kb_articles",
+      "customer_reply",
+      "confidence",
+      "escalation_reason",
+      "next_action"
+    ]
+  },
+  "run": {
+    "command": "python ../run_example.py support-resolution",
+    "expected_stdout": "expected-output.json"
+  },
+  "memory_update": {
+    "mode": "distill-only",
+    "stores": [
+      "verified decisions",
+      "reusable failures",
+      "domain lessons"
+    ],
+    "excludes": [
+      "raw sensitive data",
+      "unsupported claims"
+    ]
+  },
+  "receipt": {
+    "required": true,
+    "records": [
+      "input_hash",
+      "workflow_steps",
+      "policy_verdict",
+      "output_hash",
+      "reviewer_verdict"
+    ]
+  }
+}

@@ -1,0 +1,68 @@
+{
+  "id": "health-safe-wellness-coordination",
+  "source": {
+    "type": "local_catalog",
+    "section": "catalog",
+    "number": 14,
+    "heading": "`health` — Safe Wellness Coordination Pattern"
+  },
+  "name": "Safe wellness coordination",
+  "pattern": "Intake -> red-flag triage -> resource coordination",
+  "scenario": "A user describes stress, poor sleep, and a concerning symptom while asking for next steps.",
+  "workflow_steps": [
+    "Collect structured wellness information without diagnosing.",
+    "Detect red flags and route to appropriate resource type.",
+    "Coordinate logistics, reminders, and non-clinical follow-up.",
+    "Redirect clinical decisions to a clinician."
+  ],
+  "agents": [
+    "Intake Agent",
+    "Red-Flag Triage",
+    "Care Coordinator",
+    "Clinician Escalation Gate"
+  ],
+  "policy_gates": [
+    "No diagnosis, treatment plan, or emergency minimization.",
+    "Clinical content is routed to professional care."
+  ],
+  "input_contract": {
+    "file": "input.json",
+    "description": "Concrete scenario input for this pattern example."
+  },
+  "output_contract": {
+    "artifact_type": "intake_summary",
+    "required_fields": [
+      "user_stated_concern",
+      "non_clinical_context",
+      "red_flags",
+      "suggested_resource_type",
+      "escalation_recommendation"
+    ]
+  },
+  "run": {
+    "command": "python ../run_example.py health-safe-wellness-coordination",
+    "expected_stdout": "expected-output.json"
+  },
+  "memory_update": {
+    "mode": "distill-only",
+    "stores": [
+      "verified decisions",
+      "reusable failures",
+      "domain lessons"
+    ],
+    "excludes": [
+      "raw sensitive data",
+      "unsupported claims"
+    ]
+  },
+  "receipt": {
+    "required": true,
+    "records": [
+      "input_hash",
+      "workflow_steps",
+      "policy_verdict",
+      "output_hash",
+      "reviewer_verdict"
+    ]
+  }
+}

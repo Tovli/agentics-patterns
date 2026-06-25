@@ -1,0 +1,60 @@
+{
+  "artifact_type": "ci_agent_output",
+  "example_id": "ci-agent",
+  "status": "ready_for_review",
+  "summary": "CI agent example completed for repo_genome_report.",
+  "fields": {
+    "trigger": "pull_request_opened",
+    "bounded_task": {
+      "summary": "bounded task recorded for repo_genome_report.",
+      "responsible_agent": "Status Reporter",
+      "supporting_evidence": [
+        "contents:read",
+        "pull-requests:write"
+      ]
+    },
+    "tool_permissions": {
+      "summary": "tool permissions recorded for repo_genome_report.",
+      "responsible_agent": "Bounded Task Runner",
+      "supporting_evidence": [
+        "contents:read",
+        "pull-requests:write"
+      ]
+    },
+    "findings": {
+      "summary": "findings recorded for repo_genome_report.",
+      "responsible_agent": "GitHub Tool Broker",
+      "supporting_evidence": [
+        "contents:read",
+        "pull-requests:write"
+      ]
+    },
+    "posted_status": {
+      "result": "approve_for_example",
+      "reason": "GitHub Tool Broker completed the gated Trigger -> bounded task -> GitHub API tools -> PR/comment/status output flow for repo_genome_report."
+    },
+    "residual_risk": {
+      "level": "medium",
+      "drivers": [
+        "contents:read",
+        "pull-requests:write"
+      ],
+      "mitigation": "No arbitrary shell or broad token permissions in CI by default."
+    }
+  },
+  "policy_verdict": {
+    "allowed": true,
+    "gates_checked": [
+      "No arbitrary shell or broad token permissions in CI by default."
+    ],
+    "blocked_actions": [],
+    "notes": "Example runner accepts the artifact only after every declared policy gate is represented."
+  },
+  "receipt": {
+    "required": true,
+    "input_hash": "sha256:c90b409f0bff0d51",
+    "flow_hash": "sha256:53151d5e5b91701f",
+    "output_hash": "sha256:475d20e9a0052bd1",
+    "reviewer_verdict": "accepted_for_example"
+  }
+}

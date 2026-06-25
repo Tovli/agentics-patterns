@@ -1,0 +1,86 @@
+{
+  "artifact_type": "verification_packet",
+  "example_id": "planner-executor-verifier",
+  "status": "ready_for_review",
+  "summary": "Planner executor verifier example completed for cache returns stale data after tenant switch.",
+  "fields": {
+    "plan": [
+      {
+        "step": 1,
+        "action": "Planner decomposes the issue into small steps and acceptance checks.",
+        "owner": "Planner"
+      },
+      {
+        "step": 2,
+        "action": "Executor edits files or drafts the patch within the plan.",
+        "owner": "Executor"
+      },
+      {
+        "step": 3,
+        "action": "Verifier runs tests and reviews the diff independently.",
+        "owner": "Verifier"
+      },
+      {
+        "step": 4,
+        "action": "Verifier rejects, requests retry, or approves with residual risk.",
+        "owner": "Planner"
+      }
+    ],
+    "patch_summary": [
+      {
+        "target": "reproduction_test",
+        "change": "drafted",
+        "review": "human_or_reviewer_gate_required"
+      },
+      {
+        "target": "unit_tests",
+        "change": "drafted",
+        "review": "human_or_reviewer_gate_required"
+      },
+      {
+        "target": "diff_review",
+        "change": "drafted",
+        "review": "human_or_reviewer_gate_required"
+      }
+    ],
+    "test_results": {
+      "command": "python ../run_example.py planner-executor-verifier",
+      "status": "passed",
+      "checked_fields": [
+        "plan",
+        "patch_summary",
+        "test_results",
+        "diff_risks",
+        "verifier_verdict"
+      ]
+    },
+    "diff_risks": {
+      "level": "medium",
+      "drivers": [
+        "reproduction_test",
+        "unit_tests",
+        "diff_review"
+      ],
+      "mitigation": "The same agent cannot create and approve the output."
+    },
+    "verifier_verdict": {
+      "result": "approve_for_example",
+      "reason": "Executor completed the gated Planner -> executor -> verifier flow for cache returns stale data after tenant switch."
+    }
+  },
+  "policy_verdict": {
+    "allowed": true,
+    "gates_checked": [
+      "The same agent cannot create and approve the output."
+    ],
+    "blocked_actions": [],
+    "notes": "Example runner accepts the artifact only after every declared policy gate is represented."
+  },
+  "receipt": {
+    "required": true,
+    "input_hash": "sha256:61cea1de2d2e388b",
+    "flow_hash": "sha256:c8f384f6eceb2209",
+    "output_hash": "sha256:d0e4ab8450329db3",
+    "reviewer_verdict": "accepted_for_example"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "build": "0.8.4",
+  "telemetry": {
+    "dungeon_2_abandonment": "48_percent",
+    "gold_inflation": "31_percent"
+  },
+  "feedback": [
+    "boss feels unfair",
+    "crafting prices feel meaningless"
+  ]
+}

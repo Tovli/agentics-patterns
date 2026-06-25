@@ -1,0 +1,68 @@
+{
+  "id": "cost-aware-model-cascade",
+  "source": {
+    "type": "local_catalog",
+    "section": "agentic",
+    "number": 9,
+    "heading": "Cost-aware model cascade pattern"
+  },
+  "name": "Cost-aware model cascade",
+  "pattern": "Cheap draft -> verify -> stronger retry only if needed -> record cost and quality",
+  "scenario": "A CI triage agent drafts issue labels cheaply and escalates only uncertain cases to a stronger model.",
+  "workflow_steps": [
+    "Attempt the task with the cheapest suitable model.",
+    "Verify confidence, quality, and safety.",
+    "Escalate to a stronger model only when verification fails or uncertainty is high.",
+    "Record cost, latency, and quality outcome."
+  ],
+  "agents": [
+    "Cheap Drafter",
+    "Verifier",
+    "Escalation Router",
+    "Cost Logger"
+  ],
+  "policy_gates": [
+    "Escalation is evidence-driven, not automatic."
+  ],
+  "input_contract": {
+    "file": "input.json",
+    "description": "Concrete scenario input for this pattern example."
+  },
+  "output_contract": {
+    "artifact_type": "model_cascade_record",
+    "required_fields": [
+      "initial_model",
+      "verification_result",
+      "escalated_model",
+      "cost",
+      "latency",
+      "quality_outcome"
+    ]
+  },
+  "run": {
+    "command": "python ../run_example.py cost-aware-model-cascade",
+    "expected_stdout": "expected-output.json"
+  },
+  "memory_update": {
+    "mode": "distill-only",
+    "stores": [
+      "verified decisions",
+      "reusable failures",
+      "domain lessons"
+    ],
+    "excludes": [
+      "raw sensitive data",
+      "unsupported claims"
+    ]
+  },
+  "receipt": {
+    "required": true,
+    "records": [
+      "input_hash",
+      "workflow_steps",
+      "policy_verdict",
+      "output_hash",
+      "reviewer_verdict"
+    ]
+  }
+}

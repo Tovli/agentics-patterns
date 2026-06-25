@@ -1,0 +1,63 @@
+{
+  "id": "minimal-base-harness",
+  "source": {
+    "type": "local_catalog",
+    "section": "catalog",
+    "number": 0,
+    "heading": "`minimal` — Base Harness Pattern"
+  },
+  "name": "Minimal base harness",
+  "pattern": "Kernel smoke-test scaffold",
+  "scenario": "A new package scaffold needs a single doctor command before any domain agents are added.",
+  "workflow_steps": [
+    "Initialize the harness workspace.",
+    "Load the kernel and host adapter.",
+    "Check MCP wiring, memory backend, and host adapter health.",
+    "Return one PASS/FAIL report with remediation hints."
+  ],
+  "agents": [
+    "Harness Doctor"
+  ],
+  "policy_gates": [
+    "No domain action is allowed from the minimal scaffold."
+  ],
+  "input_contract": {
+    "file": "input.json",
+    "description": "Concrete scenario input for this pattern example."
+  },
+  "output_contract": {
+    "artifact_type": "doctor_report",
+    "required_fields": [
+      "overall_status",
+      "checks",
+      "failed_checks",
+      "remediation"
+    ]
+  },
+  "run": {
+    "command": "python ../run_example.py minimal-base-harness",
+    "expected_stdout": "expected-output.json"
+  },
+  "memory_update": {
+    "mode": "distill-only",
+    "stores": [
+      "verified decisions",
+      "reusable failures",
+      "domain lessons"
+    ],
+    "excludes": [
+      "raw sensitive data",
+      "unsupported claims"
+    ]
+  },
+  "receipt": {
+    "required": true,
+    "records": [
+      "input_hash",
+      "workflow_steps",
+      "policy_verdict",
+      "output_hash",
+      "reviewer_verdict"
+    ]
+  }
+}

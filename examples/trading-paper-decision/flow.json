@@ -1,0 +1,72 @@
+{
+  "id": "trading-paper-decision",
+  "source": {
+    "type": "local_catalog",
+    "section": "catalog",
+    "number": 4,
+    "heading": "`trading` — Paper Trading Decision Pattern"
+  },
+  "name": "Paper trading decision",
+  "pattern": "Watch -> signal -> risk gate -> paper execution -> attribution",
+  "scenario": "A momentum signal appears in a liquid ETF, but portfolio drawdown is near the weekly limit.",
+  "workflow_steps": [
+    "Summarize market state and relevant conditions.",
+    "Propose signal, confidence, horizon, and invalidation criteria.",
+    "Check exposure, drawdown, liquidity, concentration, and circuit breakers.",
+    "Route only approved orders to paper execution.",
+    "Attribute outcome to thesis, timing, risk, or noise."
+  ],
+  "agents": [
+    "Market Watcher",
+    "Signal Generator",
+    "Risk Checker",
+    "Paper Executor",
+    "Postmortem Analyst"
+  ],
+  "policy_gates": [
+    "Risk Checker is non-bypassable.",
+    "Executor runs paper-by-default unless live trading is explicitly approved."
+  ],
+  "input_contract": {
+    "file": "input.json",
+    "description": "Concrete scenario input for this pattern example."
+  },
+  "output_contract": {
+    "artifact_type": "trade_ticket",
+    "required_fields": [
+      "hypothesis",
+      "signal",
+      "invalidation_criteria",
+      "risk_checks",
+      "order_intent",
+      "paper_live_status",
+      "post_trade_analysis"
+    ]
+  },
+  "run": {
+    "command": "python ../run_example.py trading-paper-decision",
+    "expected_stdout": "expected-output.json"
+  },
+  "memory_update": {
+    "mode": "distill-only",
+    "stores": [
+      "verified decisions",
+      "reusable failures",
+      "domain lessons"
+    ],
+    "excludes": [
+      "raw sensitive data",
+      "unsupported claims"
+    ]
+  },
+  "receipt": {
+    "required": true,
+    "records": [
+      "input_hash",
+      "workflow_steps",
+      "policy_verdict",
+      "output_hash",
+      "reviewer_verdict"
+    ]
+  }
+}

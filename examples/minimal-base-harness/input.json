@@ -1,0 +1,10 @@
+{
+  "command": "doctor",
+  "workspace": "new-harness",
+  "checks": [
+    "kernel",
+    "mcp",
+    "memory",
+    "host_adapter"
+  ]
+}

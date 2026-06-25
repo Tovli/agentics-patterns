@@ -1,0 +1,76 @@
+{
+  "artifact_type": "evidence_dossier",
+  "example_id": "research-evidence-dossier",
+  "status": "ready_for_review",
+  "summary": "Evidence dossier example completed for Do passkeys reduce account takeover risk for consumer apps?.",
+  "fields": {
+    "answer": "Source Grader response for Do passkeys reduce account takeover risk for consumer apps?: grounded in standards, incident_data.",
+    "evidence_table": [
+      {
+        "claim": "standards",
+        "status": "accepted_for_example"
+      },
+      {
+        "claim": "incident_data",
+        "status": "accepted_for_example"
+      },
+      {
+        "claim": "deployment_reports",
+        "status": "accepted_for_example"
+      }
+    ],
+    "confidence": 0.82,
+    "disputed_claims": {
+      "summary": "disputed claims recorded for Do passkeys reduce account takeover risk for consumer apps?.",
+      "responsible_agent": "Fact Checker",
+      "supporting_evidence": [
+        "standards",
+        "incident_data",
+        "deployment_reports"
+      ]
+    },
+    "missing_evidence": [
+      {
+        "claim": "standards",
+        "status": "accepted_for_example"
+      },
+      {
+        "claim": "incident_data",
+        "status": "accepted_for_example"
+      },
+      {
+        "claim": "deployment_reports",
+        "status": "accepted_for_example"
+      }
+    ],
+    "citations": [
+      {
+        "claim": "standards",
+        "status": "accepted_for_example"
+      },
+      {
+        "claim": "incident_data",
+        "status": "accepted_for_example"
+      },
+      {
+        "claim": "deployment_reports",
+        "status": "accepted_for_example"
+      }
+    ]
+  },
+  "policy_verdict": {
+    "allowed": true,
+    "gates_checked": [
+      "Unsupported claims must be removed or marked as assumptions."
+    ],
+    "blocked_actions": [],
+    "notes": "Example runner accepts the artifact only after every declared policy gate is represented."
+  },
+  "receipt": {
+    "required": true,
+    "input_hash": "sha256:3d1d8ebbdeddaab0",
+    "flow_hash": "sha256:df9ccb8961b248cf",
+    "output_hash": "sha256:15a28a4b7da116dc",
+    "reviewer_verdict": "accepted_for_example"
+  }
+}

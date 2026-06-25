@@ -1,0 +1,12 @@
+{
+  "repository": "edge-intelligence-service",
+  "allowed_analysis": [
+    "static_files",
+    "package_manifests",
+    "ci_config"
+  ],
+  "disallowed_analysis": [
+    "running_tests",
+    "network_calls"
+  ]
+}

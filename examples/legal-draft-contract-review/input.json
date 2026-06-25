@@ -1,0 +1,9 @@
+{
+  "document": "vendor_msa",
+  "clauses": [
+    "indemnity",
+    "renewal",
+    "limitation_of_liability"
+  ],
+  "playbook": "standard_vendor_contract_playbook_v3"
+}

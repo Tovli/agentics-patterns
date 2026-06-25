@@ -1,0 +1,72 @@
+{
+  "id": "marketing-campaign-strategy",
+  "source": {
+    "type": "local_catalog",
+    "section": "catalog",
+    "number": 9,
+    "heading": "`marketing` — Campaign Strategy Pattern"
+  },
+  "name": "Campaign strategy",
+  "pattern": "Audience -> message -> content -> SEO/analytics loop",
+  "scenario": "A B2B SaaS team wants a launch campaign for a new compliance dashboard.",
+  "workflow_steps": [
+    "Define audience, positioning, channel, and target metric.",
+    "Draft channel-specific assets.",
+    "Ground content in search demand and analytics.",
+    "Revise campaign brief before human review and publishing.",
+    "Feed measured results back into memory."
+  ],
+  "agents": [
+    "Strategist",
+    "Content Creator",
+    "SEO Analyst",
+    "Analytics Reviewer",
+    "Memory Updater"
+  ],
+  "policy_gates": [
+    "Traffic, SEO, and competitor claims require analytics or cited evidence."
+  ],
+  "input_contract": {
+    "file": "input.json",
+    "description": "Concrete scenario input for this pattern example."
+  },
+  "output_contract": {
+    "artifact_type": "campaign_brief",
+    "required_fields": [
+      "icp",
+      "message",
+      "content_plan",
+      "channels",
+      "seo_targets",
+      "analytics_baseline",
+      "kpi",
+      "experiments"
+    ]
+  },
+  "run": {
+    "command": "python ../run_example.py marketing-campaign-strategy",
+    "expected_stdout": "expected-output.json"
+  },
+  "memory_update": {
+    "mode": "distill-only",
+    "stores": [
+      "verified decisions",
+      "reusable failures",
+      "domain lessons"
+    ],
+    "excludes": [
+      "raw sensitive data",
+      "unsupported claims"
+    ]
+  },
+  "receipt": {
+    "required": true,
+    "records": [
+      "input_hash",
+      "workflow_steps",
+      "policy_verdict",
+      "output_hash",
+      "reviewer_verdict"
+    ]
+  }
+}

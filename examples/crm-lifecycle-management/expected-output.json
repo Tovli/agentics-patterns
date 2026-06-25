@@ -1,0 +1,79 @@
+{
+  "artifact_type": "account_brief",
+  "example_id": "crm-lifecycle-management",
+  "status": "ready_for_review",
+  "summary": "CRM lifecycle management example completed for Northstar Health.",
+  "fields": {
+    "stage": {
+      "summary": "stage recorded for Northstar Health.",
+      "responsible_agent": "Lead Qualifier",
+      "supporting_evidence": [
+        "usage_up_22_percent",
+        "three_open_support_tickets",
+        "champion_changed_roles"
+      ]
+    },
+    "score": {
+      "value": 82,
+      "scale": "0-100",
+      "basis": [
+        "usage_up_22_percent",
+        "three_open_support_tickets",
+        "champion_changed_roles"
+      ]
+    },
+    "next_best_action": [
+      {
+        "action": "Score fit, urgency, potential value, and routing.",
+        "status": "proposed",
+        "gate": "CRM mutation is suggestion-only unless explicitly permitted."
+      },
+      {
+        "action": "Choose the next relationship play.",
+        "status": "proposed",
+        "gate": "CRM mutation is suggestion-only unless explicitly permitted."
+      },
+      {
+        "action": "Monitor churn signals and explain early risk.",
+        "status": "proposed",
+        "gate": "CRM mutation is suggestion-only unless explicitly permitted."
+      }
+    ],
+    "relationship_context": {
+      "summary": "relationship context recorded for Northstar Health.",
+      "responsible_agent": "Churn Watcher",
+      "supporting_evidence": [
+        "usage_up_22_percent",
+        "three_open_support_tickets",
+        "champion_changed_roles"
+      ]
+    },
+    "churn_risk": {
+      "level": "medium",
+      "drivers": [
+        "usage_up_22_percent",
+        "three_open_support_tickets",
+        "champion_changed_roles"
+      ],
+      "mitigation": "CRM mutation is suggestion-only unless explicitly permitted."
+    },
+    "missing_facts": [
+      "No unsafe missing facts accepted without gate: CRM mutation is suggestion-only unless explicitly permitted."
+    ]
+  },
+  "policy_verdict": {
+    "allowed": true,
+    "gates_checked": [
+      "CRM mutation is suggestion-only unless explicitly permitted."
+    ],
+    "blocked_actions": [],
+    "notes": "Example runner accepts the artifact only after every declared policy gate is represented."
+  },
+  "receipt": {
+    "required": true,
+    "input_hash": "sha256:49c7dd74e26827c5",
+    "flow_hash": "sha256:16b0736ab8c91bc2",
+    "output_hash": "sha256:d1fb0ef17d54a860",
+    "reviewer_verdict": "accepted_for_example"
+  }
+}

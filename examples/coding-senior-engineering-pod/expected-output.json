@@ -1,0 +1,99 @@
+{
+  "artifact_type": "patch_packet",
+  "example_id": "coding-senior-engineering-pod",
+  "status": "ready_for_review",
+  "summary": "Senior engineering pod example completed for payments-sdk.",
+  "fields": {
+    "plan": [
+      {
+        "step": 1,
+        "action": "Convert the issue into a minimal file-level implementation plan.",
+        "owner": "Architect"
+      },
+      {
+        "step": 2,
+        "action": "Write or update the focused failing test.",
+        "owner": "Implementer"
+      },
+      {
+        "step": 3,
+        "action": "Implement the smallest local-style patch.",
+        "owner": "Reviewer"
+      },
+      {
+        "step": 4,
+        "action": "Review the diff for correctness, security, reuse, and overengineering.",
+        "owner": "Test Writer"
+      },
+      {
+        "step": 5,
+        "action": "Run validation gates and summarize residual risk.",
+        "owner": "Architect"
+      }
+    ],
+    "changed_files": {
+      "summary": "changed files recorded for payments-sdk.",
+      "responsible_agent": "Architect",
+      "supporting_evidence": [
+        "A repository issue asks for deterministic retry behavior around a flaky API client.",
+        "Convert the issue into a minimal file-level implementation plan."
+      ]
+    },
+    "tests": {
+      "command": "python ../run_example.py coding-senior-engineering-pod",
+      "status": "passed",
+      "checked_fields": [
+        "plan",
+        "changed_files",
+        "tests",
+        "review_findings",
+        "validation_result",
+        "residual_risk"
+      ]
+    },
+    "review_findings": {
+      "summary": "review findings recorded for payments-sdk.",
+      "responsible_agent": "Test Writer",
+      "supporting_evidence": [
+        "A repository issue asks for deterministic retry behavior around a flaky API client.",
+        "Convert the issue into a minimal file-level implementation plan."
+      ]
+    },
+    "validation_result": {
+      "command": "python ../run_example.py coding-senior-engineering-pod",
+      "status": "passed",
+      "checked_fields": [
+        "plan",
+        "changed_files",
+        "tests",
+        "review_findings",
+        "validation_result",
+        "residual_risk"
+      ]
+    },
+    "residual_risk": {
+      "level": "medium",
+      "drivers": [
+        "A repository issue asks for deterministic retry behavior around a flaky API client.",
+        "Convert the issue into a minimal file-level implementation plan."
+      ],
+      "mitigation": "No implementation starts before a concrete plan exists."
+    }
+  },
+  "policy_verdict": {
+    "allowed": true,
+    "gates_checked": [
+      "No implementation starts before a concrete plan exists.",
+      "No merge recommendation is allowed before tests and review."
+    ],
+    "blocked_actions": [],
+    "notes": "Example runner accepts the artifact only after every declared policy gate is represented."
+  },
+  "receipt": {
+    "required": true,
+    "input_hash": "sha256:816af9c5c8d1e247",
+    "flow_hash": "sha256:8b70c5aee32e3168",
+    "output_hash": "sha256:8ae8e1ea28d97dfb",
+    "reviewer_verdict": "accepted_for_example"
+  }
+}

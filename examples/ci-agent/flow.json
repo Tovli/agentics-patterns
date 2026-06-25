@@ -1,0 +1,68 @@
+{
+  "id": "ci-agent",
+  "source": {
+    "type": "local_catalog",
+    "section": "agentic",
+    "number": 11,
+    "heading": "CI agent pattern"
+  },
+  "name": "CI agent",
+  "pattern": "Trigger -> bounded task -> GitHub API tools -> PR/comment/status output",
+  "scenario": "A GitHub Action reviews a pull request and posts a bounded genome report without arbitrary shell access.",
+  "workflow_steps": [
+    "Start from a CI trigger with declared permissions.",
+    "Run a bounded, non-interactive task.",
+    "Use GitHub API tools instead of arbitrary shell by default.",
+    "Post PR comment, status, or release note output."
+  ],
+  "agents": [
+    "Trigger Handler",
+    "Bounded Task Runner",
+    "GitHub Tool Broker",
+    "Status Reporter"
+  ],
+  "policy_gates": [
+    "No arbitrary shell or broad token permissions in CI by default."
+  ],
+  "input_contract": {
+    "file": "input.json",
+    "description": "Concrete scenario input for this pattern example."
+  },
+  "output_contract": {
+    "artifact_type": "ci_agent_output",
+    "required_fields": [
+      "trigger",
+      "bounded_task",
+      "tool_permissions",
+      "findings",
+      "posted_status",
+      "residual_risk"
+    ]
+  },
+  "run": {
+    "command": "python ../run_example.py ci-agent",
+    "expected_stdout": "expected-output.json"
+  },
+  "memory_update": {
+    "mode": "distill-only",
+    "stores": [
+      "verified decisions",
+      "reusable failures",
+      "domain lessons"
+    ],
+    "excludes": [
+      "raw sensitive data",
+      "unsupported claims"
+    ]
+  },
+  "receipt": {
+    "required": true,
+    "records": [
+      "input_hash",
+      "workflow_steps",
+      "policy_verdict",
+      "output_hash",
+      "reviewer_verdict"
+    ]
+  }
+}

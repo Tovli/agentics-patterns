@@ -1,0 +1,89 @@
+{
+  "artifact_type": "eval_report",
+  "example_id": "ai-ml-lifecycle",
+  "status": "ready_for_review",
+  "summary": "ML lifecycle example completed for route support tickets by product area.",
+  "fields": {
+    "dataset_summary": {
+      "summary": "dataset summary recorded for route support tickets by product area.",
+      "responsible_agent": "Drift Monitor",
+      "supporting_evidence": [
+        "enterprise",
+        "free_tier",
+        "billing"
+      ]
+    },
+    "baseline_delta": {
+      "summary": "baseline delta recorded for route support tickets by product area.",
+      "responsible_agent": "Evaluator",
+      "supporting_evidence": [
+        "enterprise",
+        "free_tier",
+        "billing"
+      ]
+    },
+    "metrics": [
+      {
+        "name": "enterprise",
+        "target": "improve",
+        "cadence": "weekly"
+      },
+      {
+        "name": "free_tier",
+        "target": "improve",
+        "cadence": "weekly"
+      },
+      {
+        "name": "billing",
+        "target": "improve",
+        "cadence": "weekly"
+      }
+    ],
+    "subgroup_performance": {
+      "summary": "subgroup performance recorded for route support tickets by product area.",
+      "responsible_agent": "Evaluator",
+      "supporting_evidence": [
+        "enterprise",
+        "free_tier",
+        "billing"
+      ]
+    },
+    "risks": {
+      "level": "medium",
+      "drivers": [
+        "enterprise",
+        "free_tier",
+        "billing"
+      ],
+      "mitigation": "Evaluator is independent; training metrics alone cannot drive deployment."
+    },
+    "ship_no_ship_decision": {
+      "result": "approve_for_example",
+      "reason": "Drift Monitor completed the gated Data -> train -> evaluate -> deploy behind guardrails flow for route support tickets by product area."
+    },
+    "deployment_guardrails": {
+      "summary": "deployment guardrails recorded for route support tickets by product area.",
+      "responsible_agent": "Drift Monitor",
+      "supporting_evidence": [
+        "enterprise",
+        "free_tier",
+        "billing"
+      ]
+    }
+  },
+  "policy_verdict": {
+    "allowed": true,
+    "gates_checked": [
+      "Evaluator is independent; training metrics alone cannot drive deployment."
+    ],
+    "blocked_actions": [],
+    "notes": "Example runner accepts the artifact only after every declared policy gate is represented."
+  },
+  "receipt": {
+    "required": true,
+    "input_hash": "sha256:2830963c23b67268",
+    "flow_hash": "sha256:6c5b1901666d0d17",
+    "output_hash": "sha256:8cde4fef2f34676d",
+    "reviewer_verdict": "accepted_for_example"
+  }
+}

@@ -1,0 +1,66 @@
+{
+  "artifact_type": "support_reply_packet",
+  "example_id": "support-resolution",
+  "status": "ready_for_review",
+  "summary": "Customer support resolution example completed for SSO login fails after IdP certificate rotation..",
+  "fields": {
+    "classification": {
+      "summary": "classification recorded for SSO login fails after IdP certificate rotation..",
+      "responsible_agent": "Memory Updater",
+      "supporting_evidence": [
+        "A frustrated enterprise customer reports that SSO stopped working after a certificate rotation.",
+        "Classify intent, urgency, customer tier, and sentiment."
+      ]
+    },
+    "cited_kb_articles": {
+      "summary": "cited kb articles recorded for SSO login fails after IdP certificate rotation..",
+      "responsible_agent": "KB Searcher",
+      "supporting_evidence": [
+        "A frustrated enterprise customer reports that SSO stopped working after a certificate rotation.",
+        "Classify intent, urgency, customer tier, and sentiment."
+      ]
+    },
+    "customer_reply": "Escalator response for SSO login fails after IdP certificate rotation.: grounded in A frustrated enterprise customer reports that SSO stopped working after a certificate rotation., Classify intent, urgency, customer tier, and sentiment..",
+    "confidence": 0.82,
+    "escalation_reason": {
+      "summary": "escalation reason recorded for SSO login fails after IdP certificate rotation..",
+      "responsible_agent": "Responder",
+      "supporting_evidence": [
+        "A frustrated enterprise customer reports that SSO stopped working after a certificate rotation.",
+        "Classify intent, urgency, customer tier, and sentiment."
+      ]
+    },
+    "next_action": [
+      {
+        "action": "Classify intent, urgency, customer tier, and sentiment.",
+        "status": "proposed",
+        "gate": "The responder abstains instead of inventing product or policy details."
+      },
+      {
+        "action": "Retrieve cited policy and product answers from the KB.",
+        "status": "proposed",
+        "gate": "The responder abstains instead of inventing product or policy details."
+      },
+      {
+        "action": "Draft a grounded customer-facing response.",
+        "status": "proposed",
+        "gate": "The responder abstains instead of inventing product or policy details."
+      }
+    ]
+  },
+  "policy_verdict": {
+    "allowed": true,
+    "gates_checked": [
+      "The responder abstains instead of inventing product or policy details."
+    ],
+    "blocked_actions": [],
+    "notes": "Example runner accepts the artifact only after every declared policy gate is represented."
+  },
+  "receipt": {
+    "required": true,
+    "input_hash": "sha256:d68b08fbbf917989",
+    "flow_hash": "sha256:0bc8034b63566217",
+    "output_hash": "sha256:24814ae5e12cfd8e",
+    "reviewer_verdict": "accepted_for_example"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "quarter": "Q3",
+  "metrics": {
+    "pipeline_conversion": "down_12_percent",
+    "activation": "flat",
+    "retention": "up_3_percent"
+  },
+  "decision": "select_one_growth_bet"
+}

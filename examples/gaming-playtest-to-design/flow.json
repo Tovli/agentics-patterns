@@ -1,0 +1,70 @@
+{
+  "id": "gaming-playtest-to-design",
+  "source": {
+    "type": "local_catalog",
+    "section": "catalog",
+    "number": 15,
+    "heading": "`gaming` — Playtest-to-Design Pattern"
+  },
+  "name": "Playtest-to-design",
+  "pattern": "Read playtest -> critique balance -> model economy -> preserve narrative",
+  "scenario": "A playtest shows players abandoning the second dungeon while economy telemetry shows gold inflation.",
+  "workflow_steps": [
+    "Extract signal from telemetry, feedback, and design docs.",
+    "Identify mechanic imbalance and propose changes.",
+    "Check loops, sinks, inflation, and progression.",
+    "Review lore and story consistency.",
+    "Write a build-to-build design diff."
+  ],
+  "agents": [
+    "Playtest Reader",
+    "Balance Critic",
+    "Economy Modeler",
+    "Narrative Keeper",
+    "Design Diff Writer"
+  ],
+  "policy_gates": [
+    "Player anecdotes are separated from telemetry-backed findings."
+  ],
+  "input_contract": {
+    "file": "input.json",
+    "description": "Concrete scenario input for this pattern example."
+  },
+  "output_contract": {
+    "artifact_type": "playtest_recap",
+    "required_fields": [
+      "player_pain_points",
+      "balance_issues",
+      "economy_risks",
+      "narrative_conflicts",
+      "proposed_changes",
+      "build_to_build_diff"
+    ]
+  },
+  "run": {
+    "command": "python ../run_example.py gaming-playtest-to-design",
+    "expected_stdout": "expected-output.json"
+  },
+  "memory_update": {
+    "mode": "distill-only",
+    "stores": [
+      "verified decisions",
+      "reusable failures",
+      "domain lessons"
+    ],
+    "excludes": [
+      "raw sensitive data",
+      "unsupported claims"
+    ]
+  },
+  "receipt": {
+    "required": true,
+    "records": [
+      "input_hash",
+      "workflow_steps",
+      "policy_verdict",
+      "output_hash",
+      "reviewer_verdict"
+    ]
+  }
+}

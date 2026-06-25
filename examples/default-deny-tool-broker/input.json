@@ -1,0 +1,9 @@
+{
+  "requested_tools": [
+    "shell:npm_test",
+    "network:package_registry",
+    "file_write:patch"
+  ],
+  "context": "failing build diagnosis",
+  "dirty_worktree": true
+}

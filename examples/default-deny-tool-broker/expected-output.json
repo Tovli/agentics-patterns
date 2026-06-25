@@ -1,0 +1,86 @@
+{
+  "artifact_type": "tool_broker_decision",
+  "example_id": "default-deny-tool-broker",
+  "status": "ready_for_review",
+  "summary": "Default-deny tool broker example completed for Default-deny tool broker.",
+  "fields": {
+    "tool_name": {
+      "summary": "tool name recorded for Default-deny tool broker.",
+      "responsible_agent": "Agent Worker",
+      "supporting_evidence": [
+        "shell:npm_test",
+        "network:package_registry",
+        "file_write:patch"
+      ]
+    },
+    "needs": {
+      "summary": "needs recorded for Default-deny tool broker.",
+      "responsible_agent": "Audit Logger",
+      "supporting_evidence": [
+        "shell:npm_test",
+        "network:package_registry",
+        "file_write:patch"
+      ]
+    },
+    "risk": {
+      "level": "medium",
+      "drivers": [
+        "shell:npm_test",
+        "network:package_registry",
+        "file_write:patch"
+      ],
+      "mitigation": "Network, shell, and file writes are denied unless explicitly granted."
+    },
+    "approval": {
+      "summary": "approval recorded for Default-deny tool broker.",
+      "responsible_agent": "Policy Engine",
+      "supporting_evidence": [
+        "shell:npm_test",
+        "network:package_registry",
+        "file_write:patch"
+      ]
+    },
+    "timeout_ms": {
+      "summary": "timeout ms recorded for Default-deny tool broker.",
+      "responsible_agent": "Agent Worker",
+      "supporting_evidence": [
+        "shell:npm_test",
+        "network:package_registry",
+        "file_write:patch"
+      ]
+    },
+    "max_calls_per_turn": {
+      "summary": "max calls per turn recorded for Default-deny tool broker.",
+      "responsible_agent": "Agent Worker",
+      "supporting_evidence": [
+        "shell:npm_test",
+        "network:package_registry",
+        "file_write:patch"
+      ]
+    },
+    "audit_record": {
+      "summary": "audit record recorded for Default-deny tool broker.",
+      "responsible_agent": "Policy Engine",
+      "supporting_evidence": [
+        "shell:npm_test",
+        "network:package_registry",
+        "file_write:patch"
+      ]
+    }
+  },
+  "policy_verdict": {
+    "allowed": true,
+    "gates_checked": [
+      "Network, shell, and file writes are denied unless explicitly granted."
+    ],
+    "blocked_actions": [],
+    "notes": "Example runner accepts the artifact only after every declared policy gate is represented."
+  },
+  "receipt": {
+    "required": true,
+    "input_hash": "sha256:4d5601bbcb701e64",
+    "flow_hash": "sha256:2e00d7eaf3bd9deb",
+    "output_hash": "sha256:fa744100d077f0c2",
+    "reviewer_verdict": "accepted_for_example"
+  }
+}

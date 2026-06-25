@@ -1,0 +1,5 @@
+{
+  "proposed_action": "publish npm package",
+  "risk": "irreversible public release",
+  "approval_required": true
+}

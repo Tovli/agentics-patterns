@@ -1,0 +1,71 @@
+{
+  "id": "sales-b2b-pipeline",
+  "source": {
+    "type": "local_catalog",
+    "section": "catalog",
+    "number": 16,
+    "heading": "`sales` — B2B Pipeline Pattern"
+  },
+  "name": "B2B pipeline",
+  "pattern": "Prospect -> qualify -> demo -> close honestly",
+  "scenario": "A sales team evaluates whether a healthcare prospect is ready for a technical demo.",
+  "workflow_steps": [
+    "Research account context and buying signals.",
+    "Score qualification and list missing facts.",
+    "Create a personalized demo path.",
+    "Handle objections within negotiation boundaries.",
+    "Identify pipeline bottleneck and next step."
+  ],
+  "agents": [
+    "Prospector",
+    "Qualifier",
+    "Demo Coach",
+    "Closer",
+    "Pipeline Reporter"
+  ],
+  "policy_gates": [
+    "No-stretch policy: never exaggerate product capabilities."
+  ],
+  "input_contract": {
+    "file": "input.json",
+    "description": "Concrete scenario input for this pattern example."
+  },
+  "output_contract": {
+    "artifact_type": "deal_brief",
+    "required_fields": [
+      "account_context",
+      "qualification_score",
+      "missing_facts",
+      "demo_angle",
+      "objections",
+      "next_step",
+      "go_no_go"
+    ]
+  },
+  "run": {
+    "command": "python ../run_example.py sales-b2b-pipeline",
+    "expected_stdout": "expected-output.json"
+  },
+  "memory_update": {
+    "mode": "distill-only",
+    "stores": [
+      "verified decisions",
+      "reusable failures",
+      "domain lessons"
+    ],
+    "excludes": [
+      "raw sensitive data",
+      "unsupported claims"
+    ]
+  },
+  "receipt": {
+    "required": true,
+    "records": [
+      "input_hash",
+      "workflow_steps",
+      "policy_verdict",
+      "output_hash",
+      "reviewer_verdict"
+    ]
+  }
+}

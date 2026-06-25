@@ -1,0 +1,5 @@
+{
+  "vertical": "research",
+  "run_result": "answer passed grammar checks but had weak source diversity",
+  "domain_metric": "citation_faithfulness_and_balance"
+}

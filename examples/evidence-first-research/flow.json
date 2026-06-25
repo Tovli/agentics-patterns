@@ -1,0 +1,71 @@
+{
+  "id": "evidence-first-research",
+  "source": {
+    "type": "local_catalog",
+    "section": "agentic",
+    "number": 6,
+    "heading": "Evidence-first research pattern"
+  },
+  "name": "Evidence-first research",
+  "pattern": "Retriever -> source ranker -> claim extractor -> contradiction finder -> synthesizer -> citation verifier",
+  "scenario": "A research assistant must answer a technical market question with primary-source support.",
+  "workflow_steps": [
+    "Retrieve candidate sources for each sub-question.",
+    "Rank each source for authority, recency, balance, and relevance.",
+    "Extract claims and identify contradictions.",
+    "Synthesize only supported claims.",
+    "Verify every citation against the claim it supports."
+  ],
+  "agents": [
+    "Retriever",
+    "Source Ranker",
+    "Claim Extractor",
+    "Contradiction Finder",
+    "Synthesizer",
+    "Citation Verifier"
+  ],
+  "policy_gates": [
+    "The synthesizer cannot use claims that failed citation verification."
+  ],
+  "input_contract": {
+    "file": "input.json",
+    "description": "Concrete scenario input for this pattern example."
+  },
+  "output_contract": {
+    "artifact_type": "research_quality_packet",
+    "required_fields": [
+      "answer",
+      "source_ranking",
+      "claim_table",
+      "contradictions",
+      "citation_verdicts",
+      "confidence"
+    ]
+  },
+  "run": {
+    "command": "python ../run_example.py evidence-first-research",
+    "expected_stdout": "expected-output.json"
+  },
+  "memory_update": {
+    "mode": "distill-only",
+    "stores": [
+      "verified decisions",
+      "reusable failures",
+      "domain lessons"
+    ],
+    "excludes": [
+      "raw sensitive data",
+      "unsupported claims"
+    ]
+  },
+  "receipt": {
+    "required": true,
+    "records": [
+      "input_hash",
+      "workflow_steps",
+      "policy_verdict",
+      "output_hash",
+      "reviewer_verdict"
+    ]
+  }
+}

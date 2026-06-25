@@ -1,0 +1,119 @@
+{
+  "artifact_type": "media_plan",
+  "example_id": "advertising-media-optimization",
+  "status": "ready_for_review",
+  "summary": "Media optimization example completed for trial_signups.",
+  "fields": {
+    "audience": {
+      "summary": "audience recorded for trial_signups.",
+      "responsible_agent": "Performance Analyst",
+      "supporting_evidence": [
+        "search",
+        "linkedin",
+        "retargeting"
+      ]
+    },
+    "channel_split": {
+      "summary": "channel split recorded for trial_signups.",
+      "responsible_agent": "Media Planner",
+      "supporting_evidence": [
+        "search",
+        "linkedin",
+        "retargeting"
+      ]
+    },
+    "budget": {
+      "limit": "example_budget",
+      "spent": "within_limit"
+    },
+    "creative_variants": [
+      {
+        "channel": "search",
+        "variant": "Media optimization message",
+        "review": "Performance Analyst"
+      },
+      {
+        "channel": "linkedin",
+        "variant": "Media optimization message",
+        "review": "Performance Analyst"
+      },
+      {
+        "channel": "retargeting",
+        "variant": "Media optimization message",
+        "review": "Performance Analyst"
+      }
+    ],
+    "kpis": [
+      {
+        "name": "search",
+        "target": "improve",
+        "cadence": "weekly"
+      },
+      {
+        "name": "linkedin",
+        "target": "improve",
+        "cadence": "weekly"
+      },
+      {
+        "name": "retargeting",
+        "target": "improve",
+        "cadence": "weekly"
+      }
+    ],
+    "test_plan": [
+      {
+        "step": 1,
+        "action": "Allocate spend across channels based on objective and audience.",
+        "owner": "Media Planner"
+      },
+      {
+        "step": 2,
+        "action": "Create format-specific creative variants.",
+        "owner": "Copywriter"
+      },
+      {
+        "step": 3,
+        "action": "Read performance metrics against KPIs and stop-loss thresholds.",
+        "owner": "Performance Analyst"
+      },
+      {
+        "step": 4,
+        "action": "Recommend budget reallocation and flag weak creative or channel fit.",
+        "owner": "Budget Reallocator"
+      }
+    ],
+    "stop_loss_thresholds": {
+      "summary": "stop loss thresholds recorded for trial_signups.",
+      "responsible_agent": "Copywriter",
+      "supporting_evidence": [
+        "search",
+        "linkedin",
+        "retargeting"
+      ]
+    },
+    "optimization_recommendation": {
+      "summary": "optimization recommendation recorded for trial_signups.",
+      "responsible_agent": "Budget Reallocator",
+      "supporting_evidence": [
+        "search",
+        "linkedin",
+        "retargeting"
+      ]
+    }
+  },
+  "policy_verdict": {
+    "allowed": true,
+    "gates_checked": [
+      "Creative ideation cannot control spend reallocation without performance evidence."
+    ],
+    "blocked_actions": [],
+    "notes": "Example runner accepts the artifact only after every declared policy gate is represented."
+  },
+  "receipt": {
+    "required": true,
+    "input_hash": "sha256:e2260e5a80f3184c",
+    "flow_hash": "sha256:5efc385f039fceac",
+    "output_hash": "sha256:865a7a4ae9dfcef9",
+    "reviewer_verdict": "accepted_for_example"
+  }
+}

@@ -1,0 +1,70 @@
+{
+  "id": "advertising-media-optimization",
+  "source": {
+    "type": "local_catalog",
+    "section": "catalog",
+    "number": 10,
+    "heading": "`advertising` — Media Optimization Pattern"
+  },
+  "name": "Media optimization",
+  "pattern": "Media plan -> creative -> performance readout -> budget reallocation",
+  "scenario": "A paid acquisition team has a fixed budget and must rebalance underperforming channels weekly.",
+  "workflow_steps": [
+    "Allocate spend across channels based on objective and audience.",
+    "Create format-specific creative variants.",
+    "Read performance metrics against KPIs and stop-loss thresholds.",
+    "Recommend budget reallocation and flag weak creative or channel fit."
+  ],
+  "agents": [
+    "Media Planner",
+    "Copywriter",
+    "Performance Analyst",
+    "Budget Reallocator"
+  ],
+  "policy_gates": [
+    "Creative ideation cannot control spend reallocation without performance evidence."
+  ],
+  "input_contract": {
+    "file": "input.json",
+    "description": "Concrete scenario input for this pattern example."
+  },
+  "output_contract": {
+    "artifact_type": "media_plan",
+    "required_fields": [
+      "audience",
+      "channel_split",
+      "budget",
+      "creative_variants",
+      "kpis",
+      "test_plan",
+      "stop_loss_thresholds",
+      "optimization_recommendation"
+    ]
+  },
+  "run": {
+    "command": "python ../run_example.py advertising-media-optimization",
+    "expected_stdout": "expected-output.json"
+  },
+  "memory_update": {
+    "mode": "distill-only",
+    "stores": [
+      "verified decisions",
+      "reusable failures",
+      "domain lessons"
+    ],
+    "excludes": [
+      "raw sensitive data",
+      "unsupported claims"
+    ]
+  },
+  "receipt": {
+    "required": true,
+    "records": [
+      "input_hash",
+      "workflow_steps",
+      "policy_verdict",
+      "output_hash",
+      "reviewer_verdict"
+    ]
+  }
+}

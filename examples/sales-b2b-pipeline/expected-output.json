@@ -1,0 +1,88 @@
+{
+  "artifact_type": "deal_brief",
+  "example_id": "sales-b2b-pipeline",
+  "status": "ready_for_review",
+  "summary": "B2B pipeline example completed for Acme Clinics.",
+  "fields": {
+    "account_context": {
+      "summary": "account context recorded for Acme Clinics.",
+      "responsible_agent": "Demo Coach",
+      "supporting_evidence": [
+        "recent_security_audit",
+        "new_vp_it",
+        "budget_cycle_q4"
+      ]
+    },
+    "qualification_score": {
+      "summary": "qualification score recorded for Acme Clinics.",
+      "responsible_agent": "Prospector",
+      "supporting_evidence": [
+        "recent_security_audit",
+        "new_vp_it",
+        "budget_cycle_q4"
+      ]
+    },
+    "missing_facts": [
+      "No unsafe missing facts accepted without gate: No-stretch policy: never exaggerate product capabilities."
+    ],
+    "demo_angle": {
+      "summary": "demo angle recorded for Acme Clinics.",
+      "responsible_agent": "Prospector",
+      "supporting_evidence": [
+        "recent_security_audit",
+        "new_vp_it",
+        "budget_cycle_q4"
+      ]
+    },
+    "objections": {
+      "summary": "objections recorded for Acme Clinics.",
+      "responsible_agent": "Demo Coach",
+      "supporting_evidence": [
+        "recent_security_audit",
+        "new_vp_it",
+        "budget_cycle_q4"
+      ]
+    },
+    "next_step": [
+      {
+        "action": "Research account context and buying signals.",
+        "status": "proposed",
+        "gate": "No-stretch policy: never exaggerate product capabilities."
+      },
+      {
+        "action": "Score qualification and list missing facts.",
+        "status": "proposed",
+        "gate": "No-stretch policy: never exaggerate product capabilities."
+      },
+      {
+        "action": "Create a personalized demo path.",
+        "status": "proposed",
+        "gate": "No-stretch policy: never exaggerate product capabilities."
+      }
+    ],
+    "go_no_go": {
+      "summary": "go no go recorded for Acme Clinics.",
+      "responsible_agent": "Pipeline Reporter",
+      "supporting_evidence": [
+        "recent_security_audit",
+        "new_vp_it",
+        "budget_cycle_q4"
+      ]
+    }
+  },
+  "policy_verdict": {
+    "allowed": true,
+    "gates_checked": [
+      "No-stretch policy: never exaggerate product capabilities."
+    ],
+    "blocked_actions": [],
+    "notes": "Example runner accepts the artifact only after every declared policy gate is represented."
+  },
+  "receipt": {
+    "required": true,
+    "input_hash": "sha256:1e2d24e1dec4fc33",
+    "flow_hash": "sha256:9ffc5637f69a27b1",
+    "output_hash": "sha256:aed22036511de41c",
+    "reviewer_verdict": "accepted_for_example"
+  }
+}

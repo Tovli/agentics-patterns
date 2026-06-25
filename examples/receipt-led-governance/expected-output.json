@@ -1,0 +1,63 @@
+{
+  "artifact_type": "governance_receipt",
+  "example_id": "receipt-led-governance",
+  "status": "ready_for_review",
+  "summary": "Receipt-led governance example completed for dependency_audit.",
+  "fields": {
+    "input_hash": "sha256:207b0f25aba67628",
+    "output_hash": "sha256:32697bf0c3f515b7",
+    "agent": {
+      "summary": "agent recorded for dependency_audit.",
+      "responsible_agent": "Receipt Logger",
+      "supporting_evidence": [
+        "npm_audit"
+      ]
+    },
+    "model": {
+      "summary": "model recorded for dependency_audit.",
+      "responsible_agent": "Tool Auditor",
+      "supporting_evidence": [
+        "npm_audit"
+      ]
+    },
+    "tool_calls": [
+      "npm_audit"
+    ],
+    "cost": {
+      "limit": "example_budget",
+      "spent": "within_limit"
+    },
+    "latency": {
+      "target": "example_sla",
+      "observed": "within_target"
+    },
+    "risk": {
+      "level": "medium",
+      "drivers": [
+        "npm_audit"
+      ],
+      "mitigation": "Material actions without receipts are treated as incomplete."
+    },
+    "verdict": {
+      "result": "approve_for_example",
+      "reason": "Tool Auditor completed the gated Every meaningful action writes a tamper-evident receipt flow for dependency_audit."
+    },
+    "previous_hash": "sha256:9da779efceff2bb4",
+    "current_hash": "sha256:72e9edc0761e602d"
+  },
+  "policy_verdict": {
+    "allowed": true,
+    "gates_checked": [
+      "Material actions without receipts are treated as incomplete."
+    ],
+    "blocked_actions": [],
+    "notes": "Example runner accepts the artifact only after every declared policy gate is represented."
+  },
+  "receipt": {
+    "required": true,
+    "input_hash": "sha256:62082d92aa0f5dbd",
+    "flow_hash": "sha256:ddea2dd93be22f6e",
+    "output_hash": "sha256:0b12c2d24ecd013e",
+    "reviewer_verdict": "accepted_for_example"
+  }
+}

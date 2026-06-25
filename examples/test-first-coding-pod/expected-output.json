@@ -1,0 +1,79 @@
+{
+  "artifact_type": "coding_pod_packet",
+  "example_id": "test-first-coding-pod",
+  "status": "ready_for_review",
+  "summary": "Test-first coding pod example completed for Test-first coding pod.",
+  "fields": {
+    "issue_summary": {
+      "summary": "issue summary recorded for Test-first coding pod.",
+      "responsible_agent": "Issue Analyst",
+      "supporting_evidence": [
+        "A repo-maintenance agent fixes a parsing regression by proving the failure before editing production code.",
+        "Understand the issue and target behavior."
+      ]
+    },
+    "failing_test": {
+      "command": "python ../run_example.py test-first-coding-pod",
+      "status": "passed",
+      "checked_fields": [
+        "issue_summary",
+        "failing_test",
+        "patch",
+        "validation",
+        "diff_review",
+        "release_note"
+      ]
+    },
+    "patch": [
+      {
+        "target": "A repo-maintenance agent fixes a parsing regression by proving the failure before editing production code.",
+        "change": "drafted",
+        "review": "human_or_reviewer_gate_required"
+      },
+      {
+        "target": "Understand the issue and target behavior.",
+        "change": "drafted",
+        "review": "human_or_reviewer_gate_required"
+      }
+    ],
+    "validation": [
+      "unit_test",
+      "snapshot_test"
+    ],
+    "diff_review": [
+      {
+        "target": "A repo-maintenance agent fixes a parsing regression by proving the failure before editing production code.",
+        "change": "drafted",
+        "review": "human_or_reviewer_gate_required"
+      },
+      {
+        "target": "Understand the issue and target behavior.",
+        "change": "drafted",
+        "review": "human_or_reviewer_gate_required"
+      }
+    ],
+    "release_note": {
+      "summary": "release note recorded for Test-first coding pod.",
+      "responsible_agent": "Issue Analyst",
+      "supporting_evidence": [
+        "A repo-maintenance agent fixes a parsing regression by proving the failure before editing production code.",
+        "Understand the issue and target behavior."
+      ]
+    }
+  },
+  "policy_verdict": {
+    "allowed": true,
+    "gates_checked": [
+      "No production code is edited before a failing test exists."
+    ],
+    "blocked_actions": [],
+    "notes": "Example runner accepts the artifact only after every declared policy gate is represented."
+  },
+  "receipt": {
+    "required": true,
+    "input_hash": "sha256:c2beae225c28382d",
+    "flow_hash": "sha256:fd3b1a49b3c96bea",
+    "output_hash": "sha256:541bfcad3667d387",
+    "reviewer_verdict": "accepted_for_example"
+  }
+}

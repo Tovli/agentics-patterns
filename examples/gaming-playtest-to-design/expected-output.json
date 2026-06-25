@@ -1,0 +1,75 @@
+{
+  "artifact_type": "playtest_recap",
+  "example_id": "gaming-playtest-to-design",
+  "status": "ready_for_review",
+  "summary": "Playtest-to-design example completed for 0.8.4.",
+  "fields": {
+    "player_pain_points": {
+      "summary": "player pain points recorded for 0.8.4.",
+      "responsible_agent": "Balance Critic",
+      "supporting_evidence": [
+        "dungeon_2_abandonment: 48_percent",
+        "gold_inflation: 31_percent"
+      ]
+    },
+    "balance_issues": {
+      "summary": "balance issues recorded for 0.8.4.",
+      "responsible_agent": "Narrative Keeper",
+      "supporting_evidence": [
+        "dungeon_2_abandonment: 48_percent",
+        "gold_inflation: 31_percent"
+      ]
+    },
+    "economy_risks": {
+      "level": "medium",
+      "drivers": [
+        "dungeon_2_abandonment: 48_percent",
+        "gold_inflation: 31_percent"
+      ],
+      "mitigation": "Player anecdotes are separated from telemetry-backed findings."
+    },
+    "narrative_conflicts": {
+      "summary": "narrative conflicts recorded for 0.8.4.",
+      "responsible_agent": "Economy Modeler",
+      "supporting_evidence": [
+        "dungeon_2_abandonment: 48_percent",
+        "gold_inflation: 31_percent"
+      ]
+    },
+    "proposed_changes": {
+      "summary": "proposed changes recorded for 0.8.4.",
+      "responsible_agent": "Playtest Reader",
+      "supporting_evidence": [
+        "dungeon_2_abandonment: 48_percent",
+        "gold_inflation: 31_percent"
+      ]
+    },
+    "build_to_build_diff": [
+      {
+        "target": "dungeon_2_abandonment: 48_percent",
+        "change": "drafted",
+        "review": "human_or_reviewer_gate_required"
+      },
+      {
+        "target": "gold_inflation: 31_percent",
+        "change": "drafted",
+        "review": "human_or_reviewer_gate_required"
+      }
+    ]
+  },
+  "policy_verdict": {
+    "allowed": true,
+    "gates_checked": [
+      "Player anecdotes are separated from telemetry-backed findings."
+    ],
+    "blocked_actions": [],
+    "notes": "Example runner accepts the artifact only after every declared policy gate is represented."
+  },
+  "receipt": {
+    "required": true,
+    "input_hash": "sha256:87defe0115754d93",
+    "flow_hash": "sha256:8ab432a76250095b",
+    "output_hash": "sha256:e2f9db68be73f639",
+    "reviewer_verdict": "accepted_for_example"
+  }
+}

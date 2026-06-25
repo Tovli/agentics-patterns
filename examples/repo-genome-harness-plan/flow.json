@@ -1,0 +1,69 @@
+{
+  "id": "repo-genome-harness-plan",
+  "source": {
+    "type": "local_catalog",
+    "section": "agentic",
+    "number": 2,
+    "heading": "Repo Genome → Harness Plan pattern"
+  },
+  "name": "Repo genome to harness plan",
+  "pattern": "Static repo genome -> recommended harness plan",
+  "scenario": "A meta-harness analyzes a repository without executing code and recommends the safest generated harness shape.",
+  "workflow_steps": [
+    "Scan repository structure, languages, tests, and release surfaces without execution.",
+    "Score test confidence, MCP risk, and publish readiness.",
+    "Recommend agent topology, tool surface, memory namespaces, and approvals.",
+    "Emit a harness plan with constraints and required human gates."
+  ],
+  "agents": [
+    "Repo Scanner",
+    "Risk Profiler",
+    "Topology Recommender",
+    "Plan Writer"
+  ],
+  "policy_gates": [
+    "Repo analysis does not execute repository code."
+  ],
+  "input_contract": {
+    "file": "input.json",
+    "description": "Concrete scenario input for this pattern example."
+  },
+  "output_contract": {
+    "artifact_type": "repo_genome_plan",
+    "required_fields": [
+      "repo_profile",
+      "agent_topology",
+      "tool_surface",
+      "risk_budget",
+      "memory_namespaces",
+      "recommended_vertical",
+      "required_human_approvals"
+    ]
+  },
+  "run": {
+    "command": "python ../run_example.py repo-genome-harness-plan",
+    "expected_stdout": "expected-output.json"
+  },
+  "memory_update": {
+    "mode": "distill-only",
+    "stores": [
+      "verified decisions",
+      "reusable failures",
+      "domain lessons"
+    ],
+    "excludes": [
+      "raw sensitive data",
+      "unsupported claims"
+    ]
+  },
+  "receipt": {
+    "required": true,
+    "records": [
+      "input_hash",
+      "workflow_steps",
+      "policy_verdict",
+      "output_hash",
+      "reviewer_verdict"
+    ]
+  }
+}
