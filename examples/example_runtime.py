@@ -64,6 +64,7 @@ def scenario_subject(input_payload: dict[str, Any], flow: dict[str, Any]) -> str
             "local_lesson",
             "vertical",
             "command",
+            "kernel",
         ],
     )
     if value is None:

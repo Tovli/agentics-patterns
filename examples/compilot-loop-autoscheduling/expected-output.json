@@ -1,0 +1,81 @@
+{
+  "artifact_type": "optimized_schedule_packet",
+  "example_id": "compilot-loop-autoscheduling",
+  "status": "ready_for_review",
+  "summary": "ComPilot loop auto-scheduling example completed for gemm triple-nested matrix-multiply loop.",
+  "fields": {
+    "baseline_profile": {
+      "summary": "baseline profile recorded for gemm triple-nested matrix-multiply loop.",
+      "responsible_agent": "Compiler Benchmarker",
+      "supporting_evidence": [
+        "baseline_runtime_ms",
+        "best_runtime_ms",
+        "geomean_speedup"
+      ]
+    },
+    "proposed_transformations": {
+      "summary": "proposed transformations recorded for gemm triple-nested matrix-multiply loop.",
+      "responsible_agent": "Compiler Benchmarker",
+      "supporting_evidence": [
+        "baseline_runtime_ms",
+        "best_runtime_ms",
+        "geomean_speedup"
+      ]
+    },
+    "legality_verdict": {
+      "result": "approve_for_example",
+      "reason": "Legality Checker completed the gated Analyze loop -> propose schedule -> legality gate -> compile and benchmark -> feed back and keep best flow for gemm triple-nested matrix-multiply loop."
+    },
+    "rejected_schedules": [
+      "No unsafe rejected schedules accepted without gate: Only legal, dependence-preserving schedules may be compiled or executed."
+    ],
+    "speedup_evidence": [
+      {
+        "claim": "baseline_runtime_ms",
+        "status": "accepted_for_example"
+      },
+      {
+        "claim": "best_runtime_ms",
+        "status": "accepted_for_example"
+      },
+      {
+        "claim": "geomean_speedup",
+        "status": "accepted_for_example"
+      }
+    ],
+    "best_schedule": {
+      "summary": "best schedule recorded for gemm triple-nested matrix-multiply loop.",
+      "responsible_agent": "Loop Analyzer",
+      "supporting_evidence": [
+        "baseline_runtime_ms",
+        "best_runtime_ms",
+        "geomean_speedup"
+      ]
+    },
+    "iteration_summary": {
+      "summary": "iteration summary recorded for gemm triple-nested matrix-multiply loop.",
+      "responsible_agent": "Legality Checker",
+      "supporting_evidence": [
+        "baseline_runtime_ms",
+        "best_runtime_ms",
+        "geomean_speedup"
+      ]
+    }
+  },
+  "policy_verdict": {
+    "allowed": true,
+    "gates_checked": [
+      "Only legal, dependence-preserving schedules may be compiled or executed.",
+      "Speedup claims must come from real compiler benchmarks, not from model estimates."
+    ],
+    "blocked_actions": [],
+    "notes": "Example runner accepts the artifact only after every declared policy gate is represented."
+  },
+  "receipt": {
+    "required": true,
+    "input_hash": "sha256:55cbad0503ef11db",
+    "flow_hash": "sha256:651b8cacfa8105f9",
+    "output_hash": "sha256:50dd44e7ab3458cd",
+    "reviewer_verdict": "accepted_for_example"
+  }
+}

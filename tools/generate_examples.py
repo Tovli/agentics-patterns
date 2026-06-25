@@ -905,6 +905,41 @@ SPECS = [
             "url": "https://arxiv.org/abs/2402.14207",
         },
     ),
+    example(
+        "compilot-loop-autoscheduling",
+        "agentic",
+        16,
+        "ComPilot loop auto-scheduling",
+        "Analyze loop -> propose schedule -> legality gate -> compile and benchmark -> feed back and keep best",
+        "A compiler optimization harness must speed up a nested loop kernel by letting an LLM propose schedule transformations that a compiler validates for legality and benchmarks for real speedup before any schedule is accepted.",
+        ["Loop Analyzer", "Schedule Proposer", "Legality Checker", "Compiler Benchmarker", "Feedback Coordinator"],
+        [
+            "Analyze the loop nest IR, data dependencies, and baseline performance.",
+            "Propose candidate schedule transformations such as tiling, fusion, interchange, and parallelization.",
+            "Check each proposed schedule for legality with dependence analysis before it runs.",
+            "Compile only legal schedules and benchmark real speedup against the baseline.",
+            "Feed measured results back to the proposer, iterate within budget, and keep the best legal schedule.",
+        ],
+        [
+            "Only legal, dependence-preserving schedules may be compiled or executed.",
+            "Speedup claims must come from real compiler benchmarks, not from model estimates.",
+        ],
+        {
+            "kernel": "gemm triple-nested matrix-multiply loop",
+            "baseline": "scalar -O3 untiled loop nest",
+            "allowed_transformations": ["tiling", "loop_fusion", "loop_interchange", "parallelization", "vectorization"],
+            "metrics": ["baseline_runtime_ms", "best_runtime_ms", "geomean_speedup"],
+            "budget": {"max_iterations": 12, "stop_after_no_improvement": 3},
+        },
+        "optimized_schedule_packet",
+        ["baseline_profile", "proposed_transformations", "legality_verdict", "rejected_schedules", "speedup_evidence", "best_schedule", "iteration_summary"],
+        reference={
+            "system": "ComPilot",
+            "title": "Agentic Auto-Scheduling: An Experimental Study of LLM-Guided Loop Optimization",
+            "arxiv": "2511.00592",
+            "url": "https://arxiv.org/abs/2511.00592",
+        },
+    ),
 ]
 
 

@@ -2,9 +2,9 @@
 
 This folder contains Markdown agent definitions for every agent reference used by the pattern examples in `examples/catalog.json` and the corresponding `examples/*/flow.json` files.
 
-- Patterns covered: 35
-- Agent references covered: 156
-- Unique labels covered: 136
+- Patterns covered: 36
+- Agent references covered: 161
+- Unique labels covered: 141
 - Pattern-derived definitions are synthesized from the local example workflow steps, policy gates, and output contracts.
 
 Repeated labels are pattern-scoped by path, so `Strategist`, `Verifier`, `Responder`, and similar names can carry different goals in different harness patterns without colliding.
@@ -52,6 +52,7 @@ Copy the agent Markdown file for the pattern you are building into the target ho
 | [opt-in-self-evolution](opt-in-self-evolution/) | Measure baseline -> small exploration -> evaluate -> adopt if better -> rollback on regression | [Baseline Measurer](opt-in-self-evolution/baseline-measurer.md), [Experiment Runner](opt-in-self-evolution/experiment-runner.md), [Evaluator](opt-in-self-evolution/evaluator.md), [Rollback Manager](opt-in-self-evolution/rollback-manager.md), [Audit Logger](opt-in-self-evolution/audit-logger.md) |
 | [private-shared-federation](private-shared-federation/) | Local confidential work -> distilled non-sensitive pattern -> signed sharing -> peer validation | [Local Distiller](private-shared-federation/local-distiller.md), [Sensitivity Filter](private-shared-federation/sensitivity-filter.md), [Signer](private-shared-federation/signer.md), [Federation Publisher](private-shared-federation/federation-publisher.md), [Peer Validator](private-shared-federation/peer-validator.md) |
 | [storm-article-synthesis](storm-article-synthesis/) | Discover perspectives -> ask multi-perspective questions -> retrieve and ground -> outline -> write sections -> audit citations | [Perspective Discoverer](storm-article-synthesis/perspective-discoverer.md), [Question Asker](storm-article-synthesis/question-asker.md), [Grounded Expert](storm-article-synthesis/grounded-expert.md), [Outline Architect](storm-article-synthesis/outline-architect.md), [Section Writer](storm-article-synthesis/section-writer.md), [Citation Auditor](storm-article-synthesis/citation-auditor.md) |
+| [compilot-loop-autoscheduling](compilot-loop-autoscheduling/) | Analyze loop -> propose schedule -> legality gate -> compile and benchmark -> feed back and keep best | [Loop Analyzer](compilot-loop-autoscheduling/loop-analyzer.md), [Schedule Proposer](compilot-loop-autoscheduling/schedule-proposer.md), [Legality Checker](compilot-loop-autoscheduling/legality-checker.md), [Compiler Benchmarker](compilot-loop-autoscheduling/compiler-benchmarker.md), [Feedback Coordinator](compilot-loop-autoscheduling/feedback-coordinator.md) |
 
 ## Repeated Labels
 

@@ -1,0 +1,20 @@
+{
+  "kernel": "gemm triple-nested matrix-multiply loop",
+  "baseline": "scalar -O3 untiled loop nest",
+  "allowed_transformations": [
+    "tiling",
+    "loop_fusion",
+    "loop_interchange",
+    "parallelization",
+    "vectorization"
+  ],
+  "metrics": [
+    "baseline_runtime_ms",
+    "best_runtime_ms",
+    "geomean_speedup"
+  ],
+  "budget": {
+    "max_iterations": 12,
+    "stop_after_no_improvement": 3
+  }
+}
