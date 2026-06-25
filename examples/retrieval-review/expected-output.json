@@ -40,8 +40,8 @@
   "receipt": {
     "required": true,
     "input_hash": "sha256:2a1909bf0e8dc424",
-    "flow_hash": "sha256:4a74f72582685971",
-    "output_hash": "sha256:f11c8026ea107d86",
+    "flow_hash": "sha256:8c7a1f6bd80a96d2",
+    "output_hash": "sha256:417f65f9c4a44cdb",
     "reviewer_verdict": "accepted_for_example"
   }
 }

@@ -40,6 +40,7 @@ def scenario_subject(input_payload: dict[str, Any], flow: dict[str, Any]) -> str
         [
             "service",
             "question",
+            "topic",
             "instrument",
             "ticket",
             "document",

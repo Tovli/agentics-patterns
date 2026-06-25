@@ -1,0 +1,80 @@
+{
+  "id": "storm-article-synthesis",
+  "source": {
+    "type": "local_catalog",
+    "section": "agentic",
+    "number": 15,
+    "heading": "STORM multi-perspective article synthesis pattern"
+  },
+  "name": "STORM article synthesis",
+  "pattern": "Discover perspectives -> ask multi-perspective questions -> retrieve and ground -> outline -> write sections -> audit citations",
+  "scenario": "A documentation team must produce a comprehensive, neutral overview article on an unfamiliar topic, grounded entirely in cited sources rather than model memory.",
+  "workflow_steps": [
+    "Discover diverse perspectives by surveying related topics and articles.",
+    "Drive multi-perspective question asking through simulated expert conversations.",
+    "Convert questions into queries, retrieve trusted sources, and answer with citations.",
+    "Generate and refine a hierarchical outline from internal knowledge and collected answers.",
+    "Write each section grounded only in collected references with inline citations.",
+    "Assemble the lead section, remove duplication, and verify every citation."
+  ],
+  "agents": [
+    "Perspective Discoverer",
+    "Question Asker",
+    "Grounded Expert",
+    "Outline Architect",
+    "Section Writer",
+    "Citation Auditor"
+  ],
+  "policy_gates": [
+    "Article claims must be grounded in retrieved, cited sources, not in model memory.",
+    "Untrusted or unverifiable sources are excluded before they ground any section."
+  ],
+  "input_contract": {
+    "file": "input.json",
+    "description": "Concrete scenario input for this pattern example."
+  },
+  "output_contract": {
+    "artifact_type": "grounded_article_packet",
+    "required_fields": [
+      "topic",
+      "perspectives",
+      "outline",
+      "article",
+      "citations",
+      "excluded_references",
+      "confidence"
+    ]
+  },
+  "run": {
+    "command": "python ../run_example.py storm-article-synthesis",
+    "expected_stdout": "expected-output.json"
+  },
+  "memory_update": {
+    "mode": "distill-only",
+    "stores": [
+      "verified decisions",
+      "reusable failures",
+      "domain lessons"
+    ],
+    "excludes": [
+      "raw sensitive data",
+      "unsupported claims"
+    ]
+  },
+  "receipt": {
+    "required": true,
+    "records": [
+      "input_hash",
+      "workflow_steps",
+      "policy_verdict",
+      "output_hash",
+      "reviewer_verdict"
+    ]
+  },
+  "reference": {
+    "system": "STORM",
+    "title": "Assisting in Writing Wikipedia-like Articles From Scratch with Large Language Models",
+    "arxiv": "2402.14207",
+    "url": "https://arxiv.org/abs/2402.14207"
+  }
+}

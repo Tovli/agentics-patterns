@@ -28,8 +28,9 @@ def example(
     input_payload: dict,
     artifact_type: str,
     output_fields: list[str],
+    reference: dict | None = None,
 ) -> dict:
-    return {
+    spec = {
         "id": id,
         "section": section,
         "number": number,
@@ -45,6 +46,9 @@ def example(
             "required_fields": output_fields,
         },
     }
+    if reference is not None:
+        spec["reference"] = reference
+    return spec
 
 
 SPECS = [
@@ -866,6 +870,41 @@ SPECS = [
         "federated_pattern_record",
         ["distilled_pattern", "excluded_sensitive_data", "signature", "namespace", "peer_validation", "import_decision"],
     ),
+    example(
+        "storm-article-synthesis",
+        "agentic",
+        15,
+        "STORM article synthesis",
+        "Discover perspectives -> ask multi-perspective questions -> retrieve and ground -> outline -> write sections -> audit citations",
+        "A documentation team must produce a comprehensive, neutral overview article on an unfamiliar topic, grounded entirely in cited sources rather than model memory.",
+        ["Perspective Discoverer", "Question Asker", "Grounded Expert", "Outline Architect", "Section Writer", "Citation Auditor"],
+        [
+            "Discover diverse perspectives by surveying related topics and articles.",
+            "Drive multi-perspective question asking through simulated expert conversations.",
+            "Convert questions into queries, retrieve trusted sources, and answer with citations.",
+            "Generate and refine a hierarchical outline from internal knowledge and collected answers.",
+            "Write each section grounded only in collected references with inline citations.",
+            "Assemble the lead section, remove duplication, and verify every citation.",
+        ],
+        [
+            "Article claims must be grounded in retrieved, cited sources, not in model memory.",
+            "Untrusted or unverifiable sources are excluded before they ground any section.",
+        ],
+        {
+            "topic": "post-quantum cryptography migration",
+            "audience": "general technical readers",
+            "perspectives": ["standards body", "enterprise security lead", "cryptography researcher"],
+            "source_requirements": ["primary_standards", "peer_reviewed", "official_docs"],
+        },
+        "grounded_article_packet",
+        ["topic", "perspectives", "outline", "article", "citations", "excluded_references", "confidence"],
+        reference={
+            "system": "STORM",
+            "title": "Assisting in Writing Wikipedia-like Articles From Scratch with Large Language Models",
+            "arxiv": "2402.14207",
+            "url": "https://arxiv.org/abs/2402.14207",
+        },
+    ),
 ]
 
 
@@ -897,7 +936,7 @@ def expected_output(entry: dict) -> dict:
 
 
 def flow_payload(entry: dict) -> dict:
-    return {
+    payload = {
         "id": entry["id"],
         "source": {
             "type": "local_catalog",
@@ -930,6 +969,22 @@ def flow_payload(entry: dict) -> dict:
             "records": ["input_hash", "workflow_steps", "policy_verdict", "output_hash", "reviewer_verdict"],
         },
     }
+    if entry.get("reference") is not None:
+        payload["reference"] = entry["reference"]
+    return payload
+
+
+def reference_section(entry: dict) -> str:
+    reference = entry.get("reference")
+    if not reference:
+        return ""
+    label = reference.get("system") or reference.get("title", "source")
+    title = reference.get("title", label)
+    url = reference.get("url")
+    line = f"This pattern is adapted from **{label}**: {title}."
+    if url:
+        line += f"\n\nPaper: {url}"
+    return f"\n## Reference\n\n{line}\n"
 
 
 def readme(entry: dict) -> str:
@@ -941,7 +996,7 @@ Catalog entry: `{entry["section"]}` pattern {entry["number"]}
 Source heading: {entry["source_heading"]}
 
 Pattern: **{entry["pattern"]}**
-
+{reference_section(entry)}
 ## Scenario
 
 {entry["scenario"]}

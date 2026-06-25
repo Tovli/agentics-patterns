@@ -1,0 +1,14 @@
+{
+  "topic": "post-quantum cryptography migration",
+  "audience": "general technical readers",
+  "perspectives": [
+    "standards body",
+    "enterprise security lead",
+    "cryptography researcher"
+  ],
+  "source_requirements": [
+    "primary_standards",
+    "peer_reviewed",
+    "official_docs"
+  ]
+}

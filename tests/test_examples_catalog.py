@@ -21,7 +21,7 @@ class ExamplesCatalogTest(unittest.TestCase):
         catalog = self.load_catalog()
         entries = catalog["examples"]
 
-        self.assertEqual(34, len(entries))
+        self.assertEqual(35, len(entries))
         self.assertEqual(len(entries), len({entry["id"] for entry in entries}))
         self.assertEqual(
             len(entries),

@@ -1,0 +1,66 @@
+{
+  "artifact_type": "grounded_article_packet",
+  "example_id": "storm-article-synthesis",
+  "status": "ready_for_review",
+  "summary": "STORM article synthesis example completed for post-quantum cryptography migration.",
+  "fields": {
+    "topic": "post-quantum cryptography migration",
+    "perspectives": [
+      "standards body",
+      "enterprise security lead",
+      "cryptography researcher"
+    ],
+    "outline": {
+      "summary": "outline recorded for post-quantum cryptography migration.",
+      "responsible_agent": "Perspective Discoverer",
+      "supporting_evidence": [
+        "primary_standards",
+        "peer_reviewed",
+        "official_docs"
+      ]
+    },
+    "article": {
+      "summary": "article recorded for post-quantum cryptography migration.",
+      "responsible_agent": "Grounded Expert",
+      "supporting_evidence": [
+        "primary_standards",
+        "peer_reviewed",
+        "official_docs"
+      ]
+    },
+    "citations": [
+      {
+        "claim": "primary_standards",
+        "status": "accepted_for_example"
+      },
+      {
+        "claim": "peer_reviewed",
+        "status": "accepted_for_example"
+      },
+      {
+        "claim": "official_docs",
+        "status": "accepted_for_example"
+      }
+    ],
+    "excluded_references": [
+      "No unsafe excluded references accepted without gate: Article claims must be grounded in retrieved, cited sources, not in model memory."
+    ],
+    "confidence": 0.82
+  },
+  "policy_verdict": {
+    "allowed": true,
+    "gates_checked": [
+      "Article claims must be grounded in retrieved, cited sources, not in model memory.",
+      "Untrusted or unverifiable sources are excluded before they ground any section."
+    ],
+    "blocked_actions": [],
+    "notes": "Example runner accepts the artifact only after every declared policy gate is represented."
+  },
+  "receipt": {
+    "required": true,
+    "input_hash": "sha256:cf90705ab868ecb7",
+    "flow_hash": "sha256:97743c322843970d",
+    "output_hash": "sha256:81b242e9e1625c9c",
+    "reviewer_verdict": "accepted_for_example"
+  }
+}

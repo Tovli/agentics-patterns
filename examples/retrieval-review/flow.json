@@ -4,7 +4,7 @@
     "type": "local_catalog",
     "section": "catalog",
     "number": 13,
-    "heading": "`ruview` — Retrieval Review Pattern"
+    "heading": "`ruvector` — Retrieval Review Pattern"
   },
   "name": "Retrieval review",
   "pattern": "Index -> retrieve -> answer -> source review",

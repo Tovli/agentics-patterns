@@ -14,6 +14,7 @@ this directory with `python run_example.py <example-id>`.
 
 ## Catalog Vertical And Base Patterns
 
+- [`minimal-base-harness`](./minimal-base-harness/README.md) - Minimal base harness
 - [`devops-incident-response`](./devops-incident-response/README.md) - DevOps incident response
 - [`coding-senior-engineering-pod`](./coding-senior-engineering-pod/README.md) - Senior engineering pod
 - [`research-evidence-dossier`](./research-evidence-dossier/README.md) - Evidence dossier
@@ -50,3 +51,4 @@ this directory with `python run_example.py <example-id>`.
 - [`human-approval-gate`](./human-approval-gate/README.md) - Human approval gate
 - [`opt-in-self-evolution`](./opt-in-self-evolution/README.md) - Opt-in self-evolution
 - [`private-shared-federation`](./private-shared-federation/README.md) - Private/shared federation
+- [`storm-article-synthesis`](./storm-article-synthesis/README.md) - STORM article synthesis

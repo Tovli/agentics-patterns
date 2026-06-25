@@ -1,6 +1,6 @@
 {
   "source": "local_example_catalog",
-  "example_count": 34,
+  "example_count": 35,
   "examples": [
     {
       "id": "minimal-base-harness",
@@ -1514,6 +1514,67 @@
         ]
       },
       "source_heading": "Federation pattern for private/shared learning"
+    },
+    {
+      "id": "storm-article-synthesis",
+      "section": "agentic",
+      "number": 15,
+      "name": "STORM article synthesis",
+      "pattern": "Discover perspectives -> ask multi-perspective questions -> retrieve and ground -> outline -> write sections -> audit citations",
+      "scenario": "A documentation team must produce a comprehensive, neutral overview article on an unfamiliar topic, grounded entirely in cited sources rather than model memory.",
+      "agents": [
+        "Perspective Discoverer",
+        "Question Asker",
+        "Grounded Expert",
+        "Outline Architect",
+        "Section Writer",
+        "Citation Auditor"
+      ],
+      "workflow_steps": [
+        "Discover diverse perspectives by surveying related topics and articles.",
+        "Drive multi-perspective question asking through simulated expert conversations.",
+        "Convert questions into queries, retrieve trusted sources, and answer with citations.",
+        "Generate and refine a hierarchical outline from internal knowledge and collected answers.",
+        "Write each section grounded only in collected references with inline citations.",
+        "Assemble the lead section, remove duplication, and verify every citation."
+      ],
+      "policy_gates": [
+        "Article claims must be grounded in retrieved, cited sources, not in model memory.",
+        "Untrusted or unverifiable sources are excluded before they ground any section."
+      ],
+      "input": {
+        "topic": "post-quantum cryptography migration",
+        "audience": "general technical readers",
+        "perspectives": [
+          "standards body",
+          "enterprise security lead",
+          "cryptography researcher"
+        ],
+        "source_requirements": [
+          "primary_standards",
+          "peer_reviewed",
+          "official_docs"
+        ]
+      },
+      "output_contract": {
+        "artifact_type": "grounded_article_packet",
+        "required_fields": [
+          "topic",
+          "perspectives",
+          "outline",
+          "article",
+          "citations",
+          "excluded_references",
+          "confidence"
+        ]
+      },
+      "reference": {
+        "system": "STORM",
+        "title": "Assisting in Writing Wikipedia-like Articles From Scratch with Large Language Models",
+        "arxiv": "2402.14207",
+        "url": "https://arxiv.org/abs/2402.14207"
+      },
+      "source_heading": "STORM multi-perspective article synthesis pattern"
     }
   ]
 }
