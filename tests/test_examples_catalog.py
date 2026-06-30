@@ -6,10 +6,10 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-EXAMPLES = ROOT / "examples"
-CATALOG = EXAMPLES / "catalog.json"
+PATTERNS = ROOT / "patterns"
+CATALOG = PATTERNS / "catalog.json"
 STATUS = ROOT / "EXAMPLE_STATUS.md"
-RUNNER = EXAMPLES / "run_example.py"
+RUNNER = PATTERNS / "run_example.py"
 
 
 class ExamplesCatalogTest(unittest.TestCase):
@@ -33,7 +33,7 @@ class ExamplesCatalogTest(unittest.TestCase):
 
         for entry in catalog["examples"]:
             with self.subTest(example=entry["id"]):
-                example_dir = EXAMPLES / entry["id"]
+                example_dir = PATTERNS / entry["id"]
                 self.assertTrue(example_dir.is_dir())
                 self.assertTrue((example_dir / "README.md").is_file())
                 self.assertTrue((example_dir / "flow.json").is_file())
@@ -54,14 +54,14 @@ class ExamplesCatalogTest(unittest.TestCase):
 
         for entry in catalog["examples"]:
             with self.subTest(example=entry["id"]):
-                example_dir = EXAMPLES / entry["id"]
+                example_dir = PATTERNS / entry["id"]
                 result = subprocess.run(
                     [
                         sys.executable,
                         str(RUNNER),
                         entry["id"],
                         "--root",
-                        str(EXAMPLES),
+                        str(PATTERNS),
                     ],
                     check=True,
                     capture_output=True,
@@ -91,7 +91,7 @@ class ExamplesCatalogTest(unittest.TestCase):
             "D:" + "\\Code\\ruvnet\\agent-harness-generator",
             "patterns" + ".md",
         ]
-        scanned_roots = [EXAMPLES, ROOT / "tools", ROOT / "tests"]
+        scanned_roots = [PATTERNS, ROOT / "tools", ROOT / "tests"]
         scanned_files = [STATUS]
         for scanned_root in scanned_roots:
             scanned_files.extend(
@@ -115,7 +115,7 @@ class ExamplesCatalogTest(unittest.TestCase):
         ]
         prefixed_example_dirs = [
             path.name
-            for path in EXAMPLES.iterdir()
+            for path in PATTERNS.iterdir()
             if path.is_dir() and path.name.startswith(("agentic-", "vertical-"))
         ]
         prefixed_source_headings = [

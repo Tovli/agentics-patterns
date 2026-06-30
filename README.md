@@ -4,7 +4,7 @@
 
 Runnable pattern examples and Markdown agent definitions for building agent harnesses.
 
-The examples live under `examples/`, and the reusable agent definitions live under `agents/`.
+The patterns live under `patterns/`, and each pattern carries its reusable agent definitions in an `agents/` subfolder.
 
 ## Why This Exists
 
@@ -56,26 +56,26 @@ That gives you a harness design that is easier to test, safer to run, and cleare
 
 ## How To Use The Repo
 
-Start with `examples/README.md` to find a pattern. Each example directory contains:
+Start with `patterns/README.md` to find a pattern. Each pattern directory contains:
 
 - `flow.json` for the machine-readable workflow contract
 - `input.json` for a concrete scenario
 - `expected-output.json` for the output artifact shape
 - `README.md` for a human-readable walkthrough
+- `agents/` for the Markdown agent definitions used by that pattern
 
-Then open `agents/README.md` and copy the matching Markdown agent definitions into your target harness or host-specific agent directory. The agent files are pattern-scoped so repeated names such as `Verifier`, `Strategist`, and `Responder` can have different responsibilities in different workflows.
+Then open the pattern's `agents/` folder (all of them are indexed in `patterns/AGENTS.md`) and copy the matching Markdown agent definitions into your target harness or host-specific agent directory. The agent files are pattern-scoped so repeated names such as `Verifier`, `Strategist`, and `Responder` can have different responsibilities in different workflows.
 
 For a quick contract check, run an example:
 
 ```bash
-cd examples
+cd patterns
 python run_example.py support-resolution --check
 ```
 
 ## Repository Layout
 
-- `examples/` - runnable-shape pattern examples and flow contracts
-- `agents/` - Markdown agent definitions grouped by pattern
+- `patterns/` - runnable-shape pattern examples and flow contracts, each with an `agents/` subfolder of Markdown agent definitions (indexed in `patterns/AGENTS.md`)
 - `tests/` - catalog and example contract tests
 - `tools/` - scripts used to generate and maintain the examples
 

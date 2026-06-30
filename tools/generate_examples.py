@@ -6,13 +6,13 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-EXAMPLES = ROOT / "examples"
+PATTERNS = ROOT / "patterns"
 STATUS = ROOT / "EXAMPLE_STATUS.md"
 
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from examples.example_runtime import build_output
+from patterns.example_runtime import build_output
 
 
 def example(
@@ -944,10 +944,10 @@ SPECS = [
 
 
 def existing_source_headings() -> dict[tuple[str, int], str]:
-    if not (EXAMPLES / "catalog.json").exists():
+    if not (PATTERNS / "catalog.json").exists():
         return {}
 
-    catalog = json.loads((EXAMPLES / "catalog.json").read_text(encoding="utf-8"))
+    catalog = json.loads((PATTERNS / "catalog.json").read_text(encoding="utf-8"))
     return {
         (item["section"], item["number"]): item["source_heading"]
         for item in catalog["examples"]
@@ -1117,7 +1117,7 @@ def status_file(entries: list[dict]) -> str:
         for item in items:
             rows.append(
                 f"- [x] `{item['id']}` - {item['source_heading']} - "
-                f"`examples/{item['id']}/README.md`"
+                f"`patterns/{item['id']}/README.md`"
             )
         return "\n".join(rows)
 
@@ -1151,19 +1151,19 @@ def build_entries() -> list[dict]:
 
 def main() -> None:
     entries = build_entries()
-    EXAMPLES.mkdir(exist_ok=True)
+    PATTERNS.mkdir(exist_ok=True)
 
     catalog = {
         "source": "local_example_catalog",
         "example_count": len(entries),
         "examples": entries,
     }
-    write_json(EXAMPLES / "catalog.json", catalog)
-    (EXAMPLES / "README.md").write_text(catalog_readme(entries), encoding="utf-8")
+    write_json(PATTERNS / "catalog.json", catalog)
+    (PATTERNS / "README.md").write_text(catalog_readme(entries), encoding="utf-8")
     STATUS.write_text(status_file(entries), encoding="utf-8")
 
     for entry in entries:
-        example_dir = EXAMPLES / entry["id"]
+        example_dir = PATTERNS / entry["id"]
         example_dir.mkdir(exist_ok=True)
         (example_dir / "README.md").write_text(readme(entry), encoding="utf-8")
         write_json(example_dir / "flow.json", flow_payload(entry))
