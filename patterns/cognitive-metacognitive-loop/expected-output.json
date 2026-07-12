@@ -1,0 +1,97 @@
+{
+  "artifact_type": "cognitive_cycle_record",
+  "example_id": "cognitive-metacognitive-loop",
+  "status": "ready_for_review",
+  "summary": "Cognitive metacognitive loop example completed for diagnose intermittent deployment pipeline failures that occur only during high traffic.",
+  "fields": {
+    "perception": {
+      "summary": "perception recorded for diagnose intermittent deployment pipeline failures that occur only during high traffic.",
+      "responsible_agent": "Attention Router",
+      "supporting_evidence": [
+        "high_traffic_correlation",
+        "standard_timeout_fix_failed"
+      ]
+    },
+    "cognitive_workspace": {
+      "summary": "cognitive workspace recorded for diagnose intermittent deployment pipeline failures that occur only during high traffic.",
+      "responsible_agent": "Evaluation Monitor",
+      "supporting_evidence": [
+        "high_traffic_correlation",
+        "standard_timeout_fix_failed"
+      ]
+    },
+    "attention_route": {
+      "summary": "attention route recorded for diagnose intermittent deployment pipeline failures that occur only during high traffic.",
+      "responsible_agent": "Evaluation Monitor",
+      "supporting_evidence": [
+        "high_traffic_correlation",
+        "standard_timeout_fix_failed"
+      ]
+    },
+    "selected_strategy": {
+      "summary": "selected strategy recorded for diagnose intermittent deployment pipeline failures that occur only during high traffic.",
+      "responsible_agent": "Attention Router",
+      "supporting_evidence": [
+        "high_traffic_correlation",
+        "standard_timeout_fix_failed"
+      ]
+    },
+    "execution_evidence": [
+      {
+        "claim": "high_traffic_correlation",
+        "status": "accepted_for_example"
+      },
+      {
+        "claim": "standard_timeout_fix_failed",
+        "status": "accepted_for_example"
+      }
+    ],
+    "evaluation": {
+      "summary": "evaluation recorded for diagnose intermittent deployment pipeline failures that occur only during high traffic.",
+      "responsible_agent": "Perception Agent",
+      "supporting_evidence": [
+        "high_traffic_correlation",
+        "standard_timeout_fix_failed"
+      ]
+    },
+    "confidence_gate_decision": {
+      "result": "approve_for_example",
+      "reason": "Attention Router completed the gated Perceive -> attend -> select strategy -> execute -> evaluate -> adapt and remember flow for diagnose intermittent deployment pipeline failures that occur only during high traffic."
+    },
+    "stagnation_response": "Strategy Planner response for diagnose intermittent deployment pipeline failures that occur only during high traffic: grounded in high_traffic_correlation, standard_timeout_fix_failed.",
+    "knowledge_boundary": {
+      "summary": "knowledge boundary recorded for diagnose intermittent deployment pipeline failures that occur only during high traffic.",
+      "responsible_agent": "Execution Agent",
+      "supporting_evidence": [
+        "high_traffic_correlation",
+        "standard_timeout_fix_failed"
+      ]
+    },
+    "memory_update": {
+      "summary": "memory update recorded for diagnose intermittent deployment pipeline failures that occur only during high traffic.",
+      "responsible_agent": "Memory Recorder",
+      "supporting_evidence": [
+        "high_traffic_correlation",
+        "standard_timeout_fix_failed"
+      ]
+    }
+  },
+  "policy_verdict": {
+    "allowed": true,
+    "gates_checked": [
+      "Responses below the presentation threshold must gather more evidence or explicitly signal uncertainty.",
+      "Stagnation must trigger metaplanning and failed approaches must not be repeated.",
+      "Outside the known knowledge boundary, the agent must degrade gracefully instead of guessing.",
+      "Memory records only evaluated, distilled, non-sensitive lessons."
+    ],
+    "blocked_actions": [],
+    "notes": "Example runner accepts the artifact only after every declared policy gate is represented."
+  },
+  "receipt": {
+    "required": true,
+    "input_hash": "sha256:c6e0248f65089be2",
+    "flow_hash": "sha256:476adbba37748787",
+    "output_hash": "sha256:0f1efc9da8fe2055",
+    "reviewer_verdict": "accepted_for_example"
+  }
+}

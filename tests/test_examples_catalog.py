@@ -21,12 +21,38 @@ class ExamplesCatalogTest(unittest.TestCase):
         catalog = self.load_catalog()
         entries = catalog["examples"]
 
-        self.assertEqual(36, len(entries))
+        self.assertEqual(37, len(entries))
         self.assertEqual(len(entries), len({entry["id"] for entry in entries}))
         self.assertEqual(
             len(entries),
             len({(entry["section"], entry["number"]) for entry in entries}),
         )
+
+    def test_catalog_includes_cognitive_metacognitive_loop(self):
+        catalog = self.load_catalog()
+        entry = next(
+            item for item in catalog["examples"]
+            if item["id"] == "cognitive-metacognitive-loop"
+        )
+        self.assertEqual("agentic", entry["section"])
+        self.assertEqual(17, entry["number"])
+        self.assertEqual("cognitive_cycle_record", entry["output_contract"]["artifact_type"])
+        self.assertIn("confidence_gate_decision", entry["output_contract"]["required_fields"])
+        self.assertIn("knowledge_boundary", entry["output_contract"]["required_fields"])
+        self.assertEqual("AI Agents in Action", entry["reference"]["system"])
+
+        for filename in [
+            "perception-agent.md",
+            "attention-router.md",
+            "strategy-planner.md",
+            "execution-agent.md",
+            "evaluation-monitor.md",
+            "memory-recorder.md",
+        ]:
+            self.assertTrue(
+                (PATTERNS / entry["id"] / "agents" / filename).is_file(),
+                filename,
+            )
 
     def test_every_example_has_required_artifacts(self):
         catalog = self.load_catalog()

@@ -2,9 +2,9 @@
 
 This file indexes the Markdown agent definitions stored under each pattern's `agents/` folder, covering every agent reference used by the pattern examples in `catalog.json` and the corresponding `*/flow.json` files.
 
-- Patterns covered: 36
-- Agent references covered: 161
-- Unique labels covered: 141
+- Patterns covered: 37
+- Agent references covered: 167
+- Unique labels covered: 147
 - Pattern-derived definitions are synthesized from the local example workflow steps, policy gates, and output contracts.
 
 Repeated labels are pattern-scoped by path, so `Strategist`, `Verifier`, `Responder`, and similar names can carry different goals in different harness patterns without colliding.
@@ -53,6 +53,7 @@ Copy the agent Markdown file for the pattern you are building into the target ho
 | [private-shared-federation](private-shared-federation/) | Local confidential work -> distilled non-sensitive pattern -> signed sharing -> peer validation | [Local Distiller](private-shared-federation/agents/local-distiller.md), [Sensitivity Filter](private-shared-federation/agents/sensitivity-filter.md), [Signer](private-shared-federation/agents/signer.md), [Federation Publisher](private-shared-federation/agents/federation-publisher.md), [Peer Validator](private-shared-federation/agents/peer-validator.md) |
 | [storm-article-synthesis](storm-article-synthesis/) | Discover perspectives -> ask multi-perspective questions -> retrieve and ground -> outline -> write sections -> audit citations | [Perspective Discoverer](storm-article-synthesis/agents/perspective-discoverer.md), [Question Asker](storm-article-synthesis/agents/question-asker.md), [Grounded Expert](storm-article-synthesis/agents/grounded-expert.md), [Outline Architect](storm-article-synthesis/agents/outline-architect.md), [Section Writer](storm-article-synthesis/agents/section-writer.md), [Citation Auditor](storm-article-synthesis/agents/citation-auditor.md) |
 | [compilot-loop-autoscheduling](compilot-loop-autoscheduling/) | Analyze loop -> propose schedule -> legality gate -> compile and benchmark -> feed back and keep best | [Loop Analyzer](compilot-loop-autoscheduling/agents/loop-analyzer.md), [Schedule Proposer](compilot-loop-autoscheduling/agents/schedule-proposer.md), [Legality Checker](compilot-loop-autoscheduling/agents/legality-checker.md), [Compiler Benchmarker](compilot-loop-autoscheduling/agents/compiler-benchmarker.md), [Feedback Coordinator](compilot-loop-autoscheduling/agents/feedback-coordinator.md) |
+| [cognitive-metacognitive-loop](cognitive-metacognitive-loop/) | Perceive -> attend -> select strategy -> execute -> evaluate -> adapt and remember | [Perception Agent](cognitive-metacognitive-loop/agents/perception-agent.md), [Attention Router](cognitive-metacognitive-loop/agents/attention-router.md), [Strategy Planner](cognitive-metacognitive-loop/agents/strategy-planner.md), [Execution Agent](cognitive-metacognitive-loop/agents/execution-agent.md), [Evaluation Monitor](cognitive-metacognitive-loop/agents/evaluation-monitor.md), [Memory Recorder](cognitive-metacognitive-loop/agents/memory-recorder.md) |
 
 ## Repeated Labels
 

@@ -45,3 +45,4 @@ Status: all documented patterns currently have generated example artifacts.
 - [x] `private-shared-federation` - Federation pattern for private/shared learning - `patterns/private-shared-federation/README.md`
 - [x] `storm-article-synthesis` - STORM multi-perspective article synthesis pattern - `patterns/storm-article-synthesis/README.md`
 - [x] `compilot-loop-autoscheduling` - ComPilot loop auto-scheduling - `patterns/compilot-loop-autoscheduling/README.md`
+- [x] `cognitive-metacognitive-loop` - Cognitive metacognitive loop - `patterns/cognitive-metacognitive-loop/README.md`

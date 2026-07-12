@@ -1,6 +1,6 @@
 {
   "source": "local_example_catalog",
-  "example_count": 36,
+  "example_count": 37,
   "examples": [
     {
       "id": "minimal-base-harness",
@@ -1640,6 +1640,83 @@
         "url": "https://arxiv.org/abs/2511.00592"
       },
       "source_heading": "ComPilot loop auto-scheduling"
+    },
+    {
+      "id": "cognitive-metacognitive-loop",
+      "section": "agentic",
+      "number": 17,
+      "name": "Cognitive metacognitive loop",
+      "pattern": "Perceive -> attend -> select strategy -> execute -> evaluate -> adapt and remember",
+      "scenario": "A troubleshooting agent must avoid repeating a failed timeout fix and diagnose an intermittent deployment failure under load.",
+      "agents": [
+        "Perception Agent",
+        "Attention Router",
+        "Strategy Planner",
+        "Execution Agent",
+        "Evaluation Monitor",
+        "Memory Recorder"
+      ],
+      "workflow_steps": [
+        "Classify the task, ambiguity, complexity, and initial confidence in a shared cognitive workspace.",
+        "Route attention to memory, planning, execution, evaluation, or metaplanning from active signals.",
+        "Select a reasoning strategy that fits the task and excludes already failed approaches.",
+        "Execute one bounded step and record evidence, relevance, quality, and tool outcomes.",
+        "Evaluate progress, contradictions, confidence trend, stagnation, and knowledge coverage.",
+        "Present only confidence-gated output; otherwise gather more evidence, pivot strategy, or signal uncertainty.",
+        "Record a distilled non-sensitive lesson after the cycle terminates."
+      ],
+      "policy_gates": [
+        "Responses below the presentation threshold must gather more evidence or explicitly signal uncertainty.",
+        "Stagnation must trigger metaplanning and failed approaches must not be repeated.",
+        "Outside the known knowledge boundary, the agent must degrade gracefully instead of guessing.",
+        "Memory records only evaluated, distilled, non-sensitive lessons."
+      ],
+      "input": {
+        "task": "diagnose intermittent deployment pipeline failures that occur only during high traffic",
+        "prior_attempts": [
+          "increased timeout thresholds without improvement"
+        ],
+        "signals": [
+          "high_traffic_correlation",
+          "standard_timeout_fix_failed"
+        ],
+        "available_strategies": [
+          "fast_path",
+          "react",
+          "hypothesis_test",
+          "tree_of_thought",
+          "reflexion"
+        ],
+        "confidence_thresholds": {
+          "present": 0.6,
+          "gather_more": 0.3
+        },
+        "budget": {
+          "max_iterations": 5,
+          "max_tool_calls": 10
+        }
+      },
+      "output_contract": {
+        "artifact_type": "cognitive_cycle_record",
+        "required_fields": [
+          "perception",
+          "cognitive_workspace",
+          "attention_route",
+          "selected_strategy",
+          "execution_evidence",
+          "evaluation",
+          "confidence_gate_decision",
+          "stagnation_response",
+          "knowledge_boundary",
+          "memory_update"
+        ]
+      },
+      "reference": {
+        "system": "AI Agents in Action",
+        "title": "AI Agents in Action, Second Edition - chapter 10: Exploring the cognitive agent that thinks, monitors, and adapts",
+        "author": "Micheal Lanham"
+      },
+      "source_heading": "Cognitive metacognitive loop"
     }
   ]
 }
