@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import math
 from typing import Any
 
 
@@ -11,6 +12,14 @@ TRUSTED_CONFIDENCE_DECISIONS = (
     "pivot_strategy",
     "signal_uncertainty",
 )
+TERMINAL_CONFIDENCE_DECISIONS = {"present", "signal_uncertainty"}
+NONTERMINAL_CONFIDENCE_DECISIONS = {"gather_more_evidence", "pivot_strategy"}
+TRUSTED_POLICY_GATE_CHECKS = {
+    "confidence_gate",
+    "stagnation_recovery",
+    "knowledge_boundary",
+    "memory_safety",
+}
 
 
 def canonical_json(value: Any) -> str:
@@ -207,78 +216,195 @@ def field_value(field: str, input_payload: dict[str, Any], flow: dict[str, Any])
     }
 
 
+def non_empty_text(value: Any) -> bool:
+    return isinstance(value, str) and bool(value.strip())
+
+
+def require_object(value: Any, label: str) -> dict[str, Any]:
+    if not isinstance(value, dict):
+        raise ValueError(f"{label} must be an object")
+    return value
+
+
+def require_text(value: Any, label: str) -> str:
+    if not non_empty_text(value):
+        raise ValueError(f"{label} must be a non-empty string")
+    return value
+
+
+def require_string_list(value: Any, label: str, *, allow_empty: bool = False) -> list[str]:
+    if (
+        not isinstance(value, list)
+        or any(not non_empty_text(item) for item in value)
+        or (not allow_empty and not value)
+    ):
+        raise ValueError(f"{label} must be a list of strings")
+    return value
+
+
+def require_probability(value: Any, label: str) -> float:
+    if isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value):
+        raise ValueError(f"{label} confidence must be a real finite number")
+    if not 0 <= value <= 1:
+        raise ValueError(f"{label} confidence must be between 0 and 1")
+    return value
+
+
+def require_nonnegative_int(value: Any, label: str) -> int:
+    if isinstance(value, bool) or not isinstance(value, int) or value < 0:
+        raise ValueError(f"{label} must be a non-bool integer greater than or equal to zero")
+    return value
+
+
 def validate_example_fields(
     fields: dict[str, Any],
     input_payload: dict[str, Any],
     example_output: dict[str, Any],
 ) -> None:
-    decision = fields.get("confidence_gate_decision")
-    if decision is not None:
-        if decision.get("decision_enum") != list(TRUSTED_CONFIDENCE_DECISIONS):
-            raise ValueError("confidence gate must declare the trusted confidence decision enum")
-        if decision.get("decision") not in TRUSTED_CONFIDENCE_DECISIONS:
-            raise ValueError("confidence gate decision must use the trusted confidence decision enum")
-        observed = decision.get("observed_confidence")
-        threshold = decision.get("presentation_threshold")
-        if not isinstance(observed, (int, float)) or not isinstance(threshold, (int, float)):
-            raise ValueError("confidence gate decision requires numeric observed confidence and threshold")
-        threshold_satisfied = observed >= threshold
-        if decision.get("threshold_satisfied") is not threshold_satisfied:
-            raise ValueError("confidence gate threshold comparison is inconsistent")
-        declared_threshold = input_payload.get("confidence_thresholds", {}).get("present")
-        if declared_threshold is not None and threshold != declared_threshold:
-            raise ValueError("confidence gate must use the input presentation threshold")
-        if decision["decision"] == "present" and not threshold_satisfied:
+    required_explicit_fields = example_output.get("required_explicit_fields", [])
+    for field in required_explicit_fields:
+        require_object(fields.get(field), field)
+
+    prior_attempts = require_string_list(
+        input_payload.get("prior_attempts"),
+        "prior_attempts",
+        allow_empty=True,
+    )
+    available_strategies = require_string_list(
+        input_payload.get("available_strategies"),
+        "available_strategies",
+    )
+
+    perception = require_object(fields.get("perception"), "perception")
+    require_probability(perception.get("initial_confidence"), "initial")
+
+    attention = require_object(fields.get("attention_route"), "attention_route")
+    destination = require_text(attention.get("destination"), "attention_route.destination")
+
+    strategy = require_object(fields.get("selected_strategy"), "selected_strategy")
+    strategy_name = require_text(strategy.get("strategy"), "selected_strategy.strategy")
+    strategy_exclusions = require_string_list(
+        strategy.get("excluded_failed_approaches"),
+        "excluded_failed_approaches",
+        allow_empty=not prior_attempts,
+    )
+    require_text(strategy.get("bounded_step"), "selected_strategy.bounded_step")
+
+    execution = require_object(fields.get("execution_evidence"), "execution_evidence")
+    tool_calls_used = require_nonnegative_int(
+        execution.get("tool_calls_used"),
+        "execution_evidence.tool_calls_used",
+    )
+    budget = require_object(input_payload.get("budget"), "budget")
+    max_tool_calls = require_nonnegative_int(budget.get("max_tool_calls"), "budget.max_tool_calls")
+    if tool_calls_used > max_tool_calls:
+        raise ValueError("execution_evidence.tool_calls_used exceeds max_tool_calls")
+
+    evaluation = require_object(fields.get("evaluation"), "evaluation")
+    if not isinstance(evaluation.get("terminal"), bool):
+        raise ValueError("evaluation.terminal must be boolean")
+    evaluation_confidence = require_probability(
+        evaluation.get("observed_confidence"),
+        "evaluation observed",
+    )
+    confidence_trend = evaluation.get("confidence_trend")
+    if not isinstance(confidence_trend, list) or not confidence_trend:
+        raise ValueError("evaluation.confidence_trend must be a list of confidence values")
+    for value in confidence_trend:
+        require_probability(value, "evaluation trend")
+
+    decision = require_object(fields.get("confidence_gate_decision"), "confidence_gate_decision")
+    if decision.get("decision_enum") != list(TRUSTED_CONFIDENCE_DECISIONS):
+        raise ValueError("confidence gate must declare the trusted confidence decision enum")
+    decision_name = decision.get("decision")
+    if decision_name not in TRUSTED_CONFIDENCE_DECISIONS:
+        raise ValueError("confidence gate decision must use the trusted confidence decision enum")
+    observed = require_probability(decision.get("observed_confidence"), "observed")
+    threshold = require_probability(decision.get("presentation_threshold"), "presentation threshold")
+    if evaluation_confidence != observed:
+        raise ValueError("evaluation confidence must equal confidence gate confidence")
+    threshold_satisfied = observed >= threshold
+    if not isinstance(decision.get("threshold_satisfied"), bool):
+        raise ValueError("confidence_gate_decision.threshold_satisfied must be boolean")
+    if decision["threshold_satisfied"] is not threshold_satisfied:
+        raise ValueError("confidence gate threshold comparison is inconsistent")
+    confidence_thresholds = require_object(
+        input_payload.get("confidence_thresholds"),
+        "confidence_thresholds",
+    )
+    for name, value in confidence_thresholds.items():
+        require_probability(value, str(name))
+    declared_threshold = require_probability(
+        confidence_thresholds.get("present"),
+        "declared presentation threshold",
+    )
+    if threshold != declared_threshold:
+        raise ValueError("confidence gate must use the input presentation threshold")
+    if decision_name == "present":
+        if not threshold_satisfied:
             raise ValueError("output cannot be presented below the presentation threshold")
+    if decision_name in TERMINAL_CONFIDENCE_DECISIONS and evaluation["terminal"] is not True:
+        raise ValueError("terminal decision requires a terminal evaluation")
+    if decision_name in NONTERMINAL_CONFIDENCE_DECISIONS and evaluation["terminal"] is not False:
+        raise ValueError("nonterminal decision requires a nonterminal evaluation")
 
     recovery_required = example_output.get("stagnation_recovery_required", False)
     if not isinstance(recovery_required, bool):
         raise ValueError("stagnation_recovery_required must be boolean")
-    stagnation = fields.get("stagnation_response")
+    stagnation = require_object(fields.get("stagnation_response"), "stagnation_response")
     if recovery_required:
-        if not isinstance(stagnation, dict) or stagnation.get("detected") is not True:
+        if stagnation.get("detected") is not True:
             raise ValueError("stagnation recovery requires detected=true")
-    if isinstance(stagnation, dict) and (recovery_required or stagnation.get("detected") is True):
         if stagnation.get("route") != "metaplanning":
             raise ValueError("stagnation must route to metaplanning")
-        excluded = stagnation.get("excluded_failed_approaches", [])
-        missing_exclusions = [
-            attempt for attempt in input_payload.get("prior_attempts", [])
-            if attempt not in excluded
-        ]
-        if missing_exclusions:
-            raise ValueError("stagnation response must exclude every failed approach")
+        if destination != "metaplanning":
+            raise ValueError("attention route must target metaplanning during stagnation recovery")
+        if strategy_name in prior_attempts:
+            raise ValueError("selected strategy must not repeat a prior attempt")
+        if strategy_name not in available_strategies:
+            raise ValueError("selected strategy must be available")
+        stagnation_exclusions = require_string_list(
+            stagnation.get("excluded_failed_approaches"),
+            "excluded_failed_approaches",
+            allow_empty=not prior_attempts,
+        )
+        if any(attempt not in stagnation_exclusions for attempt in prior_attempts):
+            raise ValueError("stagnation response must exclude every prior attempt")
+        if any(attempt not in strategy_exclusions for attempt in prior_attempts):
+            raise ValueError("selected strategy exclusions must cover every prior attempt")
 
-    boundary = fields.get("knowledge_boundary")
-    if boundary is not None:
-        for partition in ["supported_claims", "uncertain_claims", "out_of_bound_claims"]:
-            if not boundary.get(partition):
-                raise ValueError(f"knowledge boundary requires a non-empty {partition} partition")
+    boundary = require_object(fields.get("knowledge_boundary"), "knowledge_boundary")
+    for partition in ["supported_claims", "uncertain_claims", "out_of_bound_claims"]:
+        require_string_list(boundary.get(partition), partition)
+    if not non_empty_text(boundary.get("graceful_degradation")):
+        raise ValueError("knowledge boundary requires non-empty graceful_degradation")
 
-    memory = fields.get("memory_update")
-    if memory is not None:
-        required_memory_values = [
-            "terminal_evaluation_reference",
-            "distilled_lesson",
-            "applicability_conditions",
-            "uncertainty",
-            "excluded_sensitive_raw_data",
-        ]
-        for key in required_memory_values:
-            if not memory.get(key):
-                raise ValueError(f"memory update requires {key}")
-        evaluation = fields.get("evaluation", {})
-        if not evaluation.get("terminal"):
-            raise ValueError("memory update requires a terminal evaluation")
-        if memory["terminal_evaluation_reference"] != evaluation.get("evaluation_id"):
+    memory = require_object(fields.get("memory_update"), "memory_update")
+    record_status = require_text(memory.get("record_status"), "memory_update.record_status")
+    if decision_name in NONTERMINAL_CONFIDENCE_DECISIONS and record_status == "stored":
+        raise ValueError("nonterminal decision cannot store memory")
+    if record_status == "stored":
+        if evaluation["terminal"] is not True:
+            raise ValueError("stored memory requires a terminal evaluation")
+        if decision_name not in TERMINAL_CONFIDENCE_DECISIONS:
+            raise ValueError("stored memory requires a terminal decision")
+        evaluation_id = require_text(evaluation.get("evaluation_id"), "evaluation.evaluation_id")
+        memory_reference = require_text(
+            memory.get("terminal_evaluation_reference"),
+            "memory_update.terminal_evaluation_reference",
+        )
+        if memory_reference != evaluation_id:
             raise ValueError("memory update must reference the terminal evaluation")
+        require_text(memory.get("distilled_lesson"), "memory_update.distilled_lesson")
+        require_string_list(memory.get("applicability_conditions"), "applicability_conditions")
+        require_string_list(memory.get("uncertainty"), "uncertainty")
+        require_string_list(
+            memory.get("excluded_sensitive_raw_data"),
+            "excluded_sensitive_raw_data",
+        )
 
 
-def non_empty_text(value: Any) -> bool:
-    return isinstance(value, str) and bool(value.strip())
-
-
-def explicit_policy_verdict(
+def validate_policy_declaration(
     flow: dict[str, Any],
     example_output: dict[str, Any],
     explicit_fields: dict[str, Any],
@@ -286,6 +412,9 @@ def explicit_policy_verdict(
     verdict = example_output.get("policy_verdict")
     if verdict is None:
         return None
+    verdict = require_object(verdict, "example_output.policy_verdict")
+    if not isinstance(verdict.get("allowed"), bool):
+        raise ValueError("explicit policy verdict allowed must be boolean")
     if verdict.get("gates_checked") != flow["policy_gates"]:
         raise ValueError("explicit policy verdict must check every declared gate in order")
     if verdict.get("allowed"):
@@ -303,35 +432,64 @@ def explicit_policy_verdict(
                 f"allowed policy verdict is missing required explicit fields: {sorted(missing_explicit_fields)}"
             )
 
-        evidence = verdict.get("allow_evidence", [])
-        if not isinstance(evidence, list) or len(evidence) != len(flow["policy_gates"]):
-            raise ValueError(
-                "allowed policy verdict requires exactly one evidence record per declared gate"
-            )
-        for gate in flow["policy_gates"]:
-            gate_evidence = [
-                item
-                for item in evidence
-                if isinstance(item, dict) and item.get("gate") == gate
-            ]
-            if len(gate_evidence) != 1:
-                raise ValueError(
-                    "allowed policy verdict requires exactly one evidence record per declared gate"
-                )
-            if not non_empty_text(gate_evidence[0].get("evidence")):
-                raise ValueError("each policy gate requires non-empty evidence")
+    blocked_actions = verdict.get("blocked_actions")
+    if not isinstance(blocked_actions, list) or not blocked_actions:
+        raise ValueError("explicit policy verdict must record blocked unsafe actions")
+    for item in blocked_actions:
+        if (
+            not isinstance(item, dict)
+            or not non_empty_text(item.get("action"))
+            or not non_empty_text(item.get("reason"))
+        ):
+            raise ValueError("each blocked action requires a non-empty action and reason")
+    return {key: value for key, value in verdict.items() if key != "allow_evidence"}
 
-        blocked_actions = verdict.get("blocked_actions")
-        if not isinstance(blocked_actions, list) or not blocked_actions:
-            raise ValueError("allowed policy verdict must record blocked unsafe actions")
-        for item in blocked_actions:
-            if (
-                not isinstance(item, dict)
-                or not non_empty_text(item.get("action"))
-                or not non_empty_text(item.get("reason"))
-            ):
-                raise ValueError("each blocked action requires a non-empty action and reason")
-    return verdict
+
+def derive_policy_evidence(
+    flow: dict[str, Any],
+    fields: dict[str, Any],
+    example_output: dict[str, Any],
+) -> list[dict[str, str]]:
+    checks = example_output.get("policy_gate_checks")
+    if not isinstance(checks, list) or len(checks) != len(flow["policy_gates"]):
+        raise ValueError("policy_gate_checks must align one-to-one with policy_gates")
+    kinds = []
+    evidence = []
+    for gate, check in zip(flow["policy_gates"], checks):
+        check = require_object(check, "policy gate check")
+        kind = check.get("kind")
+        if kind not in TRUSTED_POLICY_GATE_CHECKS or kind in kinds:
+            raise ValueError("policy_gate_checks must use unique trusted check kinds")
+        kinds.append(kind)
+        if kind == "confidence_gate":
+            decision = fields["confidence_gate_decision"]
+            detail = (
+                f"decision={decision['decision']}; observed_confidence={decision['observed_confidence']}; "
+                f"presentation_threshold={decision['presentation_threshold']}; "
+                f"threshold_satisfied={decision['threshold_satisfied']}"
+            )
+        elif kind == "stagnation_recovery":
+            stagnation = fields["stagnation_response"]
+            detail = (
+                f"detected={stagnation['detected']}; route={stagnation['route']}; "
+                f"excluded_failed_approaches={len(stagnation['excluded_failed_approaches'])}"
+            )
+        elif kind == "knowledge_boundary":
+            boundary = fields["knowledge_boundary"]
+            detail = (
+                f"supported={len(boundary['supported_claims'])}; uncertain={len(boundary['uncertain_claims'])}; "
+                f"out_of_bound={len(boundary['out_of_bound_claims'])}; "
+                f"graceful_degradation={boundary['graceful_degradation']}"
+            )
+        else:
+            memory = fields["memory_update"]
+            detail = (
+                f"record_status={memory['record_status']}; "
+                f"terminal_evaluation_reference={memory.get('terminal_evaluation_reference', 'none')}; "
+                f"excluded_sensitive_raw_data={len(memory.get('excluded_sensitive_raw_data', []))}"
+            )
+        evidence.append({"gate": gate, "kind": kind, "evidence": detail})
+    return evidence
 
 
 def build_output(flow: dict[str, Any], input_payload: dict[str, Any]) -> dict[str, Any]:
@@ -346,7 +504,7 @@ def build_output(flow: dict[str, Any], input_payload: dict[str, Any]) -> dict[st
     unexpected_fields = set(explicit_fields) - set(required_fields)
     if unexpected_fields:
         raise ValueError(f"Explicit values provided for non-contract fields: {sorted(unexpected_fields)}")
-    policy_verdict = explicit_policy_verdict(flow, example_output, explicit_fields)
+    policy_verdict = validate_policy_declaration(flow, example_output, explicit_fields)
     fields = {
         field: explicit_fields[field] if field in explicit_fields else field_value(field, input_payload, flow)
         for field in required_fields
@@ -360,11 +518,23 @@ def build_output(flow: dict[str, Any], input_payload: dict[str, Any]) -> dict[st
             "blocked_actions": [],
             "notes": "Example runner accepts the artifact only after every declared policy gate is represented.",
         }
+    elif policy_verdict["allowed"]:
+        policy_verdict["allow_evidence"] = derive_policy_evidence(
+            flow,
+            fields,
+            example_output,
+        )
+    allowed = policy_verdict["allowed"]
+    subject = scenario_subject(input_payload, flow)
     output = {
         "artifact_type": flow["output_contract"]["artifact_type"],
         "example_id": flow["id"],
-        "status": "ready_for_review",
-        "summary": f"{flow['name']} example completed for {scenario_subject(input_payload, flow)}.",
+        "status": "ready_for_review" if allowed else "blocked_by_policy",
+        "summary": (
+            f"{flow['name']} example completed for {subject}."
+            if allowed
+            else f"{flow['name']} example blocked by policy for {subject}."
+        ),
         "fields": fields,
         "policy_verdict": policy_verdict,
     }
@@ -373,6 +543,6 @@ def build_output(flow: dict[str, Any], input_payload: dict[str, Any]) -> dict[st
         "input_hash": digest(input_payload),
         "flow_hash": digest(flow),
         "output_hash": digest(output),
-        "reviewer_verdict": "accepted_for_example",
+        "reviewer_verdict": "accepted_for_example" if allowed else "rejected_by_policy",
     }
     return output

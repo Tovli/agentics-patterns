@@ -44,6 +44,10 @@ A troubleshooting agent must avoid repeating a failed timeout fix and diagnose a
 
 Use `input.json` as the concrete scenario payload for this example.
 
+## Deterministic Example Fixture
+
+`flow.json`'s `example_output` is a deterministic fixture and validator input; it is not proof that a live cognitive cycle executed.
+
 ## Run
 
 From this directory:

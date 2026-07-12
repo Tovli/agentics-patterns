@@ -142,31 +142,35 @@
         "reason": "memory accepts only evaluated, distilled, non-sensitive lessons"
       }
     ],
+    "notes": "Final output is allowed only as a bounded recommendation because each gate has concrete evidence and unsafe alternatives were blocked.",
     "allow_evidence": [
       {
         "gate": "Responses below the presentation threshold must gather more evidence or explicitly signal uncertainty.",
-        "evidence": "observed confidence 0.72 is explicitly compared with and meets the 0.6 presentation threshold"
+        "kind": "confidence_gate",
+        "evidence": "decision=present; observed_confidence=0.72; presentation_threshold=0.6; threshold_satisfied=True"
       },
       {
         "gate": "Stagnation must trigger metaplanning and failed approaches must not be repeated.",
-        "evidence": "stagnation routes to metaplanning and excludes the failed timeout-threshold increase"
+        "kind": "stagnation_recovery",
+        "evidence": "detected=True; route=metaplanning; excluded_failed_approaches=1"
       },
       {
         "gate": "Outside the known knowledge boundary, the agent must degrade gracefully instead of guessing.",
-        "evidence": "supported, uncertain, and out-of-bound claims are partitioned and the root-cause claim is withheld"
+        "kind": "knowledge_boundary",
+        "evidence": "supported=2; uncertain=1; out_of_bound=1; graceful_degradation=present the bounded diagnostic plan and explicitly withhold an unverified root-cause claim"
       },
       {
         "gate": "Memory records only evaluated, distilled, non-sensitive lessons.",
-        "evidence": "memory references cycle-5-terminal-evaluation and excludes raw logs, identifiers, secrets, and customer data"
+        "kind": "memory_safety",
+        "evidence": "record_status=stored; terminal_evaluation_reference=cycle-5-terminal-evaluation; excluded_sensitive_raw_data=3"
       }
-    ],
-    "notes": "Final output is allowed only as a bounded recommendation because each gate has concrete evidence and unsafe alternatives were blocked."
+    ]
   },
   "receipt": {
     "required": true,
     "input_hash": "sha256:c6e0248f65089be2",
-    "flow_hash": "sha256:9dfb45e386881246",
-    "output_hash": "sha256:0d476eed0496443a",
+    "flow_hash": "sha256:7c5d6450e84697c5",
+    "output_hash": "sha256:3226df00e763baed",
     "reviewer_verdict": "accepted_for_example"
   }
 }

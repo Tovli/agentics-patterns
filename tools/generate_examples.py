@@ -1001,13 +1001,24 @@ SPECS = [
         },
         example_output={
             "required_explicit_fields": [
+                "perception",
+                "cognitive_workspace",
+                "attention_route",
+                "selected_strategy",
+                "execution_evidence",
+                "evaluation",
                 "confidence_gate_decision",
                 "stagnation_response",
                 "knowledge_boundary",
-                "evaluation",
                 "memory_update",
             ],
             "stagnation_recovery_required": True,
+            "policy_gate_checks": [
+                {"kind": "confidence_gate"},
+                {"kind": "stagnation_recovery"},
+                {"kind": "knowledge_boundary"},
+                {"kind": "memory_safety"},
+            ],
             "field_values": {
                 "perception": {
                     "responsible_agent": "Perception Agent",
@@ -1130,24 +1141,6 @@ SPECS = [
                         "reason": "memory accepts only evaluated, distilled, non-sensitive lessons",
                     },
                 ],
-                "allow_evidence": [
-                    {
-                        "gate": "Responses below the presentation threshold must gather more evidence or explicitly signal uncertainty.",
-                        "evidence": "observed confidence 0.72 is explicitly compared with and meets the 0.6 presentation threshold",
-                    },
-                    {
-                        "gate": "Stagnation must trigger metaplanning and failed approaches must not be repeated.",
-                        "evidence": "stagnation routes to metaplanning and excludes the failed timeout-threshold increase",
-                    },
-                    {
-                        "gate": "Outside the known knowledge boundary, the agent must degrade gracefully instead of guessing.",
-                        "evidence": "supported, uncertain, and out-of-bound claims are partitioned and the root-cause claim is withheld",
-                    },
-                    {
-                        "gate": "Memory records only evaluated, distilled, non-sensitive lessons.",
-                        "evidence": "memory references cycle-5-terminal-evaluation and excludes raw logs, identifiers, secrets, and customer data",
-                    },
-                ],
                 "notes": "Final output is allowed only as a bounded recommendation because each gate has concrete evidence and unsafe alternatives were blocked.",
             },
         },
@@ -1236,6 +1229,16 @@ def reference_section(entry: dict) -> str:
     return f"\n## Reference\n\n{line}\n"
 
 
+def example_fixture_section(entry: dict) -> str:
+    if entry.get("_example_output") is None:
+        return ""
+    return (
+        "\n## Deterministic Example Fixture\n\n"
+        "`flow.json`'s `example_output` is a deterministic fixture and validator input; "
+        "it is not proof that a live cognitive cycle executed.\n"
+    )
+
+
 def readme(entry: dict) -> str:
     fields = entry["output_contract"]["required_fields"]
     return f"""# {entry["name"]}
@@ -1265,7 +1268,7 @@ Pattern: **{entry["pattern"]}**
 ## Input
 
 Use `input.json` as the concrete scenario payload for this example.
-
+{example_fixture_section(entry)}
 ## Run
 
 From this directory:

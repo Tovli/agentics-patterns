@@ -73,16 +73,24 @@ class ExamplesCatalogTest(unittest.TestCase):
         example_output = flow["example_output"]
         self.assertIn("required_explicit_fields", example_output)
         self.assertEqual(
-            {
-                "confidence_gate_decision",
-                "stagnation_response",
-                "knowledge_boundary",
-                "evaluation",
-                "memory_update",
-            },
+            set(flow["output_contract"]["required_fields"]),
             set(example_output["required_explicit_fields"]),
         )
         self.assertTrue(example_output["stagnation_recovery_required"])
+        expected_check_kinds = [
+            "confidence_gate",
+            "stagnation_recovery",
+            "knowledge_boundary",
+            "memory_safety",
+        ]
+        self.assertEqual(
+            expected_check_kinds,
+            [item["kind"] for item in example_output["policy_gate_checks"]],
+        )
+
+        readme = (example_dir / "README.md").read_text(encoding="utf-8")
+        self.assertIn("deterministic fixture and validator input", readme)
+        self.assertIn("not proof that a live cognitive cycle executed", readme)
 
         decision = fields["confidence_gate_decision"]
         trusted_decisions = [
@@ -141,10 +149,16 @@ class ExamplesCatalogTest(unittest.TestCase):
         self.assertTrue(verdict["allowed"])
         self.assertTrue(verdict["blocked_actions"])
         self.assertTrue(verdict["allow_evidence"])
+        self.assertNotIn("allow_evidence", example_output["policy_verdict"])
         self.assertEqual(
-            set(flow["policy_gates"]),
-            {item["gate"] for item in verdict["allow_evidence"]},
+            flow["policy_gates"],
+            [item["gate"] for item in verdict["allow_evidence"]],
         )
+        self.assertEqual(
+            expected_check_kinds,
+            [item["kind"] for item in verdict["allow_evidence"]],
+        )
+        self.assertTrue(all(item["evidence"].strip() for item in verdict["allow_evidence"]))
         blocked_actions = " ".join(item["action"] for item in verdict["blocked_actions"])
         self.assertIn("timeout", blocked_actions)
         self.assertIn("root cause", blocked_actions)
@@ -155,6 +169,9 @@ class ExamplesCatalogTest(unittest.TestCase):
         bypassed_decision = bypassed_confidence["example_output"]["field_values"]["confidence_gate_decision"]
         bypassed_decision["observed_confidence"] = 0.2
         bypassed_decision["threshold_satisfied"] = False
+        bypassed_confidence["example_output"]["field_values"]["evaluation"][
+            "observed_confidence"
+        ] = 0.2
         with self.assertRaisesRegex(ValueError, "cannot be presented below"):
             build_output(bypassed_confidence, input_payload)
 
@@ -162,11 +179,6 @@ class ExamplesCatalogTest(unittest.TestCase):
         bypassed_stagnation["example_output"]["field_values"]["stagnation_response"]["route"] = "execution"
         with self.assertRaisesRegex(ValueError, "stagnation must route to metaplanning"):
             build_output(bypassed_stagnation, input_payload)
-
-        bypassed_policy = copy.deepcopy(flow)
-        bypassed_policy["example_output"]["policy_verdict"]["allow_evidence"] = []
-        with self.assertRaisesRegex(ValueError, "exactly one evidence record"):
-            build_output(bypassed_policy, input_payload)
 
         empty_fields = copy.deepcopy(flow)
         empty_fields["example_output"]["field_values"] = {}
@@ -187,11 +199,6 @@ class ExamplesCatalogTest(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "stagnation recovery requires detected=true"):
             build_output(hidden_stagnation, input_payload)
 
-        empty_evidence = copy.deepcopy(flow)
-        empty_evidence["example_output"]["policy_verdict"]["allow_evidence"][0]["evidence"] = ""
-        with self.assertRaisesRegex(ValueError, "non-empty evidence"):
-            build_output(empty_evidence, input_payload)
-
         malformed_block = copy.deepcopy(flow)
         malformed_block["example_output"]["policy_verdict"]["blocked_actions"][0] = {
             "action": "",
@@ -199,6 +206,208 @@ class ExamplesCatalogTest(unittest.TestCase):
         }
         with self.assertRaisesRegex(ValueError, "non-empty action and reason"):
             build_output(malformed_block, input_payload)
+
+        forged_evidence = copy.deepcopy(flow)
+        forged_evidence["example_output"]["policy_verdict"]["allow_evidence"] = [
+            {"gate": "forged", "kind": "forged", "evidence": "allow everything"}
+        ]
+        forged_evidence["example_output"]["field_values"]["attention_route"]["destination"] = "execution"
+        with self.assertRaisesRegex(ValueError, "attention route must target metaplanning"):
+            build_output(forged_evidence, input_payload)
+
+        def repeated_strategy(candidate, payload):
+            repeated = payload["prior_attempts"][0]
+            payload["available_strategies"].append(repeated)
+            candidate["example_output"]["field_values"]["selected_strategy"]["strategy"] = repeated
+
+        def unavailable_strategy(candidate, payload):
+            candidate["example_output"]["field_values"]["selected_strategy"]["strategy"] = "unsupported"
+
+        def gather_more_terminal(candidate, payload):
+            candidate["example_output"]["field_values"]["confidence_gate_decision"]["decision"] = (
+                "gather_more_evidence"
+            )
+
+        def pivot_stores_memory(candidate, payload):
+            candidate["example_output"]["field_values"]["confidence_gate_decision"]["decision"] = (
+                "pivot_strategy"
+            )
+            candidate["example_output"]["field_values"]["evaluation"]["terminal"] = False
+
+        def uncertainty_is_nonterminal(candidate, payload):
+            candidate["example_output"]["field_values"]["confidence_gate_decision"]["decision"] = (
+                "signal_uncertainty"
+            )
+            candidate["example_output"]["field_values"]["evaluation"]["terminal"] = False
+            candidate["example_output"]["field_values"]["memory_update"]["record_status"] = (
+                "not_stored"
+            )
+
+        mutation_cases = [
+            (
+                "attention route bypasses metaplanning",
+                lambda candidate, payload: candidate["example_output"]["field_values"][
+                    "attention_route"
+                ].__setitem__("destination", "execution"),
+                "attention route must target metaplanning",
+            ),
+            (
+                "strategy repeats prior attempt",
+                repeated_strategy,
+                "selected strategy must not repeat a prior attempt",
+            ),
+            (
+                "strategy is unavailable",
+                unavailable_strategy,
+                "selected strategy must be available",
+            ),
+            (
+                "missing graceful degradation",
+                lambda candidate, payload: candidate["example_output"]["field_values"][
+                    "knowledge_boundary"
+                ].__setitem__("graceful_degradation", ""),
+                "knowledge boundary requires non-empty graceful_degradation",
+            ),
+            (
+                "gather more remains terminal and stores memory",
+                gather_more_terminal,
+                "nonterminal decision requires a nonterminal evaluation",
+            ),
+            (
+                "pivot is nonterminal but stores memory",
+                pivot_stores_memory,
+                "nonterminal decision cannot store memory",
+            ),
+            (
+                "terminal uncertainty decision has nonterminal evaluation",
+                uncertainty_is_nonterminal,
+                "terminal decision requires a terminal evaluation",
+            ),
+            (
+                "evaluation confidence mismatch",
+                lambda candidate, payload: candidate["example_output"]["field_values"][
+                    "evaluation"
+                ].__setitem__("observed_confidence", 0.71),
+                "evaluation confidence must equal confidence gate confidence",
+            ),
+            (
+                "boolean confidence",
+                lambda candidate, payload: candidate["example_output"]["field_values"][
+                    "confidence_gate_decision"
+                ].__setitem__("observed_confidence", True),
+                "confidence must be a real finite number",
+            ),
+            (
+                "nonfinite confidence",
+                lambda candidate, payload: candidate["example_output"]["field_values"][
+                    "confidence_gate_decision"
+                ].__setitem__("observed_confidence", float("nan")),
+                "confidence must be a real finite number",
+            ),
+            (
+                "out of range confidence",
+                lambda candidate, payload: candidate["example_output"]["field_values"][
+                    "confidence_gate_decision"
+                ].__setitem__("observed_confidence", 1.1),
+                "confidence must be between 0 and 1",
+            ),
+            (
+                "boolean secondary confidence threshold",
+                lambda candidate, payload: payload["confidence_thresholds"].__setitem__(
+                    "gather_more", True
+                ),
+                "gather_more confidence must be a real finite number",
+            ),
+            (
+                "tool budget overflow",
+                lambda candidate, payload: candidate["example_output"]["field_values"][
+                    "execution_evidence"
+                ].__setitem__("tool_calls_used", payload["budget"]["max_tool_calls"] + 1),
+                "tool_calls_used exceeds max_tool_calls",
+            ),
+            (
+                "knowledge claims use wrong collection type",
+                lambda candidate, payload: candidate["example_output"]["field_values"][
+                    "knowledge_boundary"
+                ].__setitem__("supported_claims", "not-a-list"),
+                "supported_claims must be a list of strings",
+            ),
+            (
+                "prior attempts use wrong collection type",
+                lambda candidate, payload: payload.__setitem__("prior_attempts", "not-a-list"),
+                "prior_attempts must be a list of strings",
+            ),
+            (
+                "strategy exclusions use wrong collection type",
+                lambda candidate, payload: candidate["example_output"]["field_values"][
+                    "selected_strategy"
+                ].__setitem__("excluded_failed_approaches", "not-a-list"),
+                "excluded_failed_approaches must be a list of strings",
+            ),
+            (
+                "memory applicability uses wrong collection type",
+                lambda candidate, payload: candidate["example_output"]["field_values"][
+                    "memory_update"
+                ].__setitem__("applicability_conditions", "not-a-list"),
+                "applicability_conditions must be a list of strings",
+            ),
+        ]
+        for name, mutate, error in mutation_cases:
+            with self.subTest(contradiction=name):
+                candidate = copy.deepcopy(flow)
+                payload = copy.deepcopy(input_payload)
+                mutate(candidate, payload)
+                with self.assertRaisesRegex(ValueError, error):
+                    build_output(candidate, payload)
+
+    def test_cognitive_metacognitive_policy_denial_fails_closed(self):
+        example_dir = PATTERNS / "cognitive-metacognitive-loop"
+        flow = json.loads((example_dir / "flow.json").read_text(encoding="utf-8"))
+        input_payload = json.loads((example_dir / "input.json").read_text(encoding="utf-8"))
+
+        denied = copy.deepcopy(flow)
+        denied["example_output"]["policy_verdict"]["allowed"] = False
+        output = build_output(denied, input_payload)
+        self.assertEqual("blocked_by_policy", output["status"])
+        self.assertEqual("rejected_by_policy", output["receipt"]["reviewer_verdict"])
+        self.assertFalse(output["policy_verdict"]["allowed"])
+        self.assertNotIn("allow_evidence", output["policy_verdict"])
+
+        for invalid_allowed in [None, 0, 1, "true"]:
+            with self.subTest(invalid_allowed=invalid_allowed):
+                invalid = copy.deepcopy(flow)
+                invalid["example_output"]["policy_verdict"]["allowed"] = invalid_allowed
+                with self.assertRaisesRegex(ValueError, "allowed must be boolean"):
+                    build_output(invalid, input_payload)
+
+    def test_cognitive_metacognitive_role_handoffs_are_terminal_safe(self):
+        agents = PATTERNS / "cognitive-metacognitive-loop" / "agents"
+        attention = (agents / "attention-router.md").read_text(encoding="utf-8")
+        perception = (agents / "perception-agent.md").read_text(encoding="utf-8")
+        strategy = (agents / "strategy-planner.md").read_text(encoding="utf-8")
+        execution = (agents / "execution-agent.md").read_text(encoding="utf-8")
+        evaluation = (agents / "evaluation-monitor.md").read_text(encoding="utf-8")
+        memory = (agents / "memory-recorder.md").read_text(encoding="utf-8")
+
+        self.assertIn("- Downstream agents: Attention Router\n", perception)
+        self.assertIn("Upstream agents: Perception Agent, Evaluation Monitor", attention)
+        self.assertIn("Downstream agents: Strategy Planner, Execution Agent, Evaluation Monitor", attention)
+        self.assertIn(
+            "`memory` routes retrieval through the cognitive workspace and Strategy Planner",
+            attention,
+        )
+        self.assertIn("never targets the terminal-only Memory Recorder", attention)
+
+        self.assertIn(
+            "Upstream agents: Perception Agent, Attention Router, Evaluation Monitor",
+            strategy,
+        )
+        self.assertIn("Downstream agents: Execution Agent, Evaluation Monitor", strategy)
+        self.assertIn("never hands off retrieval work to the Memory Recorder", strategy)
+        self.assertIn("- Downstream agents: Evaluation Monitor\n", execution)
+        self.assertIn("Only a terminal decision hands off to the Memory Recorder", evaluation)
+        self.assertIn("- Upstream agents: Evaluation Monitor\n", memory)
+        self.assertIn("reached only by a terminal Evaluation Monitor handoff", memory)
 
     def test_every_example_has_required_artifacts(self):
         catalog = self.load_catalog()

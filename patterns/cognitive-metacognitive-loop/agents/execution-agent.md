@@ -19,7 +19,7 @@ Carry out exactly one approved diagnostic step and capture auditable evidence wi
 
 - Position: 4 of 6
 - Upstream agents: Perception Agent, Attention Router, Strategy Planner
-- Downstream agents: Evaluation Monitor, Memory Recorder
+- Downstream agents: Evaluation Monitor
 
 ## Boundary
 

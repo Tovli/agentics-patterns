@@ -84,13 +84,32 @@
   },
   "example_output": {
     "required_explicit_fields": [
+      "perception",
+      "cognitive_workspace",
+      "attention_route",
+      "selected_strategy",
+      "execution_evidence",
+      "evaluation",
       "confidence_gate_decision",
       "stagnation_response",
       "knowledge_boundary",
-      "evaluation",
       "memory_update"
     ],
     "stagnation_recovery_required": true,
+    "policy_gate_checks": [
+      {
+        "kind": "confidence_gate"
+      },
+      {
+        "kind": "stagnation_recovery"
+      },
+      {
+        "kind": "knowledge_boundary"
+      },
+      {
+        "kind": "memory_safety"
+      }
+    ],
     "field_values": {
       "perception": {
         "responsible_agent": "Perception Agent",
@@ -228,24 +247,6 @@
         {
           "action": "store raw deployment logs or sensitive identifiers",
           "reason": "memory accepts only evaluated, distilled, non-sensitive lessons"
-        }
-      ],
-      "allow_evidence": [
-        {
-          "gate": "Responses below the presentation threshold must gather more evidence or explicitly signal uncertainty.",
-          "evidence": "observed confidence 0.72 is explicitly compared with and meets the 0.6 presentation threshold"
-        },
-        {
-          "gate": "Stagnation must trigger metaplanning and failed approaches must not be repeated.",
-          "evidence": "stagnation routes to metaplanning and excludes the failed timeout-threshold increase"
-        },
-        {
-          "gate": "Outside the known knowledge boundary, the agent must degrade gracefully instead of guessing.",
-          "evidence": "supported, uncertain, and out-of-bound claims are partitioned and the root-cause claim is withheld"
-        },
-        {
-          "gate": "Memory records only evaluated, distilled, non-sensitive lessons.",
-          "evidence": "memory references cycle-5-terminal-evaluation and excludes raw logs, identifiers, secrets, and customer data"
         }
       ],
       "notes": "Final output is allowed only as a bounded recommendation because each gate has concrete evidence and unsafe alternatives were blocked."

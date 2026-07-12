@@ -19,7 +19,7 @@ Classify the task, ambiguity, complexity, initial confidence, and relevant signa
 
 - Position: 1 of 6
 - Upstream agents: None
-- Downstream agents: Attention Router, Strategy Planner, Execution Agent, Evaluation Monitor, Memory Recorder
+- Downstream agents: Attention Router
 
 ## Boundary
 
