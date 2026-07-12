@@ -1,8 +1,11 @@
+import copy
 import json
 import subprocess
 import sys
 import unittest
 from pathlib import Path
+
+from patterns.example_runtime import build_output
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -53,6 +56,96 @@ class ExamplesCatalogTest(unittest.TestCase):
                 (PATTERNS / entry["id"] / "agents" / filename).is_file(),
                 filename,
             )
+
+    def test_cognitive_metacognitive_output_enforces_semantic_gates(self):
+        example_dir = PATTERNS / "cognitive-metacognitive-loop"
+        flow = json.loads((example_dir / "flow.json").read_text(encoding="utf-8"))
+        input_payload = json.loads((example_dir / "input.json").read_text(encoding="utf-8"))
+        result = subprocess.run(
+            [sys.executable, str(RUNNER), flow["id"], "--root", str(PATTERNS)],
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+        output = json.loads(result.stdout)
+        fields = output["fields"]
+
+        decision = fields["confidence_gate_decision"]
+        self.assertIn("decision_enum", decision)
+        self.assertIn(decision["decision"], decision["decision_enum"])
+        self.assertEqual(
+            input_payload["confidence_thresholds"]["present"],
+            decision["presentation_threshold"],
+        )
+        self.assertGreaterEqual(
+            decision["observed_confidence"],
+            decision["presentation_threshold"],
+        )
+        self.assertTrue(decision["threshold_satisfied"])
+
+        stagnation = fields["stagnation_response"]
+        self.assertEqual("metaplanning", stagnation["route"])
+        self.assertEqual(
+            input_payload["prior_attempts"],
+            stagnation["excluded_failed_approaches"],
+        )
+
+        boundary = fields["knowledge_boundary"]
+        for partition in ["supported_claims", "uncertain_claims", "out_of_bound_claims"]:
+            self.assertTrue(boundary[partition], partition)
+
+        expected_owners = {
+            "perception": "Perception Agent",
+            "attention_route": "Attention Router",
+            "selected_strategy": "Strategy Planner",
+            "execution_evidence": "Execution Agent",
+            "evaluation": "Evaluation Monitor",
+            "confidence_gate_decision": "Evaluation Monitor",
+            "stagnation_response": "Evaluation Monitor",
+            "knowledge_boundary": "Evaluation Monitor",
+            "memory_update": "Memory Recorder",
+        }
+        for field, owner in expected_owners.items():
+            with self.subTest(field=field):
+                self.assertEqual(owner, fields[field]["responsible_agent"])
+
+        memory = fields["memory_update"]
+        self.assertEqual(fields["evaluation"]["evaluation_id"], memory["terminal_evaluation_reference"])
+        self.assertTrue(memory["distilled_lesson"])
+        self.assertTrue(memory["applicability_conditions"])
+        self.assertTrue(memory["uncertainty"])
+        self.assertTrue(memory["excluded_sensitive_raw_data"])
+
+        verdict = output["policy_verdict"]
+        self.assertTrue(verdict["allowed"])
+        self.assertTrue(verdict["blocked_actions"])
+        self.assertTrue(verdict["allow_evidence"])
+        self.assertEqual(
+            set(flow["policy_gates"]),
+            {item["gate"] for item in verdict["allow_evidence"]},
+        )
+        blocked_actions = " ".join(item["action"] for item in verdict["blocked_actions"])
+        self.assertIn("timeout", blocked_actions)
+        self.assertIn("root cause", blocked_actions)
+        self.assertIn("raw deployment logs", blocked_actions)
+        self.assertNotIn("represented", verdict["notes"])
+
+        bypassed_confidence = copy.deepcopy(flow)
+        bypassed_decision = bypassed_confidence["example_output"]["field_values"]["confidence_gate_decision"]
+        bypassed_decision["observed_confidence"] = 0.2
+        bypassed_decision["threshold_satisfied"] = False
+        with self.assertRaisesRegex(ValueError, "cannot be presented below"):
+            build_output(bypassed_confidence, input_payload)
+
+        bypassed_stagnation = copy.deepcopy(flow)
+        bypassed_stagnation["example_output"]["field_values"]["stagnation_response"]["route"] = "execution"
+        with self.assertRaisesRegex(ValueError, "stagnation must route to metaplanning"):
+            build_output(bypassed_stagnation, input_payload)
+
+        bypassed_policy = copy.deepcopy(flow)
+        bypassed_policy["example_output"]["policy_verdict"]["allow_evidence"] = []
+        with self.assertRaisesRegex(ValueError, "requires evidence for every gate"):
+            build_output(bypassed_policy, input_payload)
 
     def test_every_example_has_required_artifacts(self):
         catalog = self.load_catalog()
