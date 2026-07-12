@@ -77,16 +77,7 @@ class ExamplesCatalogTest(unittest.TestCase):
             set(example_output["required_explicit_fields"]),
         )
         self.assertTrue(example_output["stagnation_recovery_required"])
-        expected_check_kinds = [
-            "confidence_gate",
-            "stagnation_recovery",
-            "knowledge_boundary",
-            "memory_safety",
-        ]
-        self.assertEqual(
-            expected_check_kinds,
-            [item["kind"] for item in example_output["policy_gate_checks"]],
-        )
+        self.assertNotIn("policy_gate_checks", example_output)
 
         readme = (example_dir / "README.md").read_text(encoding="utf-8")
         self.assertIn("deterministic fixture and validator input", readme)
@@ -144,6 +135,10 @@ class ExamplesCatalogTest(unittest.TestCase):
         self.assertTrue(memory["applicability_conditions"])
         self.assertTrue(memory["uncertainty"])
         self.assertTrue(memory["excluded_sensitive_raw_data"])
+        self.assertLessEqual(
+            fields["evaluation"]["iterations_used"],
+            input_payload["budget"]["max_iterations"],
+        )
 
         verdict = output["policy_verdict"]
         self.assertTrue(verdict["allowed"])
@@ -154,10 +149,28 @@ class ExamplesCatalogTest(unittest.TestCase):
             flow["policy_gates"],
             [item["gate"] for item in verdict["allow_evidence"]],
         )
-        self.assertEqual(
-            expected_check_kinds,
-            [item["kind"] for item in verdict["allow_evidence"]],
-        )
+        expected_gate_bindings = {
+            "Responses below the presentation threshold must gather more evidence or explicitly signal uncertainty.": (
+                "confidence_gate",
+                "observed_confidence",
+            ),
+            "Stagnation must trigger metaplanning and failed approaches must not be repeated.": (
+                "stagnation_recovery",
+                "route=metaplanning",
+            ),
+            "Outside the known knowledge boundary, the agent must degrade gracefully instead of guessing.": (
+                "knowledge_boundary",
+                "graceful_degradation",
+            ),
+            "Memory records only evaluated, distilled, non-sensitive lessons.": (
+                "memory_safety",
+                "record_status=stored",
+            ),
+        }
+        for item in verdict["allow_evidence"]:
+            expected_kind, evidence_token = expected_gate_bindings[item["gate"]]
+            self.assertEqual(expected_kind, item["kind"])
+            self.assertIn(evidence_token, item["evidence"])
         self.assertTrue(all(item["evidence"].strip() for item in verdict["allow_evidence"]))
         blocked_actions = " ".join(item["action"] for item in verdict["blocked_actions"])
         self.assertIn("timeout", blocked_actions)
@@ -172,6 +185,9 @@ class ExamplesCatalogTest(unittest.TestCase):
         bypassed_confidence["example_output"]["field_values"]["evaluation"][
             "observed_confidence"
         ] = 0.2
+        bypassed_confidence["example_output"]["field_values"]["evaluation"][
+            "confidence_trend"
+        ][-1] = 0.2
         with self.assertRaisesRegex(ValueError, "cannot be presented below"):
             build_output(bypassed_confidence, input_payload)
 
@@ -211,9 +227,33 @@ class ExamplesCatalogTest(unittest.TestCase):
         forged_evidence["example_output"]["policy_verdict"]["allow_evidence"] = [
             {"gate": "forged", "kind": "forged", "evidence": "allow everything"}
         ]
-        forged_evidence["example_output"]["field_values"]["attention_route"]["destination"] = "execution"
-        with self.assertRaisesRegex(ValueError, "attention route must target metaplanning"):
+        with self.assertRaisesRegex(ValueError, "unknown policy_verdict keys"):
             build_output(forged_evidence, input_payload)
+
+        injected_binding = copy.deepcopy(flow)
+        injected_binding["example_output"]["policy_gate_checks"] = [
+            {"kind": "memory_safety"},
+            {"kind": "knowledge_boundary"},
+            {"kind": "stagnation_recovery"},
+            {"kind": "confidence_gate"},
+        ]
+        with self.assertRaisesRegex(ValueError, "unknown example_output keys"):
+            build_output(injected_binding, input_payload)
+
+        unknown_gate = copy.deepcopy(flow)
+        unknown_gate["policy_gates"][0] = "Unknown mutable gate"
+        unknown_gate["example_output"]["policy_verdict"]["gates_checked"][0] = (
+            "Unknown mutable gate"
+        )
+        with self.assertRaisesRegex(ValueError, "unknown policy gate"):
+            build_output(unknown_gate, input_payload)
+
+        unknown_memory = copy.deepcopy(flow)
+        unknown_memory["example_output"]["field_values"]["memory_update"][
+            "raw_deployment_logs"
+        ] = ["secret"]
+        with self.assertRaisesRegex(ValueError, "unknown memory_update keys"):
+            build_output(unknown_memory, input_payload)
 
         def repeated_strategy(candidate, payload):
             repeated = payload["prior_attempts"][0]
@@ -242,6 +282,20 @@ class ExamplesCatalogTest(unittest.TestCase):
             candidate["example_output"]["field_values"]["memory_update"]["record_status"] = (
                 "not_stored"
             )
+
+        def nonterminal_persisted_status(candidate, payload):
+            candidate["example_output"]["field_values"]["confidence_gate_decision"]["decision"] = (
+                "pivot_strategy"
+            )
+            candidate["example_output"]["field_values"]["evaluation"]["terminal"] = False
+            candidate["example_output"]["field_values"]["memory_update"]["record_status"] = (
+                "persisted"
+            )
+
+        def evaluation_confidence_mismatch(candidate, payload):
+            evaluation = candidate["example_output"]["field_values"]["evaluation"]
+            evaluation["observed_confidence"] = 0.71
+            evaluation["confidence_trend"][-1] = 0.71
 
         mutation_cases = [
             (
@@ -284,10 +338,13 @@ class ExamplesCatalogTest(unittest.TestCase):
                 "terminal decision requires a terminal evaluation",
             ),
             (
+                "nonterminal cycle uses non-enum persisted memory status",
+                nonterminal_persisted_status,
+                "record_status must be one of stored, rejected",
+            ),
+            (
                 "evaluation confidence mismatch",
-                lambda candidate, payload: candidate["example_output"]["field_values"][
-                    "evaluation"
-                ].__setitem__("observed_confidence", 0.71),
+                evaluation_confidence_mismatch,
                 "evaluation confidence must equal confidence gate confidence",
             ),
             (
@@ -317,6 +374,103 @@ class ExamplesCatalogTest(unittest.TestCase):
                     "gather_more", True
                 ),
                 "gather_more confidence must be a real finite number",
+            ),
+            (
+                "confidence thresholds are reversed",
+                lambda candidate, payload: payload["confidence_thresholds"].__setitem__(
+                    "gather_more", 0.9
+                ),
+                "gather_more threshold must be less than or equal to present threshold",
+            ),
+            (
+                "initial confidence is boolean",
+                lambda candidate, payload: candidate["example_output"]["field_values"][
+                    "perception"
+                ].__setitem__("initial_confidence", True),
+                "initial confidence must be a real finite number",
+            ),
+            (
+                "confidence trend is nonfinite",
+                lambda candidate, payload: candidate["example_output"]["field_values"][
+                    "evaluation"
+                ]["confidence_trend"].__setitem__(0, float("inf")),
+                "evaluation trend confidence must be a real finite number",
+            ),
+            (
+                "confidence trend is out of range",
+                lambda candidate, payload: candidate["example_output"]["field_values"][
+                    "evaluation"
+                ]["confidence_trend"].__setitem__(0, -0.1),
+                "evaluation trend confidence must be between 0 and 1",
+            ),
+            (
+                "confidence trend start mismatches perception",
+                lambda candidate, payload: candidate["example_output"]["field_values"][
+                    "evaluation"
+                ]["confidence_trend"].__setitem__(0, 0.41),
+                "confidence trend must start at initial confidence",
+            ),
+            (
+                "confidence trend end mismatches evaluation",
+                lambda candidate, payload: candidate["example_output"]["field_values"][
+                    "evaluation"
+                ]["confidence_trend"].__setitem__(-1, 0.71),
+                "confidence trend must end at evaluation observed confidence",
+            ),
+            (
+                "boolean max iterations",
+                lambda candidate, payload: payload["budget"].__setitem__("max_iterations", True),
+                "max_iterations must be a positive non-bool integer",
+            ),
+            (
+                "zero max iterations",
+                lambda candidate, payload: payload["budget"].__setitem__("max_iterations", 0),
+                "max_iterations must be a positive non-bool integer",
+            ),
+            (
+                "negative max iterations",
+                lambda candidate, payload: payload["budget"].__setitem__("max_iterations", -1),
+                "max_iterations must be a positive non-bool integer",
+            ),
+            (
+                "string max iterations",
+                lambda candidate, payload: payload["budget"].__setitem__("max_iterations", "5"),
+                "max_iterations must be a positive non-bool integer",
+            ),
+            (
+                "boolean iterations used",
+                lambda candidate, payload: candidate["example_output"]["field_values"][
+                    "evaluation"
+                ].__setitem__("iterations_used", True),
+                "iterations_used must be a positive non-bool integer",
+            ),
+            (
+                "zero iterations used",
+                lambda candidate, payload: candidate["example_output"]["field_values"][
+                    "evaluation"
+                ].__setitem__("iterations_used", 0),
+                "iterations_used must be a positive non-bool integer",
+            ),
+            (
+                "negative iterations used",
+                lambda candidate, payload: candidate["example_output"]["field_values"][
+                    "evaluation"
+                ].__setitem__("iterations_used", -1),
+                "iterations_used must be a positive non-bool integer",
+            ),
+            (
+                "string iterations used",
+                lambda candidate, payload: candidate["example_output"]["field_values"][
+                    "evaluation"
+                ].__setitem__("iterations_used", "3"),
+                "iterations_used must be a positive non-bool integer",
+            ),
+            (
+                "iteration budget overflow",
+                lambda candidate, payload: candidate["example_output"]["field_values"][
+                    "evaluation"
+                ].__setitem__("iterations_used", payload["budget"]["max_iterations"] + 1),
+                "iterations_used exceeds max_iterations",
             ),
             (
                 "tool budget overflow",

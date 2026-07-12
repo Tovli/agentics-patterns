@@ -1013,12 +1013,6 @@ SPECS = [
                 "memory_update",
             ],
             "stagnation_recovery_required": True,
-            "policy_gate_checks": [
-                {"kind": "confidence_gate"},
-                {"kind": "stagnation_recovery"},
-                {"kind": "knowledge_boundary"},
-                {"kind": "memory_safety"},
-            ],
             "field_values": {
                 "perception": {
                     "responsible_agent": "Perception Agent",
@@ -1064,6 +1058,7 @@ SPECS = [
                     "responsible_agent": "Evaluation Monitor",
                     "evaluation_id": "cycle-5-terminal-evaluation",
                     "terminal": True,
+                    "iterations_used": 3,
                     "progress": "the failed timeout path is excluded and the next diagnostic is evidence-bounded",
                     "contradictions": [],
                     "confidence_trend": [0.42, 0.72],

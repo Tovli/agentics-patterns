@@ -14,12 +14,30 @@ TRUSTED_CONFIDENCE_DECISIONS = (
 )
 TERMINAL_CONFIDENCE_DECISIONS = {"present", "signal_uncertainty"}
 NONTERMINAL_CONFIDENCE_DECISIONS = {"gather_more_evidence", "pivot_strategy"}
-TRUSTED_POLICY_GATE_CHECKS = {
-    "confidence_gate",
-    "stagnation_recovery",
-    "knowledge_boundary",
-    "memory_safety",
+TRUSTED_POLICY_GATE_BINDINGS = {
+    "Responses below the presentation threshold must gather more evidence or explicitly signal uncertainty.": "confidence_gate",
+    "Stagnation must trigger metaplanning and failed approaches must not be repeated.": "stagnation_recovery",
+    "Outside the known knowledge boundary, the agent must degrade gracefully instead of guessing.": "knowledge_boundary",
+    "Memory records only evaluated, distilled, non-sensitive lessons.": "memory_safety",
 }
+EXAMPLE_OUTPUT_KEYS = {
+    "required_explicit_fields",
+    "stagnation_recovery_required",
+    "field_values",
+    "policy_verdict",
+}
+POLICY_VERDICT_KEYS = {"allowed", "gates_checked", "blocked_actions", "notes"}
+MEMORY_UPDATE_KEYS = {
+    "responsible_agent",
+    "terminal_evaluation_reference",
+    "distilled_lesson",
+    "applicability_conditions",
+    "uncertainty",
+    "excluded_sensitive_raw_data",
+    "record_status",
+    "rejection_reason",
+}
+MEMORY_RECORD_STATUSES = {"stored", "rejected"}
 
 
 def canonical_json(value: Any) -> str:
@@ -256,6 +274,12 @@ def require_nonnegative_int(value: Any, label: str) -> int:
     return value
 
 
+def require_positive_int(value: Any, label: str) -> int:
+    if isinstance(value, bool) or not isinstance(value, int) or value < 1:
+        raise ValueError(f"{label} must be a positive non-bool integer")
+    return value
+
+
 def validate_example_fields(
     fields: dict[str, Any],
     input_payload: dict[str, Any],
@@ -276,7 +300,7 @@ def validate_example_fields(
     )
 
     perception = require_object(fields.get("perception"), "perception")
-    require_probability(perception.get("initial_confidence"), "initial")
+    initial_confidence = require_probability(perception.get("initial_confidence"), "initial")
 
     attention = require_object(fields.get("attention_route"), "attention_route")
     destination = require_text(attention.get("destination"), "attention_route.destination")
@@ -297,12 +321,22 @@ def validate_example_fields(
     )
     budget = require_object(input_payload.get("budget"), "budget")
     max_tool_calls = require_nonnegative_int(budget.get("max_tool_calls"), "budget.max_tool_calls")
+    max_iterations = require_positive_int(
+        budget.get("max_iterations"),
+        "budget.max_iterations",
+    )
     if tool_calls_used > max_tool_calls:
         raise ValueError("execution_evidence.tool_calls_used exceeds max_tool_calls")
 
     evaluation = require_object(fields.get("evaluation"), "evaluation")
     if not isinstance(evaluation.get("terminal"), bool):
         raise ValueError("evaluation.terminal must be boolean")
+    iterations_used = require_positive_int(
+        evaluation.get("iterations_used"),
+        "evaluation.iterations_used",
+    )
+    if iterations_used > max_iterations:
+        raise ValueError("evaluation.iterations_used exceeds max_iterations")
     evaluation_confidence = require_probability(
         evaluation.get("observed_confidence"),
         "evaluation observed",
@@ -312,6 +346,10 @@ def validate_example_fields(
         raise ValueError("evaluation.confidence_trend must be a list of confidence values")
     for value in confidence_trend:
         require_probability(value, "evaluation trend")
+    if confidence_trend[0] != initial_confidence:
+        raise ValueError("confidence trend must start at initial confidence")
+    if confidence_trend[-1] != evaluation_confidence:
+        raise ValueError("confidence trend must end at evaluation observed confidence")
 
     decision = require_object(fields.get("confidence_gate_decision"), "confidence_gate_decision")
     if decision.get("decision_enum") != list(TRUSTED_CONFIDENCE_DECISIONS):
@@ -340,6 +378,11 @@ def validate_example_fields(
     )
     if threshold != declared_threshold:
         raise ValueError("confidence gate must use the input presentation threshold")
+    gather_more_threshold = confidence_thresholds.get("gather_more")
+    if gather_more_threshold is None:
+        raise ValueError("confidence_thresholds requires gather_more")
+    if gather_more_threshold > declared_threshold:
+        raise ValueError("gather_more threshold must be less than or equal to present threshold")
     if decision_name == "present":
         if not threshold_satisfied:
             raise ValueError("output cannot be presented below the presentation threshold")
@@ -380,9 +423,18 @@ def validate_example_fields(
         raise ValueError("knowledge boundary requires non-empty graceful_degradation")
 
     memory = require_object(fields.get("memory_update"), "memory_update")
+    unknown_memory_keys = set(memory) - MEMORY_UPDATE_KEYS
+    if unknown_memory_keys:
+        raise ValueError(f"unknown memory_update keys: {sorted(unknown_memory_keys)}")
     record_status = require_text(memory.get("record_status"), "memory_update.record_status")
+    if record_status not in MEMORY_RECORD_STATUSES:
+        raise ValueError("memory_update.record_status must be one of stored, rejected")
+    if "rejection_reason" in memory:
+        require_text(memory["rejection_reason"], "memory_update.rejection_reason")
     if decision_name in NONTERMINAL_CONFIDENCE_DECISIONS and record_status == "stored":
         raise ValueError("nonterminal decision cannot store memory")
+    if decision_name in NONTERMINAL_CONFIDENCE_DECISIONS and record_status != "rejected":
+        raise ValueError("nonterminal decision requires rejected memory")
     if record_status == "stored":
         if evaluation["terminal"] is not True:
             raise ValueError("stored memory requires a terminal evaluation")
@@ -413,6 +465,9 @@ def validate_policy_declaration(
     if verdict is None:
         return None
     verdict = require_object(verdict, "example_output.policy_verdict")
+    unknown_verdict_keys = set(verdict) - POLICY_VERDICT_KEYS
+    if unknown_verdict_keys:
+        raise ValueError(f"unknown policy_verdict keys: {sorted(unknown_verdict_keys)}")
     if not isinstance(verdict.get("allowed"), bool):
         raise ValueError("explicit policy verdict allowed must be boolean")
     if verdict.get("gates_checked") != flow["policy_gates"]:
@@ -448,19 +503,12 @@ def validate_policy_declaration(
 def derive_policy_evidence(
     flow: dict[str, Any],
     fields: dict[str, Any],
-    example_output: dict[str, Any],
 ) -> list[dict[str, str]]:
-    checks = example_output.get("policy_gate_checks")
-    if not isinstance(checks, list) or len(checks) != len(flow["policy_gates"]):
-        raise ValueError("policy_gate_checks must align one-to-one with policy_gates")
-    kinds = []
     evidence = []
-    for gate, check in zip(flow["policy_gates"], checks):
-        check = require_object(check, "policy gate check")
-        kind = check.get("kind")
-        if kind not in TRUSTED_POLICY_GATE_CHECKS or kind in kinds:
-            raise ValueError("policy_gate_checks must use unique trusted check kinds")
-        kinds.append(kind)
+    for gate in flow["policy_gates"]:
+        kind = TRUSTED_POLICY_GATE_BINDINGS.get(gate)
+        if kind is None:
+            raise ValueError(f"unknown policy gate: {gate}")
         if kind == "confidence_gate":
             decision = fields["confidence_gate_decision"]
             detail = (
@@ -498,6 +546,18 @@ def build_output(flow: dict[str, Any], input_payload: dict[str, Any]) -> dict[st
     example_output = flow.get("example_output", {})
     if has_example_output and not isinstance(example_output, dict):
         raise ValueError("example_output must be an object")
+    unknown_example_output_keys = set(example_output) - EXAMPLE_OUTPUT_KEYS
+    if unknown_example_output_keys:
+        raise ValueError(f"unknown example_output keys: {sorted(unknown_example_output_keys)}")
+    if has_example_output:
+        required_explicit_fields = require_string_list(
+            example_output.get("required_explicit_fields"),
+            "required_explicit_fields",
+        )
+        if len(required_explicit_fields) != len(set(required_explicit_fields)):
+            raise ValueError("required_explicit_fields must not contain duplicates")
+        if not isinstance(example_output.get("stagnation_recovery_required"), bool):
+            raise ValueError("stagnation_recovery_required must be boolean")
     explicit_fields = example_output.get("field_values", {})
     if not isinstance(explicit_fields, dict):
         raise ValueError("example_output.field_values must be an object")
@@ -522,7 +582,6 @@ def build_output(flow: dict[str, Any], input_payload: dict[str, Any]) -> dict[st
         policy_verdict["allow_evidence"] = derive_policy_evidence(
             flow,
             fields,
-            example_output,
         )
     allowed = policy_verdict["allowed"]
     subject = scenario_subject(input_payload, flow)

@@ -55,6 +55,7 @@
       "responsible_agent": "Evaluation Monitor",
       "evaluation_id": "cycle-5-terminal-evaluation",
       "terminal": true,
+      "iterations_used": 3,
       "progress": "the failed timeout path is excluded and the next diagnostic is evidence-bounded",
       "contradictions": [],
       "confidence_trend": [
@@ -169,8 +170,8 @@
   "receipt": {
     "required": true,
     "input_hash": "sha256:c6e0248f65089be2",
-    "flow_hash": "sha256:7c5d6450e84697c5",
-    "output_hash": "sha256:3226df00e763baed",
+    "flow_hash": "sha256:dea5d9a162991d65",
+    "output_hash": "sha256:4b481acbad55a4ee",
     "reviewer_verdict": "accepted_for_example"
   }
 }
