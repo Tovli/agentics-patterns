@@ -244,6 +244,17 @@ class ExamplesCatalogTest(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "detected stagnation requires metaplanning"):
             build_output(empty_prior_detected, empty_prior_payload)
 
+        empty_prior_unavailable = copy.deepcopy(flow)
+        empty_prior_unavailable_payload = copy.deepcopy(input_payload)
+        empty_prior_unavailable_payload["prior_attempts"] = []
+        empty_prior_unavailable_fields = empty_prior_unavailable["example_output"]["field_values"]
+        empty_prior_unavailable_fields["stagnation_response"]["detected"] = False
+        empty_prior_unavailable_fields["stagnation_response"]["excluded_failed_approaches"] = []
+        empty_prior_unavailable_fields["selected_strategy"]["excluded_failed_approaches"] = []
+        empty_prior_unavailable_fields["selected_strategy"]["strategy"] = "unsupported"
+        with self.assertRaisesRegex(ValueError, "selected strategy must be available"):
+            build_output(empty_prior_unavailable, empty_prior_unavailable_payload)
+
         nonboolean_detected = copy.deepcopy(flow)
         nonboolean_detected["example_output"]["field_values"]["stagnation_response"][
             "detected"
@@ -292,11 +303,26 @@ class ExamplesCatalogTest(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "trusted cognitive required fields"):
             build_output(jointly_reduced_contract, input_payload)
 
+        identity_bound_contract = copy.deepcopy(flow)
+        identity_bound_contract["policy_gates"].pop()
+        identity_bound_contract["output_contract"]["required_fields"].remove(
+            "cognitive_workspace"
+        )
+        identity_bound_contract["example_output"]["required_explicit_fields"].remove(
+            "cognitive_workspace"
+        )
+        del identity_bound_contract["example_output"]["field_values"][
+            "cognitive_workspace"
+        ]
+        del identity_bound_contract["example_output"]["policy_verdict"]
+        with self.assertRaisesRegex(ValueError, "trusted cognitive flow requires"):
+            build_output(identity_bound_contract, input_payload)
+
         stored_with_rejection_reason = copy.deepcopy(flow)
         stored_with_rejection_reason["example_output"]["field_values"]["memory_update"][
             "rejection_reason"
         ] = "stored records must not carry rejection metadata"
-        with self.assertRaisesRegex(ValueError, "stored memory cannot include rejection_reason"):
+        with self.assertRaisesRegex(ValueError, "stored memory must use exactly these fields"):
             build_output(stored_with_rejection_reason, input_payload)
 
         malformed_block = copy.deepcopy(flow)
@@ -619,10 +645,11 @@ class ExamplesCatalogTest(unittest.TestCase):
         valid_rejection_fields = valid_rejection["example_output"]["field_values"]
         valid_rejection_fields["confidence_gate_decision"]["decision"] = "pivot_strategy"
         valid_rejection_fields["evaluation"]["terminal"] = False
-        valid_rejection_fields["memory_update"]["record_status"] = "rejected"
-        valid_rejection_fields["memory_update"]["rejection_reason"] = (
-            "additional evidence is required before memory storage"
-        )
+        valid_rejection_fields["memory_update"] = {
+            "responsible_agent": "Memory Recorder",
+            "record_status": "rejected",
+            "rejection_reason": "additional evidence is required before memory storage",
+        }
         rejected_output = build_output(valid_rejection, input_payload)
         self.assertEqual(
             "rejected",

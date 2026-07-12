@@ -26,6 +26,7 @@ TRUSTED_COGNITIVE_REQUIRED_FIELDS = (
     "knowledge_boundary",
     "memory_update",
 )
+TRUSTED_COGNITIVE_FLOW_ID = "cognitive-metacognitive-loop"
 TRUSTED_STAGNATION_GATE = (
     "Stagnation must trigger metaplanning and failed approaches must not be repeated."
 )
@@ -52,6 +53,12 @@ MEMORY_UPDATE_KEYS = {
     "rejection_reason",
 }
 MEMORY_RECORD_STATUSES = {"stored", "rejected"}
+STORED_MEMORY_UPDATE_KEYS = MEMORY_UPDATE_KEYS - {"rejection_reason"}
+REJECTED_MEMORY_UPDATE_KEYS = {
+    "responsible_agent",
+    "record_status",
+    "rejection_reason",
+}
 
 
 def canonical_json(value: Any) -> str:
@@ -328,6 +335,8 @@ def validate_example_fields(
         allow_empty=not prior_attempts,
     )
     require_text(strategy.get("bounded_step"), "selected_strategy.bounded_step")
+    if strategy_name not in available_strategies:
+        raise ValueError("selected strategy must be available")
 
     execution = require_object(fields.get("execution_evidence"), "execution_evidence")
     tool_calls_used = require_nonnegative_int(
@@ -422,8 +431,6 @@ def validate_example_fields(
             raise ValueError(
                 "detected stagnation requires metaplanning; attention route must target metaplanning"
             )
-        if strategy_name not in available_strategies:
-            raise ValueError("selected strategy must be available")
         stagnation_exclusions = require_string_list(
             stagnation.get("excluded_failed_approaches"),
             "excluded_failed_approaches",
@@ -450,10 +457,17 @@ def validate_example_fields(
     record_status = require_text(memory.get("record_status"), "memory_update.record_status")
     if record_status not in MEMORY_RECORD_STATUSES:
         raise ValueError("memory_update.record_status must be one of stored, rejected")
-    if record_status == "stored" and "rejection_reason" in memory:
-        raise ValueError("stored memory cannot include rejection_reason")
     if record_status == "rejected" and not non_empty_text(memory.get("rejection_reason")):
         raise ValueError("rejected memory requires rejection_reason")
+    expected_memory_keys = (
+        STORED_MEMORY_UPDATE_KEYS
+        if record_status == "stored"
+        else REJECTED_MEMORY_UPDATE_KEYS
+    )
+    if set(memory) != expected_memory_keys:
+        raise ValueError(
+            f"{record_status} memory must use exactly these fields: {sorted(expected_memory_keys)}"
+        )
     if decision_name in NONTERMINAL_CONFIDENCE_DECISIONS and record_status == "stored":
         raise ValueError("nonterminal decision cannot store memory")
     if decision_name in NONTERMINAL_CONFIDENCE_DECISIONS and record_status != "rejected":
@@ -572,16 +586,23 @@ def derive_policy_evidence(
 def build_output(flow: dict[str, Any], input_payload: dict[str, Any]) -> dict[str, Any]:
     required_fields = flow["output_contract"]["required_fields"]
     policy_gates = flow.get("policy_gates")
-    trusted_cognitive_contract = (
-        isinstance(policy_gates, list)
-        and len(policy_gates) == len(TRUSTED_POLICY_GATE_BINDINGS)
-        and all(isinstance(gate, str) for gate in policy_gates)
-        and set(policy_gates) == set(TRUSTED_POLICY_GATE_BINDINGS)
-    )
+    trusted_cognitive_contract = flow.get("id") == TRUSTED_COGNITIVE_FLOW_ID
     has_example_output = "example_output" in flow
     example_output = flow.get("example_output", {})
     if has_example_output and not isinstance(example_output, dict):
         raise ValueError("example_output must be an object")
+    if trusted_cognitive_contract:
+        if not has_example_output:
+            raise ValueError("trusted cognitive flow requires example_output")
+        if (
+            not isinstance(policy_gates, list)
+            or len(policy_gates) != len(TRUSTED_POLICY_GATE_BINDINGS)
+            or any(not isinstance(gate, str) for gate in policy_gates)
+            or set(policy_gates) != set(TRUSTED_POLICY_GATE_BINDINGS)
+        ):
+            raise ValueError(
+                "trusted cognitive flow requires the exact trusted policy gate contract"
+            )
     unknown_example_output_keys = set(example_output) - EXAMPLE_OUTPUT_KEYS
     if unknown_example_output_keys:
         raise ValueError(f"unknown example_output keys: {sorted(unknown_example_output_keys)}")
@@ -608,6 +629,8 @@ def build_output(flow: dict[str, Any], input_payload: dict[str, Any]) -> dict[st
     if trusted_cognitive_contract and set(explicit_fields) != set(TRUSTED_COGNITIVE_REQUIRED_FIELDS):
         raise ValueError("trusted cognitive required fields must all have explicit values")
     policy_verdict = validate_policy_declaration(flow, example_output, explicit_fields)
+    if trusted_cognitive_contract and policy_verdict is None:
+        raise ValueError("trusted cognitive flow requires an explicit policy verdict")
     fields = {
         field: explicit_fields[field] if field in explicit_fields else field_value(field, input_payload, flow)
         for field in required_fields
