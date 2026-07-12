@@ -1012,7 +1012,6 @@ SPECS = [
                 "knowledge_boundary",
                 "memory_update",
             ],
-            "stagnation_recovery_required": True,
             "field_values": {
                 "perception": {
                     "responsible_agent": "Perception Agent",
@@ -1056,7 +1055,7 @@ SPECS = [
                 },
                 "evaluation": {
                     "responsible_agent": "Evaluation Monitor",
-                    "evaluation_id": "cycle-5-terminal-evaluation",
+                    "evaluation_id": "cycle-3-terminal-evaluation",
                     "terminal": True,
                     "iterations_used": 3,
                     "progress": "the failed timeout path is excluded and the next diagnostic is evidence-bounded",
@@ -1097,7 +1096,7 @@ SPECS = [
                 },
                 "memory_update": {
                     "responsible_agent": "Memory Recorder",
-                    "terminal_evaluation_reference": "cycle-5-terminal-evaluation",
+                    "terminal_evaluation_reference": "cycle-3-terminal-evaluation",
                     "distilled_lesson": "When high-traffic deployment failures persist after timeout increases, pivot to load-sensitive resource and dependency hypotheses instead of retrying timeout tuning.",
                     "applicability_conditions": [
                         "the failure is intermittent and correlated with load",

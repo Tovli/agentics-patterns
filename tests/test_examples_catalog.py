@@ -76,7 +76,11 @@ class ExamplesCatalogTest(unittest.TestCase):
             set(flow["output_contract"]["required_fields"]),
             set(example_output["required_explicit_fields"]),
         )
-        self.assertTrue(example_output["stagnation_recovery_required"])
+        self.assertEqual(
+            flow["output_contract"]["required_fields"],
+            example_output["required_explicit_fields"],
+        )
+        self.assertNotIn("stagnation_recovery_required", example_output)
         self.assertNotIn("policy_gate_checks", example_output)
 
         readme = (example_dir / "README.md").read_text(encoding="utf-8")
@@ -130,6 +134,7 @@ class ExamplesCatalogTest(unittest.TestCase):
                 self.assertEqual(owner, fields[field]["responsible_agent"])
 
         memory = fields["memory_update"]
+        self.assertEqual("cycle-3-terminal-evaluation", fields["evaluation"]["evaluation_id"])
         self.assertEqual(fields["evaluation"]["evaluation_id"], memory["terminal_evaluation_reference"])
         self.assertTrue(memory["distilled_lesson"])
         self.assertTrue(memory["applicability_conditions"])
@@ -215,6 +220,46 @@ class ExamplesCatalogTest(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "stagnation recovery requires detected=true"):
             build_output(hidden_stagnation, input_payload)
 
+        disabled_stagnation = copy.deepcopy(flow)
+        disabled_stagnation["example_output"]["stagnation_recovery_required"] = False
+        disabled_fields = disabled_stagnation["example_output"]["field_values"]
+        disabled_fields["stagnation_response"]["detected"] = False
+        disabled_fields["attention_route"]["destination"] = "execution"
+        repeated = input_payload["prior_attempts"][0]
+        disabled_fields["selected_strategy"]["strategy"] = repeated
+        disabled_payload = copy.deepcopy(input_payload)
+        disabled_payload["available_strategies"].append(repeated)
+        with self.assertRaisesRegex(ValueError, "unknown example_output keys"):
+            build_output(disabled_stagnation, disabled_payload)
+
+        omitted_gate = copy.deepcopy(flow)
+        omitted_gate["policy_gates"].pop()
+        omitted_gate["example_output"]["policy_verdict"]["gates_checked"].pop()
+        with self.assertRaisesRegex(ValueError, "exact trusted policy gate contract"):
+            build_output(omitted_gate, input_payload)
+
+        duplicated_gate = copy.deepcopy(flow)
+        duplicated_gate["policy_gates"][-1] = duplicated_gate["policy_gates"][0]
+        duplicated_gate["example_output"]["policy_verdict"]["gates_checked"][-1] = (
+            duplicated_gate["policy_gates"][0]
+        )
+        with self.assertRaisesRegex(ValueError, "exact trusted policy gate contract"):
+            build_output(duplicated_gate, input_payload)
+
+        extra_gate = copy.deepcopy(flow)
+        extra_gate["policy_gates"].append("Extra untrusted gate")
+        extra_gate["example_output"]["policy_verdict"]["gates_checked"].append(
+            "Extra untrusted gate"
+        )
+        with self.assertRaisesRegex(ValueError, "exact trusted policy gate contract"):
+            build_output(extra_gate, input_payload)
+
+        reduced_contract = copy.deepcopy(flow)
+        reduced_contract["example_output"]["required_explicit_fields"].remove("memory_update")
+        del reduced_contract["example_output"]["field_values"]["memory_update"]
+        with self.assertRaisesRegex(ValueError, "must exactly match output contract"):
+            build_output(reduced_contract, input_payload)
+
         malformed_block = copy.deepcopy(flow)
         malformed_block["example_output"]["policy_verdict"]["blocked_actions"][0] = {
             "action": "",
@@ -245,7 +290,7 @@ class ExamplesCatalogTest(unittest.TestCase):
         unknown_gate["example_output"]["policy_verdict"]["gates_checked"][0] = (
             "Unknown mutable gate"
         )
-        with self.assertRaisesRegex(ValueError, "unknown policy gate"):
+        with self.assertRaisesRegex(ValueError, "exact trusted policy gate contract"):
             build_output(unknown_gate, input_payload)
 
         unknown_memory = copy.deepcopy(flow)
@@ -280,7 +325,10 @@ class ExamplesCatalogTest(unittest.TestCase):
             )
             candidate["example_output"]["field_values"]["evaluation"]["terminal"] = False
             candidate["example_output"]["field_values"]["memory_update"]["record_status"] = (
-                "not_stored"
+                "rejected"
+            )
+            candidate["example_output"]["field_values"]["memory_update"]["rejection_reason"] = (
+                "terminal uncertainty decisions require terminal evaluation"
             )
 
         def nonterminal_persisted_status(candidate, payload):
@@ -296,6 +344,15 @@ class ExamplesCatalogTest(unittest.TestCase):
             evaluation = candidate["example_output"]["field_values"]["evaluation"]
             evaluation["observed_confidence"] = 0.71
             evaluation["confidence_trend"][-1] = 0.71
+
+        def rejected_without_reason(candidate, payload):
+            candidate["example_output"]["field_values"]["confidence_gate_decision"]["decision"] = (
+                "pivot_strategy"
+            )
+            candidate["example_output"]["field_values"]["evaluation"]["terminal"] = False
+            candidate["example_output"]["field_values"]["memory_update"]["record_status"] = (
+                "rejected"
+            )
 
         mutation_cases = [
             (
@@ -341,6 +398,11 @@ class ExamplesCatalogTest(unittest.TestCase):
                 "nonterminal cycle uses non-enum persisted memory status",
                 nonterminal_persisted_status,
                 "record_status must be one of stored, rejected",
+            ),
+            (
+                "rejected memory omits rejection reason",
+                rejected_without_reason,
+                "rejected memory requires rejection_reason",
             ),
             (
                 "evaluation confidence mismatch",
@@ -513,6 +575,20 @@ class ExamplesCatalogTest(unittest.TestCase):
                 mutate(candidate, payload)
                 with self.assertRaisesRegex(ValueError, error):
                     build_output(candidate, payload)
+
+        valid_rejection = copy.deepcopy(flow)
+        valid_rejection_fields = valid_rejection["example_output"]["field_values"]
+        valid_rejection_fields["confidence_gate_decision"]["decision"] = "pivot_strategy"
+        valid_rejection_fields["evaluation"]["terminal"] = False
+        valid_rejection_fields["memory_update"]["record_status"] = "rejected"
+        valid_rejection_fields["memory_update"]["rejection_reason"] = (
+            "additional evidence is required before memory storage"
+        )
+        rejected_output = build_output(valid_rejection, input_payload)
+        self.assertEqual(
+            "rejected",
+            rejected_output["fields"]["memory_update"]["record_status"],
+        )
 
     def test_cognitive_metacognitive_policy_denial_fails_closed(self):
         example_dir = PATTERNS / "cognitive-metacognitive-loop"

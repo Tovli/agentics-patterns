@@ -53,7 +53,7 @@
     },
     "evaluation": {
       "responsible_agent": "Evaluation Monitor",
-      "evaluation_id": "cycle-5-terminal-evaluation",
+      "evaluation_id": "cycle-3-terminal-evaluation",
       "terminal": true,
       "iterations_used": 3,
       "progress": "the failed timeout path is excluded and the next diagnostic is evidence-bounded",
@@ -104,7 +104,7 @@
     },
     "memory_update": {
       "responsible_agent": "Memory Recorder",
-      "terminal_evaluation_reference": "cycle-5-terminal-evaluation",
+      "terminal_evaluation_reference": "cycle-3-terminal-evaluation",
       "distilled_lesson": "When high-traffic deployment failures persist after timeout increases, pivot to load-sensitive resource and dependency hypotheses instead of retrying timeout tuning.",
       "applicability_conditions": [
         "the failure is intermittent and correlated with load",
@@ -163,15 +163,15 @@
       {
         "gate": "Memory records only evaluated, distilled, non-sensitive lessons.",
         "kind": "memory_safety",
-        "evidence": "record_status=stored; terminal_evaluation_reference=cycle-5-terminal-evaluation; excluded_sensitive_raw_data=3"
+        "evidence": "record_status=stored; terminal_evaluation_reference=cycle-3-terminal-evaluation; excluded_sensitive_raw_data=3"
       }
     ]
   },
   "receipt": {
     "required": true,
     "input_hash": "sha256:c6e0248f65089be2",
-    "flow_hash": "sha256:dea5d9a162991d65",
-    "output_hash": "sha256:4b481acbad55a4ee",
+    "flow_hash": "sha256:9072e4527fd87aa8",
+    "output_hash": "sha256:adfa70f0d2895975",
     "reviewer_verdict": "accepted_for_example"
   }
 }

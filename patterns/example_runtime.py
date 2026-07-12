@@ -14,6 +14,9 @@ TRUSTED_CONFIDENCE_DECISIONS = (
 )
 TERMINAL_CONFIDENCE_DECISIONS = {"present", "signal_uncertainty"}
 NONTERMINAL_CONFIDENCE_DECISIONS = {"gather_more_evidence", "pivot_strategy"}
+TRUSTED_STAGNATION_GATE = (
+    "Stagnation must trigger metaplanning and failed approaches must not be repeated."
+)
 TRUSTED_POLICY_GATE_BINDINGS = {
     "Responses below the presentation threshold must gather more evidence or explicitly signal uncertainty.": "confidence_gate",
     "Stagnation must trigger metaplanning and failed approaches must not be repeated.": "stagnation_recovery",
@@ -22,7 +25,6 @@ TRUSTED_POLICY_GATE_BINDINGS = {
 }
 EXAMPLE_OUTPUT_KEYS = {
     "required_explicit_fields",
-    "stagnation_recovery_required",
     "field_values",
     "policy_verdict",
 }
@@ -281,6 +283,7 @@ def require_positive_int(value: Any, label: str) -> int:
 
 
 def validate_example_fields(
+    flow: dict[str, Any],
     fields: dict[str, Any],
     input_payload: dict[str, Any],
     example_output: dict[str, Any],
@@ -391,9 +394,7 @@ def validate_example_fields(
     if decision_name in NONTERMINAL_CONFIDENCE_DECISIONS and evaluation["terminal"] is not False:
         raise ValueError("nonterminal decision requires a nonterminal evaluation")
 
-    recovery_required = example_output.get("stagnation_recovery_required", False)
-    if not isinstance(recovery_required, bool):
-        raise ValueError("stagnation_recovery_required must be boolean")
+    recovery_required = TRUSTED_STAGNATION_GATE in flow["policy_gates"] and bool(prior_attempts)
     stagnation = require_object(fields.get("stagnation_response"), "stagnation_response")
     if recovery_required:
         if stagnation.get("detected") is not True:
@@ -431,6 +432,8 @@ def validate_example_fields(
         raise ValueError("memory_update.record_status must be one of stored, rejected")
     if "rejection_reason" in memory:
         require_text(memory["rejection_reason"], "memory_update.rejection_reason")
+    if record_status == "rejected" and not non_empty_text(memory.get("rejection_reason")):
+        raise ValueError("rejected memory requires rejection_reason")
     if decision_name in NONTERMINAL_CONFIDENCE_DECISIONS and record_status == "stored":
         raise ValueError("nonterminal decision cannot store memory")
     if decision_name in NONTERMINAL_CONFIDENCE_DECISIONS and record_status != "rejected":
@@ -473,6 +476,12 @@ def validate_policy_declaration(
     if verdict.get("gates_checked") != flow["policy_gates"]:
         raise ValueError("explicit policy verdict must check every declared gate in order")
     if verdict.get("allowed"):
+        policy_gates = require_string_list(flow.get("policy_gates"), "policy_gates")
+        if (
+            len(policy_gates) != len(TRUSTED_POLICY_GATE_BINDINGS)
+            or set(policy_gates) != set(TRUSTED_POLICY_GATE_BINDINGS)
+        ):
+            raise ValueError("allowed output requires the exact trusted policy gate contract")
         required_explicit_fields = example_output.get("required_explicit_fields")
         if not isinstance(required_explicit_fields, list) or not required_explicit_fields:
             raise ValueError("allowed policy verdict requires a non-empty required_explicit_fields contract")
@@ -556,8 +565,8 @@ def build_output(flow: dict[str, Any], input_payload: dict[str, Any]) -> dict[st
         )
         if len(required_explicit_fields) != len(set(required_explicit_fields)):
             raise ValueError("required_explicit_fields must not contain duplicates")
-        if not isinstance(example_output.get("stagnation_recovery_required"), bool):
-            raise ValueError("stagnation_recovery_required must be boolean")
+        if required_explicit_fields != required_fields:
+            raise ValueError("required_explicit_fields must exactly match output contract")
     explicit_fields = example_output.get("field_values", {})
     if not isinstance(explicit_fields, dict):
         raise ValueError("example_output.field_values must be an object")
@@ -570,7 +579,7 @@ def build_output(flow: dict[str, Any], input_payload: dict[str, Any]) -> dict[st
         for field in required_fields
     }
     if has_example_output:
-        validate_example_fields(fields, input_payload, example_output)
+        validate_example_fields(flow, fields, input_payload, example_output)
     if policy_verdict is None:
         policy_verdict = {
             "allowed": True,
