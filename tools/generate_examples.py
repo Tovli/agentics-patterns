@@ -1000,6 +1000,14 @@ SPECS = [
             "author": "Micheal Lanham",
         },
         example_output={
+            "required_explicit_fields": [
+                "confidence_gate_decision",
+                "stagnation_response",
+                "knowledge_boundary",
+                "evaluation",
+                "memory_update",
+            ],
+            "stagnation_recovery_required": True,
             "field_values": {
                 "perception": {
                     "responsible_agent": "Perception Agent",

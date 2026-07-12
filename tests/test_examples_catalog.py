@@ -70,8 +70,28 @@ class ExamplesCatalogTest(unittest.TestCase):
         output = json.loads(result.stdout)
         fields = output["fields"]
 
+        example_output = flow["example_output"]
+        self.assertIn("required_explicit_fields", example_output)
+        self.assertEqual(
+            {
+                "confidence_gate_decision",
+                "stagnation_response",
+                "knowledge_boundary",
+                "evaluation",
+                "memory_update",
+            },
+            set(example_output["required_explicit_fields"]),
+        )
+        self.assertTrue(example_output["stagnation_recovery_required"])
+
         decision = fields["confidence_gate_decision"]
-        self.assertIn("decision_enum", decision)
+        trusted_decisions = [
+            "present",
+            "gather_more_evidence",
+            "pivot_strategy",
+            "signal_uncertainty",
+        ]
+        self.assertEqual(trusted_decisions, decision["decision_enum"])
         self.assertIn(decision["decision"], decision["decision_enum"])
         self.assertEqual(
             input_payload["confidence_thresholds"]["present"],
@@ -96,6 +116,7 @@ class ExamplesCatalogTest(unittest.TestCase):
 
         expected_owners = {
             "perception": "Perception Agent",
+            "cognitive_workspace": "Perception Agent",
             "attention_route": "Attention Router",
             "selected_strategy": "Strategy Planner",
             "execution_evidence": "Execution Agent",
@@ -144,8 +165,40 @@ class ExamplesCatalogTest(unittest.TestCase):
 
         bypassed_policy = copy.deepcopy(flow)
         bypassed_policy["example_output"]["policy_verdict"]["allow_evidence"] = []
-        with self.assertRaisesRegex(ValueError, "requires evidence for every gate"):
+        with self.assertRaisesRegex(ValueError, "exactly one evidence record"):
             build_output(bypassed_policy, input_payload)
+
+        empty_fields = copy.deepcopy(flow)
+        empty_fields["example_output"]["field_values"] = {}
+        with self.assertRaisesRegex(ValueError, "missing required explicit fields"):
+            build_output(empty_fields, input_payload)
+
+        arbitrary_decision = copy.deepcopy(flow)
+        arbitrary_value = arbitrary_decision["example_output"]["field_values"][
+            "confidence_gate_decision"
+        ]
+        arbitrary_value["decision"] = "approve_anyway"
+        arbitrary_value["decision_enum"] = ["approve_anyway"]
+        with self.assertRaisesRegex(ValueError, "trusted confidence decision enum"):
+            build_output(arbitrary_decision, input_payload)
+
+        hidden_stagnation = copy.deepcopy(flow)
+        hidden_stagnation["example_output"]["field_values"]["stagnation_response"]["detected"] = False
+        with self.assertRaisesRegex(ValueError, "stagnation recovery requires detected=true"):
+            build_output(hidden_stagnation, input_payload)
+
+        empty_evidence = copy.deepcopy(flow)
+        empty_evidence["example_output"]["policy_verdict"]["allow_evidence"][0]["evidence"] = ""
+        with self.assertRaisesRegex(ValueError, "non-empty evidence"):
+            build_output(empty_evidence, input_payload)
+
+        malformed_block = copy.deepcopy(flow)
+        malformed_block["example_output"]["policy_verdict"]["blocked_actions"][0] = {
+            "action": "",
+            "reason": "",
+        }
+        with self.assertRaisesRegex(ValueError, "non-empty action and reason"):
+            build_output(malformed_block, input_payload)
 
     def test_every_example_has_required_artifacts(self):
         catalog = self.load_catalog()

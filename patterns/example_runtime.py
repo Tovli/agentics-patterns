@@ -5,6 +5,14 @@ import json
 from typing import Any
 
 
+TRUSTED_CONFIDENCE_DECISIONS = (
+    "present",
+    "gather_more_evidence",
+    "pivot_strategy",
+    "signal_uncertainty",
+)
+
+
 def canonical_json(value: Any) -> str:
     return json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
 
@@ -202,12 +210,14 @@ def field_value(field: str, input_payload: dict[str, Any], flow: dict[str, Any])
 def validate_example_fields(
     fields: dict[str, Any],
     input_payload: dict[str, Any],
+    example_output: dict[str, Any],
 ) -> None:
     decision = fields.get("confidence_gate_decision")
     if decision is not None:
-        decision_enum = decision.get("decision_enum", [])
-        if decision.get("decision") not in decision_enum:
-            raise ValueError("confidence gate decision must use its declared enum")
+        if decision.get("decision_enum") != list(TRUSTED_CONFIDENCE_DECISIONS):
+            raise ValueError("confidence gate must declare the trusted confidence decision enum")
+        if decision.get("decision") not in TRUSTED_CONFIDENCE_DECISIONS:
+            raise ValueError("confidence gate decision must use the trusted confidence decision enum")
         observed = decision.get("observed_confidence")
         threshold = decision.get("presentation_threshold")
         if not isinstance(observed, (int, float)) or not isinstance(threshold, (int, float)):
@@ -221,8 +231,14 @@ def validate_example_fields(
         if decision["decision"] == "present" and not threshold_satisfied:
             raise ValueError("output cannot be presented below the presentation threshold")
 
+    recovery_required = example_output.get("stagnation_recovery_required", False)
+    if not isinstance(recovery_required, bool):
+        raise ValueError("stagnation_recovery_required must be boolean")
     stagnation = fields.get("stagnation_response")
-    if stagnation is not None and stagnation.get("detected"):
+    if recovery_required:
+        if not isinstance(stagnation, dict) or stagnation.get("detected") is not True:
+            raise ValueError("stagnation recovery requires detected=true")
+    if isinstance(stagnation, dict) and (recovery_required or stagnation.get("detected") is True):
         if stagnation.get("route") != "metaplanning":
             raise ValueError("stagnation must route to metaplanning")
         excluded = stagnation.get("excluded_failed_approaches", [])
@@ -258,35 +274,85 @@ def validate_example_fields(
             raise ValueError("memory update must reference the terminal evaluation")
 
 
-def explicit_policy_verdict(flow: dict[str, Any]) -> dict[str, Any] | None:
-    verdict = flow.get("example_output", {}).get("policy_verdict")
+def non_empty_text(value: Any) -> bool:
+    return isinstance(value, str) and bool(value.strip())
+
+
+def explicit_policy_verdict(
+    flow: dict[str, Any],
+    example_output: dict[str, Any],
+    explicit_fields: dict[str, Any],
+) -> dict[str, Any] | None:
+    verdict = example_output.get("policy_verdict")
     if verdict is None:
         return None
     if verdict.get("gates_checked") != flow["policy_gates"]:
         raise ValueError("explicit policy verdict must check every declared gate in order")
     if verdict.get("allowed"):
+        required_explicit_fields = example_output.get("required_explicit_fields")
+        if not isinstance(required_explicit_fields, list) or not required_explicit_fields:
+            raise ValueError("allowed policy verdict requires a non-empty required_explicit_fields contract")
+        non_contract_fields = set(required_explicit_fields) - set(
+            flow["output_contract"]["required_fields"]
+        )
+        if non_contract_fields:
+            raise ValueError(f"required_explicit_fields contains non-contract fields: {sorted(non_contract_fields)}")
+        missing_explicit_fields = set(required_explicit_fields) - set(explicit_fields)
+        if missing_explicit_fields:
+            raise ValueError(
+                f"allowed policy verdict is missing required explicit fields: {sorted(missing_explicit_fields)}"
+            )
+
         evidence = verdict.get("allow_evidence", [])
-        evidenced_gates = {item.get("gate") for item in evidence}
-        if any(gate not in evidenced_gates for gate in flow["policy_gates"]):
-            raise ValueError("allowed policy verdict requires evidence for every gate")
-        if not verdict.get("blocked_actions"):
+        if not isinstance(evidence, list) or len(evidence) != len(flow["policy_gates"]):
+            raise ValueError(
+                "allowed policy verdict requires exactly one evidence record per declared gate"
+            )
+        for gate in flow["policy_gates"]:
+            gate_evidence = [
+                item
+                for item in evidence
+                if isinstance(item, dict) and item.get("gate") == gate
+            ]
+            if len(gate_evidence) != 1:
+                raise ValueError(
+                    "allowed policy verdict requires exactly one evidence record per declared gate"
+                )
+            if not non_empty_text(gate_evidence[0].get("evidence")):
+                raise ValueError("each policy gate requires non-empty evidence")
+
+        blocked_actions = verdict.get("blocked_actions")
+        if not isinstance(blocked_actions, list) or not blocked_actions:
             raise ValueError("allowed policy verdict must record blocked unsafe actions")
+        for item in blocked_actions:
+            if (
+                not isinstance(item, dict)
+                or not non_empty_text(item.get("action"))
+                or not non_empty_text(item.get("reason"))
+            ):
+                raise ValueError("each blocked action requires a non-empty action and reason")
     return verdict
 
 
 def build_output(flow: dict[str, Any], input_payload: dict[str, Any]) -> dict[str, Any]:
     required_fields = flow["output_contract"]["required_fields"]
-    explicit_fields = flow.get("example_output", {}).get("field_values", {})
+    has_example_output = "example_output" in flow
+    example_output = flow.get("example_output", {})
+    if has_example_output and not isinstance(example_output, dict):
+        raise ValueError("example_output must be an object")
+    explicit_fields = example_output.get("field_values", {})
+    if not isinstance(explicit_fields, dict):
+        raise ValueError("example_output.field_values must be an object")
     unexpected_fields = set(explicit_fields) - set(required_fields)
     if unexpected_fields:
         raise ValueError(f"Explicit values provided for non-contract fields: {sorted(unexpected_fields)}")
+    policy_verdict = explicit_policy_verdict(flow, example_output, explicit_fields)
     fields = {
         field: explicit_fields[field] if field in explicit_fields else field_value(field, input_payload, flow)
         for field in required_fields
     }
-    if explicit_fields:
-        validate_example_fields(fields, input_payload)
-    policy_verdict = explicit_policy_verdict(flow)
+    if has_example_output:
+        validate_example_fields(fields, input_payload, example_output)
     if policy_verdict is None:
         policy_verdict = {
             "allowed": True,

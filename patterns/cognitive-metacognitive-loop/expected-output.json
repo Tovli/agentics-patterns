@@ -165,7 +165,7 @@
   "receipt": {
     "required": true,
     "input_hash": "sha256:c6e0248f65089be2",
-    "flow_hash": "sha256:254d29de66d623f3",
+    "flow_hash": "sha256:9dfb45e386881246",
     "output_hash": "sha256:0d476eed0496443a",
     "reviewer_verdict": "accepted_for_example"
   }
