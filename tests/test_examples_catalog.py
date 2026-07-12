@@ -203,7 +203,7 @@ class ExamplesCatalogTest(unittest.TestCase):
 
         empty_fields = copy.deepcopy(flow)
         empty_fields["example_output"]["field_values"] = {}
-        with self.assertRaisesRegex(ValueError, "missing required explicit fields"):
+        with self.assertRaisesRegex(ValueError, "trusted cognitive required fields"):
             build_output(empty_fields, input_payload)
 
         arbitrary_decision = copy.deepcopy(flow)
@@ -232,6 +232,25 @@ class ExamplesCatalogTest(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "unknown example_output keys"):
             build_output(disabled_stagnation, disabled_payload)
 
+        empty_prior_detected = copy.deepcopy(flow)
+        empty_prior_payload = copy.deepcopy(input_payload)
+        empty_prior_payload["prior_attempts"] = []
+        empty_prior_fields = empty_prior_detected["example_output"]["field_values"]
+        empty_prior_fields["stagnation_response"]["detected"] = True
+        empty_prior_fields["stagnation_response"]["route"] = "execution"
+        empty_prior_fields["attention_route"]["destination"] = "execution"
+        empty_prior_fields["stagnation_response"]["excluded_failed_approaches"] = []
+        empty_prior_fields["selected_strategy"]["excluded_failed_approaches"] = []
+        with self.assertRaisesRegex(ValueError, "detected stagnation requires metaplanning"):
+            build_output(empty_prior_detected, empty_prior_payload)
+
+        nonboolean_detected = copy.deepcopy(flow)
+        nonboolean_detected["example_output"]["field_values"]["stagnation_response"][
+            "detected"
+        ] = "true"
+        with self.assertRaisesRegex(ValueError, "stagnation_response.detected must be boolean"):
+            build_output(nonboolean_detected, input_payload)
+
         omitted_gate = copy.deepcopy(flow)
         omitted_gate["policy_gates"].pop()
         omitted_gate["example_output"]["policy_verdict"]["gates_checked"].pop()
@@ -259,6 +278,26 @@ class ExamplesCatalogTest(unittest.TestCase):
         del reduced_contract["example_output"]["field_values"]["memory_update"]
         with self.assertRaisesRegex(ValueError, "must exactly match output contract"):
             build_output(reduced_contract, input_payload)
+
+        jointly_reduced_contract = copy.deepcopy(flow)
+        jointly_reduced_contract["output_contract"]["required_fields"].remove(
+            "cognitive_workspace"
+        )
+        jointly_reduced_contract["example_output"]["required_explicit_fields"].remove(
+            "cognitive_workspace"
+        )
+        del jointly_reduced_contract["example_output"]["field_values"][
+            "cognitive_workspace"
+        ]
+        with self.assertRaisesRegex(ValueError, "trusted cognitive required fields"):
+            build_output(jointly_reduced_contract, input_payload)
+
+        stored_with_rejection_reason = copy.deepcopy(flow)
+        stored_with_rejection_reason["example_output"]["field_values"]["memory_update"][
+            "rejection_reason"
+        ] = "stored records must not carry rejection metadata"
+        with self.assertRaisesRegex(ValueError, "stored memory cannot include rejection_reason"):
+            build_output(stored_with_rejection_reason, input_payload)
 
         malformed_block = copy.deepcopy(flow)
         malformed_block["example_output"]["policy_verdict"]["blocked_actions"][0] = {

@@ -14,6 +14,18 @@ TRUSTED_CONFIDENCE_DECISIONS = (
 )
 TERMINAL_CONFIDENCE_DECISIONS = {"present", "signal_uncertainty"}
 NONTERMINAL_CONFIDENCE_DECISIONS = {"gather_more_evidence", "pivot_strategy"}
+TRUSTED_COGNITIVE_REQUIRED_FIELDS = (
+    "perception",
+    "cognitive_workspace",
+    "attention_route",
+    "selected_strategy",
+    "execution_evidence",
+    "evaluation",
+    "confidence_gate_decision",
+    "stagnation_response",
+    "knowledge_boundary",
+    "memory_update",
+)
 TRUSTED_STAGNATION_GATE = (
     "Stagnation must trigger metaplanning and failed approaches must not be repeated."
 )
@@ -396,15 +408,20 @@ def validate_example_fields(
 
     recovery_required = TRUSTED_STAGNATION_GATE in flow["policy_gates"] and bool(prior_attempts)
     stagnation = require_object(fields.get("stagnation_response"), "stagnation_response")
-    if recovery_required:
-        if stagnation.get("detected") is not True:
-            raise ValueError("stagnation recovery requires detected=true")
+    detected = stagnation.get("detected")
+    if not isinstance(detected, bool):
+        raise ValueError("stagnation_response.detected must be boolean")
+    if recovery_required and not detected:
+        raise ValueError("stagnation recovery requires detected=true")
+    if detected:
         if stagnation.get("route") != "metaplanning":
-            raise ValueError("stagnation must route to metaplanning")
+            raise ValueError(
+                "detected stagnation requires metaplanning; stagnation must route to metaplanning"
+            )
         if destination != "metaplanning":
-            raise ValueError("attention route must target metaplanning during stagnation recovery")
-        if strategy_name in prior_attempts:
-            raise ValueError("selected strategy must not repeat a prior attempt")
+            raise ValueError(
+                "detected stagnation requires metaplanning; attention route must target metaplanning"
+            )
         if strategy_name not in available_strategies:
             raise ValueError("selected strategy must be available")
         stagnation_exclusions = require_string_list(
@@ -412,10 +429,13 @@ def validate_example_fields(
             "excluded_failed_approaches",
             allow_empty=not prior_attempts,
         )
-        if any(attempt not in stagnation_exclusions for attempt in prior_attempts):
-            raise ValueError("stagnation response must exclude every prior attempt")
-        if any(attempt not in strategy_exclusions for attempt in prior_attempts):
-            raise ValueError("selected strategy exclusions must cover every prior attempt")
+        if prior_attempts:
+            if strategy_name in prior_attempts:
+                raise ValueError("selected strategy must not repeat a prior attempt")
+            if any(attempt not in stagnation_exclusions for attempt in prior_attempts):
+                raise ValueError("stagnation response must exclude every prior attempt")
+            if any(attempt not in strategy_exclusions for attempt in prior_attempts):
+                raise ValueError("selected strategy exclusions must cover every prior attempt")
 
     boundary = require_object(fields.get("knowledge_boundary"), "knowledge_boundary")
     for partition in ["supported_claims", "uncertain_claims", "out_of_bound_claims"]:
@@ -430,8 +450,8 @@ def validate_example_fields(
     record_status = require_text(memory.get("record_status"), "memory_update.record_status")
     if record_status not in MEMORY_RECORD_STATUSES:
         raise ValueError("memory_update.record_status must be one of stored, rejected")
-    if "rejection_reason" in memory:
-        require_text(memory["rejection_reason"], "memory_update.rejection_reason")
+    if record_status == "stored" and "rejection_reason" in memory:
+        raise ValueError("stored memory cannot include rejection_reason")
     if record_status == "rejected" and not non_empty_text(memory.get("rejection_reason")):
         raise ValueError("rejected memory requires rejection_reason")
     if decision_name in NONTERMINAL_CONFIDENCE_DECISIONS and record_status == "stored":
@@ -551,6 +571,13 @@ def derive_policy_evidence(
 
 def build_output(flow: dict[str, Any], input_payload: dict[str, Any]) -> dict[str, Any]:
     required_fields = flow["output_contract"]["required_fields"]
+    policy_gates = flow.get("policy_gates")
+    trusted_cognitive_contract = (
+        isinstance(policy_gates, list)
+        and len(policy_gates) == len(TRUSTED_POLICY_GATE_BINDINGS)
+        and all(isinstance(gate, str) for gate in policy_gates)
+        and set(policy_gates) == set(TRUSTED_POLICY_GATE_BINDINGS)
+    )
     has_example_output = "example_output" in flow
     example_output = flow.get("example_output", {})
     if has_example_output and not isinstance(example_output, dict):
@@ -567,12 +594,19 @@ def build_output(flow: dict[str, Any], input_payload: dict[str, Any]) -> dict[st
             raise ValueError("required_explicit_fields must not contain duplicates")
         if required_explicit_fields != required_fields:
             raise ValueError("required_explicit_fields must exactly match output contract")
+        if trusted_cognitive_contract and (
+            required_fields != list(TRUSTED_COGNITIVE_REQUIRED_FIELDS)
+            or required_explicit_fields != list(TRUSTED_COGNITIVE_REQUIRED_FIELDS)
+        ):
+            raise ValueError("trusted cognitive required fields must match the runtime contract")
     explicit_fields = example_output.get("field_values", {})
     if not isinstance(explicit_fields, dict):
         raise ValueError("example_output.field_values must be an object")
     unexpected_fields = set(explicit_fields) - set(required_fields)
     if unexpected_fields:
         raise ValueError(f"Explicit values provided for non-contract fields: {sorted(unexpected_fields)}")
+    if trusted_cognitive_contract and set(explicit_fields) != set(TRUSTED_COGNITIVE_REQUIRED_FIELDS):
+        raise ValueError("trusted cognitive required fields must all have explicit values")
     policy_verdict = validate_policy_declaration(flow, example_output, explicit_fields)
     fields = {
         field: explicit_fields[field] if field in explicit_fields else field_value(field, input_payload, flow)
