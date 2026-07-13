@@ -1,0 +1,177 @@
+{
+  "artifact_type": "cognitive_cycle_record",
+  "example_id": "cognitive-metacognitive-loop",
+  "status": "ready_for_review",
+  "summary": "Cognitive metacognitive loop example completed for diagnose intermittent deployment pipeline failures that occur only during high traffic.",
+  "fields": {
+    "perception": {
+      "responsible_agent": "Perception Agent",
+      "task_class": "intermittent deployment failure diagnosis",
+      "ambiguity": "medium",
+      "complexity": "high",
+      "initial_confidence": 0.42,
+      "active_signals": [
+        "high_traffic_correlation",
+        "standard_timeout_fix_failed"
+      ]
+    },
+    "cognitive_workspace": {
+      "responsible_agent": "Perception Agent",
+      "observations": [
+        "failures correlate with high traffic",
+        "increasing timeout thresholds did not improve the failure rate"
+      ],
+      "failed_approaches": [
+        "increased timeout thresholds without improvement"
+      ],
+      "open_question": "which load-sensitive resource or dependency is saturated"
+    },
+    "attention_route": {
+      "responsible_agent": "Attention Router",
+      "destination": "metaplanning",
+      "trigger": "the standard timeout strategy failed while a load correlation remains unexplained",
+      "next_target": "Strategy Planner"
+    },
+    "selected_strategy": {
+      "responsible_agent": "Strategy Planner",
+      "strategy": "hypothesis_test",
+      "rationale": "compare load-sensitive saturation signals instead of repeating timeout tuning",
+      "excluded_failed_approaches": [
+        "increased timeout thresholds without improvement"
+      ],
+      "bounded_step": "correlate queue depth, worker saturation, and dependency throttling with failed deployments"
+    },
+    "execution_evidence": {
+      "responsible_agent": "Execution Agent",
+      "bounded_step_completed": true,
+      "observations": [
+        "failure windows overlap high-traffic intervals",
+        "the prior timeout increase produced no improvement"
+      ],
+      "evidence_quality": "sufficient for a bounded diagnostic recommendation, not a confirmed root cause",
+      "tool_calls_used": 2
+    },
+    "evaluation": {
+      "responsible_agent": "Evaluation Monitor",
+      "evaluation_id": "cycle-3-terminal-evaluation",
+      "terminal": true,
+      "iterations_used": 3,
+      "progress": "the failed timeout path is excluded and the next diagnostic is evidence-bounded",
+      "contradictions": [],
+      "confidence_trend": [
+        0.42,
+        0.72
+      ],
+      "observed_confidence": 0.72,
+      "knowledge_coverage": "enough to present a bounded next step while retaining root-cause uncertainty"
+    },
+    "confidence_gate_decision": {
+      "responsible_agent": "Evaluation Monitor",
+      "decision": "present",
+      "decision_enum": [
+        "present",
+        "gather_more_evidence",
+        "pivot_strategy",
+        "signal_uncertainty"
+      ],
+      "observed_confidence": 0.72,
+      "presentation_threshold": 0.6,
+      "threshold_satisfied": true,
+      "reason": "0.72 meets the 0.6 presentation threshold for a bounded recommendation; root-cause uncertainty remains explicit"
+    },
+    "stagnation_response": {
+      "responsible_agent": "Evaluation Monitor",
+      "detected": true,
+      "route": "metaplanning",
+      "excluded_failed_approaches": [
+        "increased timeout thresholds without improvement"
+      ],
+      "next_action": "test resource-contention and dependency-throttling hypotheses under representative load"
+    },
+    "knowledge_boundary": {
+      "responsible_agent": "Evaluation Monitor",
+      "supported_claims": [
+        "failures correlate with high traffic",
+        "increased timeout thresholds did not improve the outcome"
+      ],
+      "uncertain_claims": [
+        "resource contention or dependency throttling is the most relevant next hypothesis"
+      ],
+      "out_of_bound_claims": [
+        "a specific root cause is confirmed without saturation and throttling telemetry"
+      ],
+      "graceful_degradation": "present the bounded diagnostic plan and explicitly withhold an unverified root-cause claim"
+    },
+    "memory_update": {
+      "responsible_agent": "Memory Recorder",
+      "terminal_evaluation_reference": "cycle-3-terminal-evaluation",
+      "distilled_lesson": "When high-traffic deployment failures persist after timeout increases, pivot to load-sensitive resource and dependency hypotheses instead of retrying timeout tuning.",
+      "applicability_conditions": [
+        "the failure is intermittent and correlated with load",
+        "a timeout-threshold increase was already evaluated and failed"
+      ],
+      "uncertainty": [
+        "the exact saturated resource or throttled dependency still requires telemetry"
+      ],
+      "excluded_sensitive_raw_data": [
+        "raw deployment logs",
+        "service identifiers",
+        "secrets and customer data"
+      ],
+      "record_status": "stored"
+    }
+  },
+  "policy_verdict": {
+    "allowed": true,
+    "gates_checked": [
+      "Responses below the presentation threshold must gather more evidence or explicitly signal uncertainty.",
+      "Stagnation must trigger metaplanning and failed approaches must not be repeated.",
+      "Outside the known knowledge boundary, the agent must degrade gracefully instead of guessing.",
+      "Memory records only evaluated, distilled, non-sensitive lessons."
+    ],
+    "blocked_actions": [
+      {
+        "action": "repeat the failed timeout-threshold increase",
+        "reason": "the failed approach is excluded and stagnation routes to metaplanning"
+      },
+      {
+        "action": "present a specific root cause as confirmed",
+        "reason": "the claim is outside the current knowledge boundary"
+      },
+      {
+        "action": "store raw deployment logs or sensitive identifiers",
+        "reason": "memory accepts only evaluated, distilled, non-sensitive lessons"
+      }
+    ],
+    "notes": "Final output is allowed only as a bounded recommendation because each gate has concrete evidence and unsafe alternatives were blocked.",
+    "allow_evidence": [
+      {
+        "gate": "Responses below the presentation threshold must gather more evidence or explicitly signal uncertainty.",
+        "kind": "confidence_gate",
+        "evidence": "decision=present; observed_confidence=0.72; presentation_threshold=0.6; threshold_satisfied=True"
+      },
+      {
+        "gate": "Stagnation must trigger metaplanning and failed approaches must not be repeated.",
+        "kind": "stagnation_recovery",
+        "evidence": "detected=True; route=metaplanning; excluded_failed_approaches=1"
+      },
+      {
+        "gate": "Outside the known knowledge boundary, the agent must degrade gracefully instead of guessing.",
+        "kind": "knowledge_boundary",
+        "evidence": "supported=2; uncertain=1; out_of_bound=1; graceful_degradation=present the bounded diagnostic plan and explicitly withhold an unverified root-cause claim"
+      },
+      {
+        "gate": "Memory records only evaluated, distilled, non-sensitive lessons.",
+        "kind": "memory_safety",
+        "evidence": "record_status=stored; terminal_evaluation_reference=cycle-3-terminal-evaluation; excluded_sensitive_raw_data=3"
+      }
+    ]
+  },
+  "receipt": {
+    "required": true,
+    "input_hash": "sha256:c6e0248f65089be2",
+    "flow_hash": "sha256:9072e4527fd87aa8",
+    "output_hash": "sha256:adfa70f0d2895975",
+    "reviewer_verdict": "accepted_for_example"
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "task": "diagnose intermittent deployment pipeline failures that occur only during high traffic",
+  "prior_attempts": [
+    "increased timeout thresholds without improvement"
+  ],
+  "signals": [
+    "high_traffic_correlation",
+    "standard_timeout_fix_failed"
+  ],
+  "available_strategies": [
+    "fast_path",
+    "react",
+    "hypothesis_test",
+    "tree_of_thought",
+    "reflexion"
+  ],
+  "confidence_thresholds": {
+    "present": 0.6,
+    "gather_more": 0.3
+  },
+  "budget": {
+    "max_iterations": 5,
+    "max_tool_calls": 10
+  }
+}

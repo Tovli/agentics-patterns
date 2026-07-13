@@ -29,6 +29,7 @@ def example(
     artifact_type: str,
     output_fields: list[str],
     reference: dict | None = None,
+    example_output: dict | None = None,
 ) -> dict:
     spec = {
         "id": id,
@@ -48,6 +49,8 @@ def example(
     }
     if reference is not None:
         spec["reference"] = reference
+    if example_output is not None:
+        spec["_example_output"] = example_output
     return spec
 
 
@@ -940,6 +943,202 @@ SPECS = [
             "url": "https://arxiv.org/abs/2511.00592",
         },
     ),
+    example(
+        "cognitive-metacognitive-loop",
+        "agentic",
+        17,
+        "Cognitive metacognitive loop",
+        "Perceive -> attend -> select strategy -> execute -> evaluate -> adapt and remember",
+        "A troubleshooting agent must avoid repeating a failed timeout fix and diagnose an intermittent deployment failure under load.",
+        [
+            "Perception Agent",
+            "Attention Router",
+            "Strategy Planner",
+            "Execution Agent",
+            "Evaluation Monitor",
+            "Memory Recorder",
+        ],
+        [
+            "Classify the task, ambiguity, complexity, and initial confidence in a shared cognitive workspace.",
+            "Route attention to memory, planning, execution, evaluation, or metaplanning from active signals.",
+            "Select a reasoning strategy that fits the task and excludes already failed approaches.",
+            "Execute one bounded step and record evidence, relevance, quality, and tool outcomes.",
+            "Evaluate progress, contradictions, confidence trend, stagnation, and knowledge coverage.",
+            "Present only confidence-gated output; otherwise gather more evidence, pivot strategy, or signal uncertainty.",
+            "Record a distilled non-sensitive lesson after the cycle terminates.",
+        ],
+        [
+            "Responses below the presentation threshold must gather more evidence or explicitly signal uncertainty.",
+            "Stagnation must trigger metaplanning and failed approaches must not be repeated.",
+            "Outside the known knowledge boundary, the agent must degrade gracefully instead of guessing.",
+            "Memory records only evaluated, distilled, non-sensitive lessons.",
+        ],
+        {
+            "task": "diagnose intermittent deployment pipeline failures that occur only during high traffic",
+            "prior_attempts": ["increased timeout thresholds without improvement"],
+            "signals": ["high_traffic_correlation", "standard_timeout_fix_failed"],
+            "available_strategies": ["fast_path", "react", "hypothesis_test", "tree_of_thought", "reflexion"],
+            "confidence_thresholds": {"present": 0.6, "gather_more": 0.3},
+            "budget": {"max_iterations": 5, "max_tool_calls": 10},
+        },
+        "cognitive_cycle_record",
+        [
+            "perception",
+            "cognitive_workspace",
+            "attention_route",
+            "selected_strategy",
+            "execution_evidence",
+            "evaluation",
+            "confidence_gate_decision",
+            "stagnation_response",
+            "knowledge_boundary",
+            "memory_update",
+        ],
+        reference={
+            "system": "AI Agents in Action",
+            "title": "AI Agents in Action, Second Edition - chapter 10: Exploring the cognitive agent that thinks, monitors, and adapts",
+            "author": "Micheal Lanham",
+        },
+        example_output={
+            "required_explicit_fields": [
+                "perception",
+                "cognitive_workspace",
+                "attention_route",
+                "selected_strategy",
+                "execution_evidence",
+                "evaluation",
+                "confidence_gate_decision",
+                "stagnation_response",
+                "knowledge_boundary",
+                "memory_update",
+            ],
+            "field_values": {
+                "perception": {
+                    "responsible_agent": "Perception Agent",
+                    "task_class": "intermittent deployment failure diagnosis",
+                    "ambiguity": "medium",
+                    "complexity": "high",
+                    "initial_confidence": 0.42,
+                    "active_signals": ["high_traffic_correlation", "standard_timeout_fix_failed"],
+                },
+                "cognitive_workspace": {
+                    "responsible_agent": "Perception Agent",
+                    "observations": [
+                        "failures correlate with high traffic",
+                        "increasing timeout thresholds did not improve the failure rate",
+                    ],
+                    "failed_approaches": ["increased timeout thresholds without improvement"],
+                    "open_question": "which load-sensitive resource or dependency is saturated",
+                },
+                "attention_route": {
+                    "responsible_agent": "Attention Router",
+                    "destination": "metaplanning",
+                    "trigger": "the standard timeout strategy failed while a load correlation remains unexplained",
+                    "next_target": "Strategy Planner",
+                },
+                "selected_strategy": {
+                    "responsible_agent": "Strategy Planner",
+                    "strategy": "hypothesis_test",
+                    "rationale": "compare load-sensitive saturation signals instead of repeating timeout tuning",
+                    "excluded_failed_approaches": ["increased timeout thresholds without improvement"],
+                    "bounded_step": "correlate queue depth, worker saturation, and dependency throttling with failed deployments",
+                },
+                "execution_evidence": {
+                    "responsible_agent": "Execution Agent",
+                    "bounded_step_completed": True,
+                    "observations": [
+                        "failure windows overlap high-traffic intervals",
+                        "the prior timeout increase produced no improvement",
+                    ],
+                    "evidence_quality": "sufficient for a bounded diagnostic recommendation, not a confirmed root cause",
+                    "tool_calls_used": 2,
+                },
+                "evaluation": {
+                    "responsible_agent": "Evaluation Monitor",
+                    "evaluation_id": "cycle-3-terminal-evaluation",
+                    "terminal": True,
+                    "iterations_used": 3,
+                    "progress": "the failed timeout path is excluded and the next diagnostic is evidence-bounded",
+                    "contradictions": [],
+                    "confidence_trend": [0.42, 0.72],
+                    "observed_confidence": 0.72,
+                    "knowledge_coverage": "enough to present a bounded next step while retaining root-cause uncertainty",
+                },
+                "confidence_gate_decision": {
+                    "responsible_agent": "Evaluation Monitor",
+                    "decision": "present",
+                    "decision_enum": ["present", "gather_more_evidence", "pivot_strategy", "signal_uncertainty"],
+                    "observed_confidence": 0.72,
+                    "presentation_threshold": 0.6,
+                    "threshold_satisfied": True,
+                    "reason": "0.72 meets the 0.6 presentation threshold for a bounded recommendation; root-cause uncertainty remains explicit",
+                },
+                "stagnation_response": {
+                    "responsible_agent": "Evaluation Monitor",
+                    "detected": True,
+                    "route": "metaplanning",
+                    "excluded_failed_approaches": ["increased timeout thresholds without improvement"],
+                    "next_action": "test resource-contention and dependency-throttling hypotheses under representative load",
+                },
+                "knowledge_boundary": {
+                    "responsible_agent": "Evaluation Monitor",
+                    "supported_claims": [
+                        "failures correlate with high traffic",
+                        "increased timeout thresholds did not improve the outcome",
+                    ],
+                    "uncertain_claims": [
+                        "resource contention or dependency throttling is the most relevant next hypothesis",
+                    ],
+                    "out_of_bound_claims": [
+                        "a specific root cause is confirmed without saturation and throttling telemetry",
+                    ],
+                    "graceful_degradation": "present the bounded diagnostic plan and explicitly withhold an unverified root-cause claim",
+                },
+                "memory_update": {
+                    "responsible_agent": "Memory Recorder",
+                    "terminal_evaluation_reference": "cycle-3-terminal-evaluation",
+                    "distilled_lesson": "When high-traffic deployment failures persist after timeout increases, pivot to load-sensitive resource and dependency hypotheses instead of retrying timeout tuning.",
+                    "applicability_conditions": [
+                        "the failure is intermittent and correlated with load",
+                        "a timeout-threshold increase was already evaluated and failed",
+                    ],
+                    "uncertainty": [
+                        "the exact saturated resource or throttled dependency still requires telemetry",
+                    ],
+                    "excluded_sensitive_raw_data": [
+                        "raw deployment logs",
+                        "service identifiers",
+                        "secrets and customer data",
+                    ],
+                    "record_status": "stored",
+                },
+            },
+            "policy_verdict": {
+                "allowed": True,
+                "gates_checked": [
+                    "Responses below the presentation threshold must gather more evidence or explicitly signal uncertainty.",
+                    "Stagnation must trigger metaplanning and failed approaches must not be repeated.",
+                    "Outside the known knowledge boundary, the agent must degrade gracefully instead of guessing.",
+                    "Memory records only evaluated, distilled, non-sensitive lessons.",
+                ],
+                "blocked_actions": [
+                    {
+                        "action": "repeat the failed timeout-threshold increase",
+                        "reason": "the failed approach is excluded and stagnation routes to metaplanning",
+                    },
+                    {
+                        "action": "present a specific root cause as confirmed",
+                        "reason": "the claim is outside the current knowledge boundary",
+                    },
+                    {
+                        "action": "store raw deployment logs or sensitive identifiers",
+                        "reason": "memory accepts only evaluated, distilled, non-sensitive lessons",
+                    },
+                ],
+                "notes": "Final output is allowed only as a bounded recommendation because each gate has concrete evidence and unsafe alternatives were blocked.",
+            },
+        },
+    ),
 ]
 
 
@@ -1006,6 +1205,8 @@ def flow_payload(entry: dict) -> dict:
     }
     if entry.get("reference") is not None:
         payload["reference"] = entry["reference"]
+    if entry.get("_example_output") is not None:
+        payload["example_output"] = entry["_example_output"]
     return payload
 
 
@@ -1020,6 +1221,16 @@ def reference_section(entry: dict) -> str:
     if url:
         line += f"\n\nPaper: {url}"
     return f"\n## Reference\n\n{line}\n"
+
+
+def example_fixture_section(entry: dict) -> str:
+    if entry.get("_example_output") is None:
+        return ""
+    return (
+        "\n## Deterministic Example Fixture\n\n"
+        "`flow.json`'s `example_output` is a deterministic fixture and validator input; "
+        "it is not proof that a live cognitive cycle executed.\n"
+    )
 
 
 def readme(entry: dict) -> str:
@@ -1051,7 +1262,7 @@ Pattern: **{entry["pattern"]}**
 ## Input
 
 Use `input.json` as the concrete scenario payload for this example.
-
+{example_fixture_section(entry)}
 ## Run
 
 From this directory:
@@ -1153,10 +1364,14 @@ def main() -> None:
     entries = build_entries()
     PATTERNS.mkdir(exist_ok=True)
 
+    catalog_entries = [
+        {key: value for key, value in entry.items() if not key.startswith("_")}
+        for entry in entries
+    ]
     catalog = {
         "source": "local_example_catalog",
-        "example_count": len(entries),
-        "examples": entries,
+        "example_count": len(catalog_entries),
+        "examples": catalog_entries,
     }
     write_json(PATTERNS / "catalog.json", catalog)
     (PATTERNS / "README.md").write_text(catalog_readme(entries), encoding="utf-8")

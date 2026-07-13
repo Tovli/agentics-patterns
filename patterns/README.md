@@ -53,3 +53,4 @@ this directory with `python run_example.py <example-id>`.
 - [`private-shared-federation`](./private-shared-federation/README.md) - Private/shared federation
 - [`storm-article-synthesis`](./storm-article-synthesis/README.md) - STORM article synthesis
 - [`compilot-loop-autoscheduling`](./compilot-loop-autoscheduling/README.md) - ComPilot loop auto-scheduling
+- [`cognitive-metacognitive-loop`](./cognitive-metacognitive-loop/README.md) - Cognitive metacognitive loop
